@@ -12,9 +12,9 @@ public class Eratosthenes {
     private void sift() {
         for (int i = 2; i < sieve.length - 1; i ++) {
             for (int j = i + 1; j < sieve.length; j++) {
+
                 if (j % i == 0) {
                     sieve[j] = false;
-                    break;
                 }
             }
         }
@@ -25,8 +25,8 @@ public class Eratosthenes {
     }
 
     public static void main(String[] args) {
-        Eratosthenes eratosthenes = new Eratosthenes(100);
-        System.out.println(eratosthenes.isSimple(17));
+        Eratosthenes eratosthenes = new Eratosthenes(10);
+        System.out.println(eratosthenes.isSimple(10));
     }
 }
 
