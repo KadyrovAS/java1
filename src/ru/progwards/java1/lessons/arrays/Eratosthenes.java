@@ -12,11 +12,11 @@ public class Eratosthenes {
     private void sift() {
         for (int i = 2; i < sieve.length -1; i ++) { //я бы скреативил так (int i = 2; i < sieve.length / 2; i ++)
             if (! sieve[i]) { //первое незачеркнутое число в списке
-                break;
+                continue;
             }
             for (int j = 2; j < sieve.length - 1; j++) {
                 if (i * j > sieve.length - 1) {
-                    continue;
+                    break;
                 }
 
                 sieve[i * j] = false;
@@ -29,7 +29,7 @@ public class Eratosthenes {
     }
 
     public static void main(String[] args) {
-        int n = 400;
+        int n = 200;
         Eratosthenes er = new Eratosthenes(n);
         for (int i = 0; i <= n; i ++) {
             System.out.println(i + " " + er.isSimple(i));
