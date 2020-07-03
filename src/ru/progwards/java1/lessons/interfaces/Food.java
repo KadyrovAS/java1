@@ -8,9 +8,9 @@ public class Food implements CompareWeight{
     @Override
     public CompareResult compareWeight(CompareWeight smthHasWeigt) {
         int res;
-        Animal smthAnimal;
-        smthAnimal = (Animal) smthHasWeigt;
-        res = Double.compare(this.getWeight(), smthAnimal.getWeight());
+        Food smthFood;
+        smthFood = (Food) smthHasWeigt;
+        res = Double.compare(this.getWeight(), smthFood.getWeight());
         if (res < 0) {
             return CompareResult.LESS;
         } else if (res == 0) return CompareResult.EQUAL;
@@ -18,8 +18,8 @@ public class Food implements CompareWeight{
     }
 
     public static void main(String[] args) {
-        Animal animal1 = new Animal(100);
-        Animal animal2 = new Animal(200);
-        System.out.println(animal1.compareWeight(animal2));
+        Food fd1 = new Food(100);
+        Food fd2 = new Food(200);
+        System.out.println(fd1.compareWeight(fd2));
     }
 }
