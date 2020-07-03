@@ -28,11 +28,13 @@ public class Animal implements FoodCompare, CompareWeight {
     }
 
     public double getFood1kgPrice() { //возвращает информацию о цене 1 кг еды
-        return switch (getFoodKind()) {
-            case UNKNOWN -> 0;
-            case HAY -> 20;
-            case CORN -> 50;
-        };
+
+        switch (getFoodKind()) {
+            case HAY: return 20;
+            case CORN: return 50;
+            case UNKNOWN:
+            default: return 0;
+        }
     }
 
     public double getFoodPrice() { //возвращает информацию о цене еды для конкретного животного
@@ -83,5 +85,6 @@ public class Animal implements FoodCompare, CompareWeight {
         Animal animal1 = new Animal(100);
         Animal animal2 = new Animal(200);
         System.out.println(animal1.compareWeight(animal2));
+        System.out.println(animal1.getFood1kgPrice());
     }
 }
