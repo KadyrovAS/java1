@@ -78,4 +78,10 @@ public class Animal implements FoodCompare, CompareWeight {
             }
         }
     }
+
+    public static void main(String[] args) {
+        Animal animal1 = new Animal(100);
+        Animal animal2 = new Animal(200);
+        System.out.println(animal1.compareWeight(animal2));
+    }
 }
