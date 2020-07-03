@@ -11,8 +11,10 @@ public class CalculateFibonacci {
                 return lastFibo.fibo;
             }
 
-        if (n < 3) return 1;
-        else {
+        if (n < 3) {
+          lastFibo.n = n;
+          lastFibo.fibo = 1;
+        } else {
             for (int i = 3; i <= n; i++) {
                 fb3 = fb1 + fb2;
                 fb1 = fb2;
@@ -39,7 +41,7 @@ public class CalculateFibonacci {
 
     public static void main(String[] args) {
 
-        System.out.println(fiboNumber(10));
+        System.out.println(fiboNumber(1));
         System.out.println(getLastFibo().n + " " + getLastFibo().fibo);
         clearLastFibo();
         System.out.println(fiboNumber(10));
