@@ -9,9 +9,7 @@ public class Animal implements FoodCompare, CompareWeight {
     }
     public enum AnimalKind {ANIMAL, COW, HAMSTER, DUCK}
     public enum FoodKind {UNKNOWN, HAY, CORN}
-    public AnimalKind getKind() {
-        return AnimalKind.ANIMAL;
-    }
+    public AnimalKind getKind() {return AnimalKind.ANIMAL;}
     public FoodKind getFoodKind() {return FoodKind.UNKNOWN;}
 
     @Override
