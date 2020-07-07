@@ -6,9 +6,7 @@ public class IntInteger extends AbsInteger {
 
     @Override
     public String toString() {
-        return "IntInteger{" +
-                "value=" + value +
-                '}';
+        return String.valueOf(value);
     }
 
 }

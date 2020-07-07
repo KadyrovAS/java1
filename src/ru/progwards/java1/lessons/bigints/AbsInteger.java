@@ -22,9 +22,7 @@ public class AbsInteger {
 
     @Override
     public String toString() {
-        return "AbsInteger{" +
-                "value=" + value +
-                '}';
+        return String.valueOf(value);
     }
 
 
