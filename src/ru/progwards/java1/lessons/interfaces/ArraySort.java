@@ -49,11 +49,12 @@ public class ArraySort implements CompareWeight{
     public static void main(String[] args) {
         ArraySort[] arWeight = new ArraySort[10];
         for (int i = 0; i < 10; i++) {
-            arWeight[i] = new ArraySort((100 - i));
+            arWeight[i] = new ArraySort(100 - i);
         }
         sort(arWeight);
         for (int i = 0; i < 10; i++) {
             System.out.println(arWeight[i].weight);
         }
+
     }
 }
