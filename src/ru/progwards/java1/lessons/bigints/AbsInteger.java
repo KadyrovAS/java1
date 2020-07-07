@@ -27,45 +27,6 @@ public class AbsInteger {
                 '}';
     }
 
-    public static class ByteInteger extends AbsInteger {
-        public byte value;
-        public ByteInteger(byte value) {super(value); this.value = (byte) value;}
-
-        @Override
-        public String toString() {
-            return "ByteInteger{" +
-                    "value=" + value +
-                    '}';
-        }
-
-
-    }
-
-    public static class ShortInteger extends AbsInteger {
-        public short value;
-        public ShortInteger(short value) {super(value); this.value = (short) value;}
-
-        @Override
-        public String toString() {
-            return "ShortInteger{" +
-                    "value=" + value +
-                    '}';
-        }
-
-    }
-
-    public static class IntInteger extends AbsInteger {
-        public int value;
-        public IntInteger(int value) {super(value); this.value = (int) value;}
-
-        @Override
-        public String toString() {
-            return "IntInteger{" +
-                    "value=" + value +
-                    '}';
-        }
-
-    }
 
     public static void main(String[] args) {
         ByteInteger bi;
