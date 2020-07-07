@@ -5,6 +5,8 @@ package ru.progwards.java1.lessons.bigints;
 //Наверное опять задачу не понял? Сергей, уточните пожалуйста, если вдруг что то не так
 
 
+import java.math.BigInteger;
+
 public class AbsInteger {
     public int value;
 
