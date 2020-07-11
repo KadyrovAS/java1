@@ -26,7 +26,7 @@ public class ArrayInteger{
         return result;
     }
 
-    boolean add(ArrayInteger num) { //реализация сложения в столбик двух чисел, разложеных по цифрам в массиве
+    boolean add(ArrayInteger num) { //реализация сложения в столбик двух чисел, разложенных по цифрам в массиве
         byte iMod = 0; //перенос 1 в старший разряд при сложении
         int d1, d2;
 
@@ -50,7 +50,7 @@ public class ArrayInteger{
 
 
     public static void main(String[] args) {
-        ArrayInteger a1 = new ArrayInteger(5);
+        ArrayInteger a1 = new ArrayInteger(6);
         ArrayInteger a2 = new ArrayInteger(5);
 
         BigInteger bg1 = BigInteger.valueOf(23856);
