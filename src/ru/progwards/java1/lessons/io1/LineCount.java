@@ -10,16 +10,15 @@ public class LineCount {
             try {
                 FileReader reader = new FileReader(fileName);
                 Scanner scanner = new Scanner(reader);
+                try {
                 while (scanner.hasNextLine()) {
-                    try {
                         String strFromFile = scanner.nextLine();
-                        if (strFromFile == "") n++;
-                    } finally {
-                        reader.close();
+                        if (strFromFile.compareTo("") == 0) n++;
                     }
+                } finally {
+                    reader.close();
                 }
             } catch (IOException e) {
-
                 return -1;
             }
             return n; }
