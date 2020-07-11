@@ -18,18 +18,13 @@ public class Coder {
             fileReader = new FileReader(inFileName);
             fileWriter = new FileWriter(outFileName);
             BufferedReader reader = new BufferedReader(fileReader, Character.SIZE );
-            BufferedWriter writer = new BufferedWriter(fileWriter, Integer.SIZE);
 
             try {
                 while (intCode != -1) {
                     intCode = reader.read();
-                    if (intCode != -1) for (i = 0; i < code.length; i ++) {
-                        if (code[i] == (char) intCode) {
-                            writer.write(i);
-                            break;
-                        }
-                    }
-
+                    if (intCode != -1) {
+                        fileWriter.write(code[intCode]);
+                }
                 }
             } catch (IOException e) {
                 logFile.write(e.getMessage());
@@ -48,8 +43,8 @@ public class Coder {
         int n = 65535;
         char[] code = new char[n];
         for (int i = 0; i < n; i ++) {
-        code[i] = (char) i;
+        code[n - i - 1] = (char) i;
         }
-        codeFile("myFirstFile.txt","CodeFile.txt",code,"file_out.log");
+        codeFile("CodeFile.txt","myFirstFile.txt",code,"file_out.log");
     }
 }

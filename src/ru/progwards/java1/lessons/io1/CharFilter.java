@@ -13,7 +13,6 @@ public class CharFilter {
             fileReader = new FileReader(inFileName);
             fileWriter = new FileWriter(outFileName);
             BufferedReader reader = new BufferedReader(fileReader, Character.SIZE );
-            BufferedWriter writer = new BufferedWriter(fileWriter, Character.SIZE);
 
             try {
                 while (true) {
@@ -22,10 +21,9 @@ public class CharFilter {
                     if (intCode != -1) for (int i = 0; i < filter.length(); i ++) {
                         if ((char) filter.charAt(i) == (char) intCode) eq = true;
                     } else break;
-//                    System.out.println((char) intCode);
-                    writer.write((char) intCode);
+
                         if (! eq) {
-                            writer.write((char) intCode);
+                            fileWriter.write((char) intCode);
                         }
 
                 }
@@ -42,6 +40,6 @@ public class CharFilter {
     }
 
     public static void main(String[] args) throws IOException {
-        filterFile("myFirstFile.txt","CodeFile.txt","Ё");
+        filterFile("myFirstFile.txt","CodeFile.txt","о");
     }
 }
