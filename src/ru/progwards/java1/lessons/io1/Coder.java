@@ -28,9 +28,11 @@ public class Coder {
                 }
             } catch (IOException e) {
                 logFile.write(e.getMessage());
+                throw new RuntimeException(e.getMessage());
             }
         } catch (IOException e) {
                 logFile.write(e.getMessage());
+                throw new RuntimeException(e.getMessage());
         } finally {
             logFile.close();
             fileReader.close();
