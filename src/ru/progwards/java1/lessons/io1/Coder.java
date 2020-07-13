@@ -1,6 +1,7 @@
 package ru.progwards.java1.lessons.io1;
 
 import java.io.*;
+import java.util.Arrays;
 
 //Уважаемый, Сергей.
 //Не могу понять, почему робот ругается на этот код.
@@ -14,11 +15,15 @@ import java.io.*;
 //без всякой проверки.
 //Может быть из-за этого на меня робот ругается?
 
-
-
 public class Coder {
     public static void codeFile(String inFileName, String outFileName, char[] code, String logName)
             throws IOException  {
+        System.out.println("inFileName = " + inFileName);
+        System.out.println("outFileName = " + outFileName);
+        System.out.println(Arrays.toString(code));
+        System.out.println("code.length = " + code.length);
+        System.out.println("logName" + logName);
+
         FileReader fileReader = null;
         FileWriter fileWriter = null;
         FileWriter logFile = null;
@@ -37,6 +42,7 @@ public class Coder {
                     intCode = reader.read();
                     if (intCode != -1) {
                         fileWriter.write(code[intCode]);
+                        System.out.println(intCode);
                 }
                 }
             } catch (IOException e) {
