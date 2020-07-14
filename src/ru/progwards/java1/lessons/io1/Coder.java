@@ -4,7 +4,7 @@ import java.io.*;
 
 public class Coder {
     public static void codeFile(String inFileName, String outFileName, char[] code, String logName) {
-
+        System.out.println("Start");
         int i = 0;
         int intCode = 0;
         FileWriter logFile = null;
@@ -12,11 +12,12 @@ public class Coder {
         FileWriter fileWriter = null;
 
         try {
+            logFile = new FileWriter(logName);
+            System.out.println("logName = " + logName);
 
             fileWriter = new FileWriter(outFileName);
             System.out.println("outFileName = " + outFileName);
-            logFile = new FileWriter(logName);
-            System.out.println("logName = " + logName);
+
             fileReader = new FileReader(inFileName);
             System.out.println("inFileName = " + inFileName);
 
