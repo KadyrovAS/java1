@@ -5,49 +5,48 @@ import java.io.*;
 public class Coder {
     public static void codeFile(String inFileName, String outFileName, char[] code, String logName) {
 
-        FileReader fileReader = null;
-        FileWriter fileWriter = null;
-        FileWriter logFile = null;
-
         int i = 0;
         int intCode = 0;
+        FileWriter logFile = null;
+        FileReader fileReader = null;
+        FileWriter fileWriter = null;
 
         try {
             logFile = new FileWriter(logName);
             fileReader = new FileReader(inFileName);
             fileWriter = new FileWriter(outFileName);
-            BufferedReader reader = new BufferedReader(fileReader, Character.SIZE );
-
-            try {
-                while (intCode != -1) {
-                    intCode = reader.read();
-                    if (intCode != -1) {
-                        fileWriter.write(code[intCode]);
-
+            BufferedReader reader = new BufferedReader(fileReader, Character.SIZE);
+            while (intCode != -1) {
+                intCode = reader.read();
+                if (intCode != -1) {
+                    fileWriter.write(code[intCode]);
                 }
-                }
-            } catch (IOException e) {
-                logFile.write(e.getMessage());
-                throw new RuntimeException();
             }
         } catch (IOException e) {
+            try {
                 logFile.write(e.getMessage());
-                throw new RuntimeException();
+            } catch (IOException err){
+                return;
+            }
         } finally {
-            logFile.close();
-            fileReader.close();
-            fileWriter.close();
+            try {
+                logFile.close();
+                fileReader.close();
+                fileWriter.close();
+            } catch (IOException e) {
+                return;
+            }
+            }
         }
 
-        }
-
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         int n = Character.MAX_VALUE;
-
         char[] code = new char[n];
-        for (int i = 0; i < n; i ++) {
-        code[n - i - 1] = (char) i;
+        for (int i = 0; i < n; i++) {
+            code[n - i - 1] = (char) i;
         }
-        codeFile("CodeFile.txt","myFirstFile.txt",code,"file_out.log");
+        codeFile("CodeFile.txt", "myFirstFile.txt", code, "file_out.log");
     }
+
+
 }
