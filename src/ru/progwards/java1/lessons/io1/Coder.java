@@ -23,10 +23,10 @@ public class Coder {
                     fileWriter.write(code[intCode]);
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             try {
                 logFile.write(e.getMessage());
-            } catch (IOException err) {
+            } catch (Exception err) {
                 return;
             }
         } finally {
