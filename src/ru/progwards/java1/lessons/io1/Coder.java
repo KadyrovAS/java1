@@ -25,6 +25,7 @@ public class Coder {
 
                 if (intCode != -1) {
                     fileWriter.write(code[intCode]);
+                    System.out.println((char) intCode);
                 }
             }
         } catch (Exception e) {
@@ -32,14 +33,19 @@ public class Coder {
                 System.out.println("Запись в log = " + e.getMessage());
                 logFile.write(e.getMessage());
             } catch (Exception err) {
+                System.out.println("В log не записалось");
                 return;
             }
         } finally {
             try {
                 logFile.close();
+                System.out.println("log закрылся");
                 fileReader.close();
+                System.out.println("fileReader закрылся");
                 fileWriter.close();
+                System.out.println("fileWriter закрылся");
             } catch (Exception e) {
+                System.out.println("Файлы закрылись с ошибкой");
                 return;
             }
         }
