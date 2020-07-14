@@ -13,9 +13,13 @@ public class Coder {
 
         try {
             logFile = new FileWriter(logName);
+            System.out.println("fileReader = " + inFileName);
             fileReader = new FileReader(inFileName);
+            System.out.println("fileReader после открытия = " + fileReader);
             fileWriter = new FileWriter(outFileName);
+            System.out.println("fileWriter после открытия");
             BufferedReader reader = new BufferedReader(fileReader, Character.SIZE);
+            System.out.println("Buffered");
             while (intCode != -1) {
                 intCode = reader.read();
                 if (intCode != -1) {
@@ -25,11 +29,13 @@ public class Coder {
         } catch (IOException e) {
             try {
                 logFile.write(e.getMessage());
+                System.out.println("Запись в log: " + e.getMessage());
             } catch (IOException err){
                 return;
             }
         } finally {
             try {
+                System.out.println("Закрытие всех файлов");
                 logFile.close();
                 fileReader.close();
                 fileWriter.close();
