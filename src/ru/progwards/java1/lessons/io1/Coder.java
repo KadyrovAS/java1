@@ -14,9 +14,11 @@ public class Coder {
         try {
             fileReader = new FileReader(inFileName);
             fileWriter = new FileWriter(outFileName);
-            BufferedReader reader = new BufferedReader(fileReader, Character.SIZE);
+            logFile = new FileWriter(logName);
+
             while (intCode != -1) {
-                intCode = reader.read();
+                intCode = fileReader.read();
+
                 if (intCode != -1) {
                     fileWriter.write(code[intCode]);
                 }
@@ -42,7 +44,7 @@ public class Coder {
         int n = Character.MAX_VALUE;
         char[] code = new char[n];
         for (int i = 0; i < n; i++) {
-            code[n - i - 1] = (char) i;
+            code[n-i-1] = (char) i;
         }
         codeFile("CodeFile.txt", "myFirstFile.txt", code, "file_out.log");
     }
