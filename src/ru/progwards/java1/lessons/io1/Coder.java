@@ -14,8 +14,11 @@ public class Coder {
         try {
 
             fileWriter = new FileWriter(outFileName);
+            System.out.println("outFileName = " + outFileName);
             logFile = new FileWriter(logName);
+            System.out.println("logName = " + logName);
             fileReader = new FileReader(inFileName);
+            System.out.println("inFileName = " + inFileName);
 
             while (intCode != -1) {
                 intCode = fileReader.read();
@@ -26,6 +29,7 @@ public class Coder {
             }
         } catch (Exception e) {
             try {
+                System.out.println("Запись в log = " + e.getMessage());
                 logFile.write(e.getMessage());
             } catch (Exception err) {
                 return;
