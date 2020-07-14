@@ -12,9 +12,10 @@ public class Coder {
         FileWriter fileWriter = null;
 
         try {
-            fileReader = new FileReader(inFileName);
+
             fileWriter = new FileWriter(outFileName);
             logFile = new FileWriter(logName);
+            fileReader = new FileReader(inFileName);
 
             while (intCode != -1) {
                 intCode = fileReader.read();
@@ -46,7 +47,7 @@ public class Coder {
         for (int i = 0; i < n; i++) {
             code[n-i-1] = (char) i;
         }
-        codeFile("CodeFile.txt", "myFirstFile.txt", code, "file_out.log");
+        codeFile("CodeFil.txt", "myFirstFile.txt", code, "file_out.log");
     }
 
 
