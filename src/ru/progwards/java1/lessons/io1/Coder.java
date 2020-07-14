@@ -23,7 +23,7 @@ public class Coder {
             }
         } catch (Exception e) {
             try {
-                logFile.write(e.getMessage());
+                logFile.write(e.getMessage() + "\n");
             } catch (Exception err) {
                 return;
             }
