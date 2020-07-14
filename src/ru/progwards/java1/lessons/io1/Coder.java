@@ -23,7 +23,9 @@ public class Coder {
             }
         } catch (Exception e) {
             try {
+                System.out.println("Попытка записи в log " + e.getMessage());
                 logFile.write(e.getMessage() + "\n");
+                System.out.println("Записано в log  успешно");
             } catch (Exception err) {
                 return;
             }
