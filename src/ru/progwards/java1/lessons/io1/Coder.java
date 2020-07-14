@@ -22,26 +22,32 @@ public class Coder {
 
             while (intCode != -1) {
                 intCode = fileReader.read();
-
+                System.out.println("Чтение из fileReader: " + intCode);
                 if (intCode != -1) {
                     fileWriter.write(code[intCode]);
-                    System.out.println((char) intCode);
+                    System.out.println("запись в fileWriter: " + intCode);
                 }
             }
         } catch (Exception e) {
             try {
                 System.out.println("Запись в log = " + e.getMessage());
+                System.out.println("logFile = " + logFile);
                 logFile.write(e.getMessage());
             } catch (Exception err) {
+                if (logFile == null)
+                    System.out.println("logFile == null");
                 System.out.println("В log не записалось");
                 return;
             }
         } finally {
             try {
+                if (logFile != null)
                 logFile.close();
                 System.out.println("log закрылся");
+                if (fileReader != null)
                 fileReader.close();
                 System.out.println("fileReader закрылся");
+                if (fileWriter != null)
                 fileWriter.close();
                 System.out.println("fileWriter закрылся");
             } catch (Exception e) {
