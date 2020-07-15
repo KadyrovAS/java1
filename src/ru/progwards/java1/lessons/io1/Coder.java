@@ -1,9 +1,6 @@
 package ru.progwards.java1.lessons.io1;
 
 import java.io.*;
-//Переделал код. Убрал из сигнатуры throws, протестировал в IDEA
-//У меня все работает. Проверил робота с трассировкой
-//Все вроде в log записывается. Почему робот ругается?
 
 public class Coder {
     public static void codeFile(String inFileName, String outFileName, char[] code, String logName) {
@@ -24,10 +21,10 @@ public class Coder {
                     fileWriter.write(code[intCode]);
                 }
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             try {
                 logFile.write(e.getMessage() + "\n");
-            } catch (Exception err) {
+            } catch (Throwable err) {
                 return;
             }
         } finally {
@@ -41,7 +38,7 @@ public class Coder {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args)  {
         int n = Character.MAX_VALUE;
         char[] code = new char[n];
         for (int i = 0; i < n; i++) {
