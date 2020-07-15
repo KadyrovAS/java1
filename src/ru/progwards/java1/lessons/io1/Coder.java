@@ -12,8 +12,9 @@ public class Coder {
 
         try {
             logFile = new FileWriter(logName);
-            fileWriter = new FileWriter(outFileName);
             fileReader = new FileReader(inFileName);
+            fileWriter = new FileWriter(outFileName);
+
 
             while (intCode != -1) {
                 intCode = fileReader.read();
