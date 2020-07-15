@@ -11,7 +11,7 @@ public class Coder {
         FileWriter fileWriter = null;
 
         try {
-            logFile = new FileWriter(logName, true);
+            logFile = new FileWriter(logName);
             fileWriter = new FileWriter(outFileName);
             fileReader = new FileReader(inFileName);
 
@@ -23,7 +23,7 @@ public class Coder {
             }
         } catch (Throwable e) {
             try {
-                logFile.write(e.getMessage() + "\n");
+                logFile.write(e.getMessage());
             } catch (Throwable err) {
                 return;
             }
