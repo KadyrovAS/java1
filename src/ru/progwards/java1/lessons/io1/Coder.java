@@ -32,7 +32,7 @@ public class Coder {
                 if (logFile != null) logFile.close();
                 if (fileReader != null) fileReader.close();
                 if (fileWriter != null) fileWriter.close();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 return;
             }
         }
