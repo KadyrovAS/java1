@@ -26,7 +26,7 @@ public class Censor {
         }
     }
 
-    public static void censorFile(String inoutFileName, String[] obscene) throws Throwable {
+    public static void censorFile(String inoutFileName, String[] obscene) throws CensorException {
 
          String[] obsceneCopy = new String[obscene.length];
         StringBuilder copyString = new StringBuilder("");
@@ -38,32 +38,36 @@ public class Censor {
             obsceneCopy[i] = copyString.toString();
             i++;
         }
-
-        FileReader fileReader = new FileReader(inoutFileName);
-        FileWriter fileWriter = new FileWriter("2" + inoutFileName);
-        String currentLine;
-        try (Scanner scanner = new Scanner(fileReader);) {
-            while (scanner.hasNext()) {
-                currentLine = scanner.nextLine();
-                for (i = 0; i < obscene.length; i++) {
-                    if (currentLine.contains(obscene[i]))
-                        currentLine = currentLine.replaceAll(obscene[i], obsceneCopy[i]);
+        try {
+            FileReader fileReader = new FileReader(inoutFileName);
+            FileWriter fileWriter = new FileWriter("2" + inoutFileName);
+            String currentLine;
+            try (Scanner scanner = new Scanner(fileReader);) {
+                while (scanner.hasNext()) {
+                    currentLine = scanner.nextLine();
+                    for (i = 0; i < obscene.length; i++) {
+                        if (currentLine.contains(obscene[i]))
+                            currentLine = currentLine.replaceAll(obscene[i], obsceneCopy[i]);
+                    }
+                    fileWriter.write(currentLine + "\n");
                 }
-                fileWriter.write(currentLine + "\n");
+
+
+                if (fileWriter != null) fileWriter.close();
+                if (fileReader != null) fileReader.close();
+
+                File fileChanged = new File(inoutFileName);
+                if (fileChanged.delete()) {
+                    File fileCopy = new File("2" + inoutFileName);
+                    fileCopy.renameTo(fileChanged);
+                }
+            } catch (Throwable e) {
+                CensorException censorException = new CensorException(e.getMessage(), inoutFileName);
+                throw censorException;
             }
-
-
-            if (fileWriter != null) fileWriter.close();
-            if (fileReader != null) fileReader.close();
-
-            File fileChanged = new File(inoutFileName);
-            if (fileChanged.delete()) {
-                File fileCopy = new File("2" + inoutFileName);
-                fileCopy.renameTo(fileChanged);
-            }
-        } catch (Throwable e) {
-        CensorException censorException = new CensorException(e.getMessage(), inoutFileName);
-        throw censorException;
+        } catch (IOException e) {
+            CensorException censorException = new CensorException(e.getMessage(), inoutFileName);
+            throw censorException;
         }
     }
 
