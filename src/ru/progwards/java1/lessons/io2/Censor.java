@@ -66,7 +66,7 @@ public class Censor {
     }
 
     public static void main(String[] args) {
-        String[] line = {"солнце", "друг", "3"};
+        String[] line = {"солнце", "друг", "03"};
         try {
             censorFile("myFirstFile.txt", line);
         } catch (Throwable e) {
