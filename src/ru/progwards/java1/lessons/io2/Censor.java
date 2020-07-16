@@ -53,7 +53,7 @@ public class Censor {
             randomAccessFile.seek(endPosition);
         }
 
-        } catch (IOException e) {
+        } catch (Throwable e) {
             CensorException censorException = new CensorException(e.getMessage(), inoutFileName);
             throw censorException;
         }
