@@ -43,10 +43,9 @@ public class Coder {
         int n = Character.MAX_VALUE;
         char[] code = new char[n];
         for (int i = 0; i < n; i++) {
-            code[n - i - 1] = (char) i;
+            code[i] = (char) i;
         }
-        codeFile("CodeFil.txt", "myFirstFile.txt", code, "file_out.log");
+        codeFile("CodeFile.txt", "myFirstFile.txt", code, "file_out.log");
     }
-
 
 }
