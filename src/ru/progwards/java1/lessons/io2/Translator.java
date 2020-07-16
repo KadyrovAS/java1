@@ -43,7 +43,13 @@ public class Translator {
         String word;
         for (int i = 0; i < sentence.length(); i++) {
             sim = sentence.substring(i, i + 1).toCharArray();
-            if (Character.isAlphabetic(sim[0])) wordIndexEnd++;
+            if (Character.isAlphabetic(sim[0])) {
+                if(i == sentence.length() - 1) {
+                    //последний символ в строке
+                    word = sentence.substring(wordIndexStart, wordIndexEnd + 1);
+                    resultLine.append(compareWord(word));
+                } else wordIndexEnd++;
+            }
             else if (wordIndexStart == wordIndexEnd) {
                 resultLine.append(sim[0]);
                 wordIndexStart++;
@@ -61,9 +67,9 @@ public class Translator {
     }
 
     public static void main(String[] args) {
-        String[] arIn = {"Дом", "Машина", "Улица", "Поле", "и"};
-        String[] arOut = {"House", "Car", "Street", "Field", "and"};
+        String[] arIn = {"make", "love", "not", "war"};
+        String[] arOut = {"твори", "любовь", "не", "войну"};
         Translator translator = new Translator(arIn, arOut);
-        System.out.println(translator.translate("(Машина) и дом."));
+        System.out.println(translator.translate("make love not war"));
     }
 }
