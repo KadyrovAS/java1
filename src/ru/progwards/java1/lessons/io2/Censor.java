@@ -35,13 +35,14 @@ public class Censor {
     }
 
     public static void censorFile(String inoutFileName, String[] obscene) throws CensorException {
-        String[] obsceneCopy = copyStar(obscene);
-        String currentLine;
-        long startPosition;
-        long endPosition;
 
         try (RandomAccessFile randomAccessFile = new RandomAccessFile(inoutFileName, "rw");) {
-        while (randomAccessFile.getFilePointer() < randomAccessFile.length()) {
+            String[] obsceneCopy = copyStar(obscene);
+            String currentLine;
+            long startPosition;
+            long endPosition;
+
+            while (randomAccessFile.getFilePointer() < randomAccessFile.length()) {
             startPosition = randomAccessFile.getFilePointer();
             currentLine = randomAccessFile.readLine();
             endPosition = randomAccessFile.getFilePointer();
@@ -61,7 +62,7 @@ public class Censor {
 
 
     public static void main(String[] args) {
-        String[] line = {"two", "storey", "write", "count", "day"};
+        String[] line = {"IDEA", "most", "help", "one"};
         try {
             censorFile("myFirstFile.txt", line);
         } catch (Throwable e) {
