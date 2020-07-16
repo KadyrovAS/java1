@@ -11,24 +11,24 @@ import java.util.Scanner;
 
 public class Censor {
 
-    public static void censorFile(String inoutFileName, String[] obscene) throws Throwable {
+    static class CensorException extends Exception {
+        String lineError; //Строка ошибки
+        String fileName; //Имя файла
 
-        class CensorException extends Exception {
-            String lineError; //Строка ошибки
-            String fileName; //Имя файла
-
-            CensorException(String lineError, String fileName) {
-                this.fileName = fileName;
-                this.lineError = lineError;
-            }
-
-            @Override
-            public String toString() {
-                return fileName + ":" + lineError;
-            }
+        CensorException(String lineError, String fileName) {
+            this.fileName = fileName;
+            this.lineError = lineError;
         }
 
-        String[] obsceneCopy = new String[obscene.length];
+        @Override
+        public String toString() {
+            return fileName + ":" + lineError;
+        }
+    }
+
+    public static void censorFile(String inoutFileName, String[] obscene) throws Throwable {
+
+         String[] obsceneCopy = new String[obscene.length];
         StringBuilder copyString = new StringBuilder("");
         int i = 0;
         for (String word : obscene) {
