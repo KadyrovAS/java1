@@ -10,38 +10,37 @@ public class ArrayIterator<T> implements Iterator<T> {
     ArrayIterator(T[] array) {
         this.array = array;
         currentPosition = 0;
+        for (T item: this.array) System.out.println(item);
     }
 
     @Override
     public boolean hasNext() {
         // TODO Auto-generated method stub
-        if (currentPosition == array.length - 1) return false;
+        if (currentPosition == array.length) return false;
         return true;
     }
 
     @Override
     public T next() {
         // TODO Auto-generated method stub
-        if (currentPosition == array.length - 1) return null;
-        currentPosition++;
-        return array[currentPosition];
+        if (currentPosition == array.length) return null;
+        return array[currentPosition++];
     }
 
     public static void main(String[] args) {
-        int[][] ar = new int[4][6];
-        for (int i = 0; i < 4; i ++)
-            for (int k = 0; k < 6; k ++)
-                ar[i][k] = i * 10 + k;
+        String [] myArray = new String[5];
+        myArray[0] = "Один";
+        myArray[1] = "Два";
+        myArray[2] = "Три";
+        myArray[3] = "Четыре";
+        myArray[4] = "Пять";
 
-        for (int i = 0; i < 4; i ++) {
-            for (int k = 0; k < 6; k++) {
-                System.out.print("i = " + i + "; ");
-                System.out.print("k = " + k + "; ");
-                System.out.println(ar[i][k]);
-            }
+        ArrayIterator ar = new ArrayIterator(myArray);
+
+        System.out.println("After all");
+        while (ar.hasNext()) {
+            System.out.println(ar.next());
         }
-        System.out.println(ar.length);
-        System.out.println(ar[1].length);
     }
 }
 
