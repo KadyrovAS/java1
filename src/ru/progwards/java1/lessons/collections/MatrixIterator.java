@@ -8,7 +8,7 @@ public class MatrixIterator<T> implements Iterator<T> {
     private int currentPosition1; //текущая позиция в 1 измерении
     private int currentPosition2; //текущая позиция во 2 измерении
 
-    ArrayIterator(T[][] array) {
+    MatrixIterator(T[][] array) {
         this.array = array;
         currentPosition1 = 0;
         currentPosition2 = 0;
