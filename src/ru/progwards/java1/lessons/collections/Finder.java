@@ -80,11 +80,12 @@ public class Finder {
         return resultSimilar + ":" +Integer.toString(resultCount);
     }
 
+
     public static void main(String[] args) {
-        Collection<Integer> collection = new ArrayList<Integer>();
-        Integer[] ar = new Integer[]{78, 3, 1,12,24,36,48,69};
-        for (int item: ar) collection.add(item);
-        System.out.println(findMinSumPair(collection));
+        Collection<String> collection = new ArrayList<String>();
+        String[] ar = new String[]{"Дима","Вова", "Вова", "Сергей", "Алексей", "Денис", "Денис","Денис"};
+        
+        System.out.println(findSimilar(collection));
 
         }
     }

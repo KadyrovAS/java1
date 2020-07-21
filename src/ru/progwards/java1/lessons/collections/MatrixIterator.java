@@ -1,6 +1,9 @@
 package ru.progwards.java1.lessons.collections;
 
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 
 public class MatrixIterator<T> implements Iterator<T> {
 
@@ -18,7 +21,7 @@ public class MatrixIterator<T> implements Iterator<T> {
     public boolean hasNext() {
         // TODO Auto-generated method stub
         if (currentPosition2 == array[currentPosition1].length &&
-           currentPosition1 == array.length - 1) return false;
+                currentPosition1 == array.length - 1) return false;
         return true;
     }
 
@@ -30,21 +33,23 @@ public class MatrixIterator<T> implements Iterator<T> {
 
         if (currentPosition2 == array[currentPosition1].length) {
             currentPosition2 = 0;
-            currentPosition1 ++;
+            currentPosition1++;
         }
         return array[currentPosition1][currentPosition2++];
     }
 
     public static void main(String[] args) {
-        Integer[][] myArray = new Integer[4][6];
-        for (int i = 0; i < 4; i ++)
-            for (int k = 0; k < 6; k ++)
-                myArray[i][k] = i * 10 + k;
+        List<Integer> linkedList = new LinkedList();
+        for (int i = 0; i < 5; i++)
+            linkedList.add(i);
+//---------------------------------------
 
-        MatrixIterator ar = new MatrixIterator(myArray);
-
-        while (ar.hasNext()) {
-            System.out.println(ar.next());
+        for (ListIterator<Integer> listIterator = linkedList.listIterator(); listIterator.hasNext(); ) {
+            Integer n = listIterator.next();
+            if (n % 2 != 0)
+                listIterator.set(n * 2);
         }
+            for (int i = 0; i < linkedList.size(); i++) System.out.println(linkedList.get(i));
+
     }
 }
