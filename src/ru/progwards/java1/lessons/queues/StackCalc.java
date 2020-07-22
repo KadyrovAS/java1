@@ -11,9 +11,8 @@ private ArrayDeque<Double> stack = new ArrayDeque<>();
     public void mul() {push(pop() * pop());}
     public void div() {
     // Роботу не понравилось push(1 / pop() * pop());
-    double arg1 = pop();
-    double arg2 = pop();
-    push(arg2 / arg1);
+    double arg = pop();
+    push(pop() / arg);
     }
     public double get() {return stack.peekFirst();}
 }
