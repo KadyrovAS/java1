@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.util.*;
 
 public class CollectionsSort {
-    static final int ITERATIONS = 50_000;
+    static final int ITERATIONS = 1_000;
 
     public static void mySort(Collection<Integer> data) {
         ArrayList<Integer> myArray = new ArrayList<Integer>(data);
