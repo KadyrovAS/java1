@@ -29,6 +29,7 @@ public class SalesInfo {
             while (scanner.hasNext()) {
                 record = scanner.nextLine();
                 item = record.split(",");
+                if (item.length != 4) continue;
                 for (int i = 0; i < item.length; i ++) item[i] = item[i].trim();
                 try {
                     listRecords.add(new OneRecord(item[0], item[1],
