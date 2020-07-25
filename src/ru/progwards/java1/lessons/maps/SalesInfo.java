@@ -33,7 +33,7 @@ public class SalesInfo {
                 try {
                     listRecords.add(new OneRecord(item[0], item[1],
                             Integer.valueOf(item[2]), Double.valueOf(item[3])));
-                } catch (NumberFormatException e) {
+                } catch (Throwable e) {
                     continue;
                 }
             }
