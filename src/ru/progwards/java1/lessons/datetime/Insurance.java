@@ -1,7 +1,6 @@
 package ru.progwards.java1.lessons.datetime;
 
-import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
@@ -14,12 +13,19 @@ public class Insurance {
         this.start = start;
     }
     public Insurance(String strStart, FormatStyle style) {
-        if (style == FormatStyle.SHORT)
-            start = ZonedDateTime.parse(strStart, DateTimeFormatter.ISO_LOCAL_DATE);
-        else if (style == FormatStyle.LONG)
-            start = ZonedDateTime.parse(strStart, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        LocalDate ld;
+        LocalTime lt = LocalTime.of(0,0,0,0);
+        LocalDateTime ldt;
+        if (style == FormatStyle.SHORT) {
+            ld = LocalDate.parse(strStart, DateTimeFormatter.ISO_LOCAL_DATE);
+            this.start = ZonedDateTime.of(ld, lt, ZoneId.systemDefault());
+        }
+        else if (style == FormatStyle.LONG) {
+            ldt = LocalDateTime.parse(strStart, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            this.start = ZonedDateTime.of(ldt, ZoneId.systemDefault());
+        }
         else if (style == FormatStyle.FULL)
-            start = ZonedDateTime.parse(strStart, DateTimeFormatter.ISO_ZONED_DATE_TIME);
+            this.start = ZonedDateTime.parse(strStart, DateTimeFormatter.ISO_ZONED_DATE_TIME);
     }
     public void setDuration(Duration duration) {this.duration = duration;}
     public void setDuration(ZonedDateTime expiration) {this.duration = Duration.between(this.start, expiration);}
@@ -30,22 +36,28 @@ public class Insurance {
         this.duration = Duration.between(start, zdt);
     }
     public void setDuration(String strDuration, FormatStyle style) {
+        LocalDateTime ldt;
         Long milisec;
-        ZonedDateTime zdt;
         if (style == FormatStyle.SHORT) {
             milisec = Long.valueOf(strDuration);
             this.duration = Duration.ofMillis(milisec);
         } else if (style == FormatStyle.LONG) {
-            zdt = ZonedDateTime.parse(strDuration, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-            this.duration = Duration.ofMillis(zdt.getSecond() * 1000);
+            ldt = LocalDateTime.parse(strDuration, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+
+            this.duration = Duration.ofHours(ldt.getHour())
+                    .plusMinutes(ldt.getMinute())
+                    .plusSeconds(ldt.getSecond())
+                    .plusDays(ldt.getDayOfMonth())
+                    .plusDays(ldt.getMonthValue() * 30);
         } else
             this.duration = Duration.parse(strDuration);
     }
 
     public boolean checkValid(ZonedDateTime dateTime) {
+        if (this.start.compareTo(dateTime) > 0) return false;
         if (this.duration == null) return true;
         Duration durationCalculate = Duration.between(this.start, dateTime);
-        if (this.duration.compareTo(durationCalculate) >= 0) return true;
+        if (this.duration.compareTo(durationCalculate) > 0) return true;
         return false;
     }
 
@@ -57,11 +69,16 @@ public class Insurance {
     }
 
     public static void main(String[] args) {
-        Locale locale = new Locale("ru", "RU");
-        Locale.setDefault(locale);
+        String strDuration = "0000-01-02T03:04:05";
+        LocalDateTime ldt = LocalDateTime.parse(strDuration, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        Period period = Period.of(ldt.getYear(), ldt.getMonthValue(), ldt.getDayOfMonth());
 
-        Insurance insurance = new Insurance(ZonedDateTime.now().minus(10, ChronoUnit.DAYS));
-        insurance.setDuration(0,15,0);
-        System.out.println(insurance.toString());
+        Duration duration = Duration.ofHours(ldt.getHour())
+                .plusMinutes(ldt.getMinute())
+                .plusSeconds(ldt.getSecond())
+                .plusDays(ldt.getDayOfMonth())
+                .plusDays(ldt.getMonthValue() * 30);
+
+        System.out.println(duration.toSeconds());
     }
 }

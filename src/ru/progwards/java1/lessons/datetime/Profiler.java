@@ -2,11 +2,12 @@ package ru.progwards.java1.lessons.datetime;
 
 import java.util.*;
 
-public class Profiler{
+public class Profiler {
 
     static class CurrentLevel {
         String nameSection; //имя секции
         long entryTime; //время вызова секции
+
         CurrentLevel(String nameSection, long entryTime) {
             this.nameSection = nameSection;
             this.entryTime = entryTime;
@@ -15,49 +16,41 @@ public class Profiler{
 
     static HashMap<String, StatisticInfo> mapStatistic = new HashMap<>();
     static LinkedList<CurrentLevel> listCurrentInfo = new LinkedList<>();
-    static boolean entry = false; //При открытии секции true, при закрытии секции - false
-    //если происходит закрытие секции при entry==true - это значит, что у текущей секции
-    //отсутствуют вложенные секции, поэтому durationTime добавляем еще и к selfTime текущей секции
 
     public static void enterSection(String name) {
-        entry = true;
+        long currentTime = System.currentTimeMillis();
         StatisticInfo currentInfo = new StatisticInfo();
         if (mapStatistic.get(name) == null) currentInfo.sectionName = name;
         else currentInfo = mapStatistic.get(name);
-        currentInfo.count ++;
-        listCurrentInfo.add(new CurrentLevel(name, System.currentTimeMillis()));
+        currentInfo.count++;
+        listCurrentInfo.add(new CurrentLevel(name, currentTime));
         mapStatistic.put(name, currentInfo);
     }
 
     public static void exitSection(String name) {
         long timeExit = System.currentTimeMillis();
-        long durationTime;
+        Long durationTime;
         String nameSection;
 
-        StatisticInfo currentInfo = mapStatistic.get(name);;
+        StatisticInfo currentInfo = mapStatistic.get(name);
         durationTime = timeExit - listCurrentInfo.getLast().entryTime;
         currentInfo.fullTime += durationTime;
 
-        //Добавление durationTime к selfTime текущего элемента, если у него отсутствуют вложенные вызовы
-        if (entry == true) currentInfo.selfTime += durationTime;
-
         mapStatistic.put(name, currentInfo);
-        if (listCurrentInfo.size() > 1) {
-            // Добавление durationTime к selfTime элементу на уровень выше
-            nameSection = listCurrentInfo.get(listCurrentInfo.size() - 2).nameSection;
-            currentInfo = mapStatistic.get(nameSection);
-            currentInfo.selfTime += durationTime;
-            mapStatistic.put(nameSection, currentInfo);
-        }
-
-        entry = false;
         listCurrentInfo.removeLast();
+        if (listCurrentInfo.size() > 0) {
+            currentInfo = mapStatistic.get(listCurrentInfo.getLast().nameSection);
+            currentInfo.selfTime -= durationTime;
+            mapStatistic.put(currentInfo.sectionName, currentInfo);
+        }
     }
 
     public static List<StatisticInfo> getStatisticInfo() {
         List<StatisticInfo> statisticInfo = new ArrayList<>();
         statisticInfo.addAll(mapStatistic.values());
-        statisticInfo.sort(new Comparator<StatisticInfo>(){
+        for (int i = 0; i < statisticInfo.size(); i ++)
+            statisticInfo.get(i).selfTime += statisticInfo.get(i).fullTime;
+        statisticInfo.sort(new Comparator<StatisticInfo>() {
             @Override
             public int compare(StatisticInfo o1, StatisticInfo o2) {
                 return o1.sectionName.compareTo(o2.sectionName);
@@ -67,19 +60,24 @@ public class Profiler{
     }
 
     public static void main(String[] args) throws InterruptedException {
-        enterSection("Один");
-        Thread.sleep(3000);
-        enterSection("Два");
-        Thread.sleep(5000);
-        enterSection("Три");
-        Thread.sleep(4000);
-        exitSection("Три");
-        exitSection("Два");
-        enterSection("Три");
-        Thread.sleep(1000);
-        exitSection("Три");
-        exitSection("Один");
-        for (StatisticInfo item: getStatisticInfo()) System.out.println(item.sectionName + " " +
-                item.fullTime + " " + item.selfTime + " " + item.count);
+        for (int i = 0; i < 3; i++) {
+            enterSection("Process1");
+            Thread.sleep(100);
+            exitSection("Process1");
+        }
+        enterSection("Process1");
+        Thread.sleep(100);
+        for (int i = 0; i < 2; i++) {
+            enterSection("Process2");
+            Thread.sleep(200);
+            enterSection("Process3");
+            Thread.sleep(100);
+            exitSection("Process3");
+            exitSection("Process2");
+        }
+        exitSection("Process1");
+        for (StatisticInfo item : getStatisticInfo())
+            System.out.println(item.sectionName + " " +
+                    item.fullTime / 100 * 100 + " " + item.selfTime / 100 * 100 + " " + item.count);
     }
 }
