@@ -51,7 +51,7 @@ public class Insurance {
     public boolean checkValid(ZonedDateTime dateTime) {
         if (this.duration == null) return true;
         Duration durationCalculate = Duration.between(this.start, dateTime);
-        if (this.duration.compareTo(durationCalculate) >= 0) return true;
+        if (this.duration.compareTo(durationCalculate) > 0) return true;
         return false;
     }
 

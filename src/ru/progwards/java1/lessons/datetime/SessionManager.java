@@ -54,12 +54,15 @@ public class SessionManager {
                 sessions.remove(currentSession.getUserName());
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         int sessionHandle;
         UserSession us = new UserSession("User1");
         sessionHandle = us.getSessionHandle();
         SessionManager sm = new SessionManager(1);
         sm.add(us);
-        System.out.println(sm.get(sessionHandle).getUserName());
+        Thread.sleep(500);
+        System.out.println(sm.get(sessionHandle));
+        Thread.sleep(1000);
+        System.out.println(sm.get(sessionHandle));
     }
 }
