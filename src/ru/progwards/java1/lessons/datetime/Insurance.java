@@ -1,7 +1,6 @@
 package ru.progwards.java1.lessons.datetime;
 
-import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
@@ -14,11 +13,17 @@ public class Insurance {
         this.start = start;
     }
     public Insurance(String strStart, FormatStyle style) {
-        System.out.println("Конструктор Insurance  " + strStart + "  " + style);
-        if (style == FormatStyle.SHORT)
-            this.start = ZonedDateTime.parse(strStart, DateTimeFormatter.ISO_LOCAL_DATE);
-        else if (style == FormatStyle.LONG)
-            this.start = ZonedDateTime.parse(strStart, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        LocalDate ld;
+        LocalDateTime ldt;
+        LocalTime lt = LocalTime.now();
+        if (style == FormatStyle.SHORT) {
+            ld = LocalDate.parse(strStart, DateTimeFormatter.ISO_LOCAL_DATE);
+            this.start = ZonedDateTime.of(ld, lt, ZoneId.systemDefault());
+        }
+        else if (style == FormatStyle.LONG) {
+            ldt = LocalDateTime.parse(strStart, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            this.start = ZonedDateTime.of(ldt, ZoneId.systemDefault());
+        }
         else if (style == FormatStyle.FULL)
             this.start = ZonedDateTime.parse(strStart, DateTimeFormatter.ISO_ZONED_DATE_TIME);
     }
@@ -31,15 +36,17 @@ public class Insurance {
         this.duration = Duration.between(start, zdt);
     }
     public void setDuration(String strDuration, FormatStyle style) {
-        System.out.println("Конструктор setDuration  " + strDuration + "  " + style);
+        LocalDateTime ldt;
+//        System.out.println("Конструктор setDuration  " + strDuration + "  " + style);
         Long milisec;
-        ZonedDateTime zdt;
+//        ZonedDateTime zdt;
         if (style == FormatStyle.SHORT) {
             milisec = Long.valueOf(strDuration);
             this.duration = Duration.ofMillis(milisec);
         } else if (style == FormatStyle.LONG) {
-            zdt = ZonedDateTime.parse(strDuration, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-            this.duration = Duration.ofMillis(zdt.getSecond() * 1000);
+            ldt = LocalDateTime.parse(strDuration, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+//            zdt = ZonedDateTime.parse(strDuration, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            this.duration = Duration.ofMillis(ldt.getSecond() * 1000);
         } else
             this.duration = Duration.parse(strDuration);
     }
@@ -59,11 +66,14 @@ public class Insurance {
     }
 
     public static void main(String[] args) {
-        Locale locale = new Locale("ru", "RU");
-        Locale.setDefault(locale);
+        Locale.setDefault(Locale.US);
+        String str = "2020-07-30T13:09:57.708512100";
 
-        Insurance insurance = new Insurance(ZonedDateTime.now().minus(10, ChronoUnit.DAYS));
-        insurance.setDuration(0,15,0);
-        System.out.println(insurance.toString());
+        LocalDateTime ldt = LocalDateTime.parse(str, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        System.out.println(ldt.toString());
+        ZoneId zd = ZoneId.systemDefault();
+//        LocalTime lt = LocalTime.of(0,0,0);
+        ZonedDateTime zdt = ZonedDateTime.of(ldt, zd);
+        System.out.println(zdt.toString());
     }
 }

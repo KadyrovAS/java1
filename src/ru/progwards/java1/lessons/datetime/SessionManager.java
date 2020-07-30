@@ -3,7 +3,6 @@ package ru.progwards.java1.lessons.datetime;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
-import java.util.List;
 
 public class SessionManager {
     private HashMap<String, UserSession> sessions = new HashMap<>(); //Коллекция
@@ -12,12 +11,10 @@ public class SessionManager {
     public SessionManager(int sessionValid) { //Конструктор  создает экземпляр SessionManager и
         // сохраняет sessionValid - период валидности сессии в секундах.
         this.sessionValid = sessionValid;
-//        sessions.clear();
-        System.out.println("Конструктор SessionManager " + sessionValid);
     }
 
     public void add(UserSession userSession) { //добавляет новую сессию пользователя
-        if (sessions.get(userSession.getUserName()) != null)
+        if (sessions.get(userSession.getUserName()) == null)
             sessions.put(userSession.getUserName(), userSession);
     }
 
@@ -36,7 +33,6 @@ public class SessionManager {
     }
 
     public UserSession get(int sessionHandle) { //проверяет наличие существующей сессии по хендлу.
-        System.out.println("get sessionHandle=" + sessionHandle+ " время: " + ZonedDateTime.now().toString());
         for (UserSession currentSession : sessions.values())
             if (currentSession.getSessionHandle() == sessionHandle)
                 if (valid(currentSession) == true)
@@ -54,5 +50,14 @@ public class SessionManager {
         for (UserSession currentSession : sessions.values())
             if (valid(currentSession) == false)
                 sessions.remove(currentSession.getUserName());
+    }
+
+    public static void main(String[] args) {
+        int sessionHandle;
+        UserSession us = new UserSession("User1");
+        sessionHandle = us.getSessionHandle();
+        SessionManager sm = new SessionManager(1);
+        sm.add(us);
+        System.out.println(sm.get(sessionHandle));
     }
 }
