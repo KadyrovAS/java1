@@ -62,7 +62,7 @@ public class SessionManager {
         sm.add(us);
         Thread.sleep(500);
         System.out.println(sm.get(sessionHandle));
-        Thread.sleep(1000);
+        Thread.sleep(500);
         System.out.println(sm.get(sessionHandle));
     }
 }

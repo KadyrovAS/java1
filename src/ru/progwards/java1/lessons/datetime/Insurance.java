@@ -49,6 +49,7 @@ public class Insurance {
     }
 
     public boolean checkValid(ZonedDateTime dateTime) {
+        if (this.start.compareTo(dateTime) > 0) return false;
         if (this.duration == null) return true;
         Duration durationCalculate = Duration.between(this.start, dateTime);
         if (this.duration.compareTo(durationCalculate) > 0) return true;
@@ -63,13 +64,8 @@ public class Insurance {
     }
 
     public static void main(String[] args) {
-        Locale.setDefault(Locale.US);
-        String str = "2020-07-30T13:09:57.708512100";
-
-        LocalDateTime ldt = LocalDateTime.parse(str, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        System.out.println(ldt.toString());
-        ZoneId zd = ZoneId.systemDefault();
-        ZonedDateTime zdt = ZonedDateTime.of(ldt, zd);
-        System.out.println(zdt.toString());
+        Insurance insurance = new Insurance(ZonedDateTime.now().plusDays(30));
+        insurance.setDuration(0,30,0);
+        System.out.println(insurance.toString());
     }
 }
