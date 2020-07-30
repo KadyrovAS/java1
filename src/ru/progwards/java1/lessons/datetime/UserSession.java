@@ -17,4 +17,5 @@ public class UserSession {
         lastAccess = ZonedDateTime.now();
         this.sessionHandle = random.nextInt();
     }
+
 }
