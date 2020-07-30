@@ -60,14 +60,14 @@ public class Profiler {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
             enterSection("Process1");
             Thread.sleep(100);
             exitSection("Process1");
         }
         enterSection("Process1");
         Thread.sleep(100);
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i ++) {
             enterSection("Process2");
             Thread.sleep(200);
             enterSection("Process3");
@@ -76,6 +76,7 @@ public class Profiler {
             exitSection("Process2");
         }
         exitSection("Process1");
+
         for (StatisticInfo item : getStatisticInfo())
             System.out.println(item.sectionName + " " +
                     item.fullTime / 100 * 100 + " " + item.selfTime / 100 * 100 + " " + item.count);
