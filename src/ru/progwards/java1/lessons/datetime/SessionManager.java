@@ -60,6 +60,6 @@ public class SessionManager {
         sessionHandle = us.getSessionHandle();
         SessionManager sm = new SessionManager(1);
         sm.add(us);
-        System.out.println(sm.get(sessionHandle));
+        System.out.println(sm.get(sessionHandle).getUserName());
     }
 }
