@@ -12,7 +12,8 @@ public class SessionManager {
     public SessionManager(int sessionValid) { //Конструктор  создает экземпляр SessionManager и
         // сохраняет sessionValid - период валидности сессии в секундах.
         this.sessionValid = sessionValid;
-        sessions.clear();
+//        sessions.clear();
+        System.out.println("Конструктор SessionManager " + sessionValid);
     }
 
     public void add(UserSession userSession) { //добавляет новую сессию пользователя
@@ -35,6 +36,7 @@ public class SessionManager {
     }
 
     public UserSession get(int sessionHandle) { //проверяет наличие существующей сессии по хендлу.
+        System.out.println("get sessionHandle=" + sessionHandle+ " время: " + ZonedDateTime.now().toString());
         for (UserSession currentSession : sessions.values())
             if (currentSession.getSessionHandle() == sessionHandle)
                 if (valid(currentSession) == true)

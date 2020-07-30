@@ -67,19 +67,23 @@ public class Profiler{
     }
 
     public static void main(String[] args) throws InterruptedException {
-        enterSection("Один");
-        Thread.sleep(3000);
-        enterSection("Два");
-        Thread.sleep(5000);
-        enterSection("Три");
-        Thread.sleep(4000);
-        exitSection("Три");
-        exitSection("Два");
-        enterSection("Три");
+        for (int i = 0; i < 2; i ++) {
+            enterSection("Process1");
+            Thread.sleep(1000);
+            exitSection("Process1");
+        }
+        enterSection("Process1");
         Thread.sleep(1000);
-        exitSection("Три");
-        exitSection("Один");
+        for (int i = 0; i < 4; i ++) {
+            enterSection("Process2");
+            Thread.sleep(2000);
+            enterSection("Process3");
+            Thread.sleep(3000);
+            exitSection("Process3");
+            exitSection("Process2");
+        }
+        exitSection("Process1");
         for (StatisticInfo item: getStatisticInfo()) System.out.println(item.sectionName + " " +
-                item.fullTime + " " + item.selfTime + " " + item.count);
+                item.fullTime / 100 * 100 + " " + item.selfTime / 100 * 100 + " " + item.count);
     }
 }

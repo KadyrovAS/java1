@@ -14,12 +14,13 @@ public class Insurance {
         this.start = start;
     }
     public Insurance(String strStart, FormatStyle style) {
+        System.out.println("Конструктор Insurance  " + strStart + "  " + style);
         if (style == FormatStyle.SHORT)
-            start = ZonedDateTime.parse(strStart, DateTimeFormatter.ISO_LOCAL_DATE);
+            this.start = ZonedDateTime.parse(strStart, DateTimeFormatter.ISO_LOCAL_DATE);
         else if (style == FormatStyle.LONG)
-            start = ZonedDateTime.parse(strStart, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            this.start = ZonedDateTime.parse(strStart, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         else if (style == FormatStyle.FULL)
-            start = ZonedDateTime.parse(strStart, DateTimeFormatter.ISO_ZONED_DATE_TIME);
+            this.start = ZonedDateTime.parse(strStart, DateTimeFormatter.ISO_ZONED_DATE_TIME);
     }
     public void setDuration(Duration duration) {this.duration = duration;}
     public void setDuration(ZonedDateTime expiration) {this.duration = Duration.between(this.start, expiration);}
@@ -30,6 +31,7 @@ public class Insurance {
         this.duration = Duration.between(start, zdt);
     }
     public void setDuration(String strDuration, FormatStyle style) {
+        System.out.println("Конструктор setDuration  " + strDuration + "  " + style);
         Long milisec;
         ZonedDateTime zdt;
         if (style == FormatStyle.SHORT) {
