@@ -23,6 +23,8 @@ public class Profiler {
         if (mapStatistic.get(name) == null) currentInfo.sectionName = name;
         else currentInfo = mapStatistic.get(name);
         currentInfo.count++;
+        System.out.println("enterSection " + currentInfo.sectionName + " " + currentInfo.count + " " +
+                           currentInfo.fullTime + " " + currentInfo.selfTime);
         listCurrentInfo.add(new CurrentLevel(name, currentTime));
         mapStatistic.put(name, currentInfo);
     }
@@ -33,7 +35,13 @@ public class Profiler {
 
         StatisticInfo currentInfo = mapStatistic.get(name);
         durationTime = timeExit - listCurrentInfo.getLast().entryTime;
+
+        System.out.println("exitSection " + currentInfo.sectionName + " " + currentInfo.count + " " +
+                currentInfo.fullTime + " " + currentInfo.selfTime);
+
         currentInfo.fullTime += durationTime;
+
+        System.out.println();
 
         mapStatistic.put(name, currentInfo);
         listCurrentInfo.removeLast();
@@ -41,6 +49,10 @@ public class Profiler {
             currentInfo = mapStatistic.get(listCurrentInfo.getLast().nameSection);
             currentInfo.selfTime -= durationTime;
             mapStatistic.put(currentInfo.sectionName, currentInfo);
+
+            System.out.println("after remove: " + currentInfo.sectionName + " " + currentInfo.count + " " +
+                    currentInfo.fullTime + " " + currentInfo.selfTime);
+
         }
     }
 
