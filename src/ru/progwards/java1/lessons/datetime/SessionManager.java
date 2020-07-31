@@ -16,6 +16,7 @@ public class SessionManager {
     public void add(UserSession userSession) { //добавляет новую сессию пользователя
         if (sessions.get(userSession.getUserName()) == null)
             sessions.put(userSession.getUserName(), userSession);
+        userSession.updateLastAccess();
     }
 
     public boolean checkValid(ZonedDateTime dateTime) {
@@ -30,8 +31,10 @@ public class SessionManager {
 
     public UserSession find(String userName) { //проверяет наличие существующей сессии по userName.
         if (sessions.get(userName) != null)
-            if (checkValid(sessions.get(userName).getLastAccess()) == true)
+            if (checkValid(sessions.get(userName).getLastAccess()) == true) {
+                sessions.get(userName).updateLastAccess();
                 return sessions.get(userName);
+            }
         return null;
     }
 
