@@ -9,7 +9,7 @@ public class SessionManager {
 
     public SessionManager(int sessionValid) { //Конструктор  создает экземпляр SessionManager и
         // сохраняет sessionValid - период валидности сессии в секундах.
-        this.sessionValid = sessionValid;
+        this.sessionValid = sessionValid * 1000;
         System.out.println("SessionManager " + sessionValid);
     }
 
@@ -20,10 +20,10 @@ public class SessionManager {
 
     public boolean checkValid(ZonedDateTime dateTime) {
         //Если срок сессии истек, возвращает false
-        long sessionDuration = Duration.between(dateTime, ZonedDateTime.now()).toSeconds();
+        long sessionDuration = Duration.between(dateTime, ZonedDateTime.now()).toMillis();
 
         System.out.println("checkValid " + dateTime.toString() + " " + ZonedDateTime.now().toString());
-        System.out.println("Сравниваем " + this.sessionValid + " > " + sessionDuration);
+        System.out.println("Сравниваем " + this.sessionValid + " >= " + sessionDuration);
         if (this.sessionValid >= sessionDuration) return true;
         return false;
     }
@@ -63,9 +63,12 @@ public class SessionManager {
         sessionHandle = us.getSessionHandle();
         SessionManager sm = new SessionManager(1);
         sm.add(us);
+        ZonedDateTime start = ZonedDateTime.now();
         Thread.sleep(500);
         System.out.println(sm.get(sessionHandle));
         Thread.sleep(500);
+        ZonedDateTime finis = ZonedDateTime.now();
+        System.out.println(Duration.between(start, finis).toMillis());
         System.out.println(sm.get(sessionHandle));
     }
 }
