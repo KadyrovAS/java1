@@ -1,5 +1,4 @@
 package ru.progwards.java1.lessons.datetime;
-
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
@@ -11,7 +10,7 @@ public class SessionManager {
     public SessionManager(int sessionValid) { //Конструктор  создает экземпляр SessionManager и
         // сохраняет sessionValid - период валидности сессии в секундах.
         this.sessionValid = sessionValid;
-//        System.out.println("SessionManager " + sessionValid);
+        System.out.println("SessionManager " + sessionValid);
     }
 
     public void add(UserSession userSession) { //добавляет новую сессию пользователя
@@ -23,8 +22,8 @@ public class SessionManager {
         //Если срок сессии истек, возвращает false
         long sessionDuration = Duration.between(dateTime, ZonedDateTime.now()).toSeconds();
 
-//        System.out.println("checkValid " + dateTime.toString() + " " + ZonedDateTime.now().toString());
-//        System.out.println("Сравниваем " + this.sessionValid + " > " + sessionDuration);
+        System.out.println("checkValid " + dateTime.toString() + " " + ZonedDateTime.now().toString());
+        System.out.println("Сравниваем " + this.sessionValid + " > " + sessionDuration);
         if (this.sessionValid >= sessionDuration) return true;
         return false;
     }

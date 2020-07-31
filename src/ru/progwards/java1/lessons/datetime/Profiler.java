@@ -49,7 +49,7 @@ public class Profiler {
             mapStatistic.put(currentInfo.sectionName, currentInfo);
 
             System.out.println("afterExit " + currentInfo.sectionName + " " + currentInfo.count + " " +
-                    currentInfo.fullTime + " " + currentInfo.selfTime + " durationTime " + durationTime);
+                    currentInfo.fullTime + " " + currentInfo.selfTime);
 
         }
     }
