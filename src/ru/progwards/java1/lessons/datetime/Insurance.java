@@ -2,8 +2,6 @@ package ru.progwards.java1.lessons.datetime;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.Locale;
 
 public class Insurance {
     public static enum FormatStyle {SHORT, LONG, FULL} // стиль формата даты-времени
@@ -68,5 +66,10 @@ public class Insurance {
             return "Insurance issued on " + this.start.toString() +  " is not valid";
     }
 
+    public static void main(String[] args) {
+        Insurance insurance = new Insurance("2020-06-30T09:08:13.309878+03:00[Europe/Moscow]", FormatStyle.FULL);
+        insurance.setDuration("0000-01-02T00:00:00", Insurance.FormatStyle.LONG);
+        System.out.println(insurance.toString());
+    }
 
 }
