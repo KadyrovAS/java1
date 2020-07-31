@@ -9,8 +9,7 @@ public class SessionManager {
 
     public SessionManager(int sessionValid) { //Конструктор  создает экземпляр SessionManager и
         // сохраняет sessionValid - период валидности сессии в секундах.
-        this.sessionValid = sessionValid * 1000;
-        System.out.println("SessionManager " + sessionValid);
+        this.sessionValid = sessionValid * 1000; //пересчитываем в милисекунды
     }
 
     public void add(UserSession userSession) { //добавляет новую сессию пользователя
@@ -22,9 +21,6 @@ public class SessionManager {
     public boolean checkValid(ZonedDateTime dateTime) {
         //Если срок сессии истек, возвращает false
         long sessionDuration = Duration.between(dateTime, ZonedDateTime.now()).toMillis();
-
-        System.out.println("checkValid " + dateTime.toString() + " " + ZonedDateTime.now().toString());
-        System.out.println("Сравниваем " + this.sessionValid + " >= " + sessionDuration);
         if (this.sessionValid >= sessionDuration) return true;
         return false;
     }
