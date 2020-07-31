@@ -68,17 +68,5 @@ public class Insurance {
             return "Insurance issued on " + this.start.toString() +  " is not valid";
     }
 
-    public static void main(String[] args) {
-        String strDuration = "0000-01-02T03:04:05";
-        LocalDateTime ldt = LocalDateTime.parse(strDuration, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        Period period = Period.of(ldt.getYear(), ldt.getMonthValue(), ldt.getDayOfMonth());
 
-        Duration duration = Duration.ofHours(ldt.getHour())
-                .plusMinutes(ldt.getMinute())
-                .plusSeconds(ldt.getSecond())
-                .plusDays(ldt.getDayOfMonth())
-                .plusDays(ldt.getMonthValue() * 30);
-
-        System.out.println(duration.toSeconds());
-    }
 }
