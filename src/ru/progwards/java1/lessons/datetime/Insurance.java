@@ -53,7 +53,7 @@ public class Insurance {
                     .plusMinutes(ldt.getMinute())
                     .plusSeconds(ldt.getSecond())
                     .plusDays(ldt.getDayOfMonth())
-                    .plusDays(ldt.getMonthValue() * 30);
+                    .plusDays(ldt.getMonthValue() * 31);
         } else
             this.duration = Duration.parse(strDuration);
     }
