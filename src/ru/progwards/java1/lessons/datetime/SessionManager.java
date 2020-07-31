@@ -11,7 +11,6 @@ public class SessionManager {
     public SessionManager(int sessionValid) { //Конструктор  создает экземпляр SessionManager и
         // сохраняет sessionValid - период валидности сессии в секундах.
         this.sessionValid = sessionValid;
-        System.out.println("SessionManager(int sessionValid) " + sessionValid);
     }
 
     public void add(UserSession userSession) { //добавляет новую сессию пользователя
@@ -22,14 +21,12 @@ public class SessionManager {
     public boolean checkValid(ZonedDateTime dateTime) {
         //Если срок годности истек, возвращает false
         long sessionDuration = Duration.between(dateTime, ZonedDateTime.now()).toSeconds();
-        System.out.println("checkValid(ZonedDateTime dateTime) dateTime=" + dateTime.toString());
-        System.out.println("Сравниваем " + this.sessionValid + " > " + sessionDuration);
+
         if (this.sessionValid > sessionDuration) return true;
         return false;
     }
 
     public UserSession find(String userName) { //проверяет наличие существующей сессии по userName.
-        System.out.println("find " + userName);
         if (sessions.get(userName) != null)
             if (checkValid(sessions.get(userName).getLastAccess()) == true)
                 return sessions.get(userName);
@@ -37,7 +34,6 @@ public class SessionManager {
     }
 
     public UserSession get(int sessionHandle) { //проверяет наличие существующей сессии по хендлу.
-        System.out.println("get " + sessionHandle);
         for (UserSession currentSession : sessions.values())
             if (currentSession.getSessionHandle() == sessionHandle)
                 if (checkValid(currentSession.getLastAccess()) == true) {
