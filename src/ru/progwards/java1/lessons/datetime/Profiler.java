@@ -61,6 +61,8 @@ public class Profiler {
             mapStatistic.remove(statisticInfo.get(i).sectionName);
             statisticInfo.get(i).selfTime += statisticInfo.get(i).fullTime;
         }
+        for (int i = 0; i < listCurrentInfo.size(); i ++) listCurrentInfo.removeLast();
+
         statisticInfo.sort(new Comparator<StatisticInfo>() {
             @Override
             public int compare(StatisticInfo o1, StatisticInfo o2) {
