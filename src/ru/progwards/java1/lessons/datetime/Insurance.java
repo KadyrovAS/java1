@@ -42,18 +42,20 @@ public class Insurance {
     }
     public void setDuration(String strDuration, FormatStyle style) {
         LocalDateTime ldt;
+
         Long milisec;
         if (style == FormatStyle.SHORT) {
             milisec = Long.valueOf(strDuration);
             this.duration = Duration.ofMillis(milisec);
         } else if (style == FormatStyle.LONG) {
             ldt = LocalDateTime.parse(strDuration, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-
-            this.duration = Duration.ofHours(ldt.getHour())
-                    .plusMinutes(ldt.getMinute())
-                    .plusSeconds(ldt.getSecond())
-                    .plusDays(ldt.getDayOfMonth())
-                    .plusDays(ldt.getMonthValue() * 31);
+            ZonedDateTime finis = start.plusYears(ldt.getYear())
+                                        .plusMonths(ldt.getMonthValue())
+                                        .plusDays(ldt.getDayOfMonth())
+                                        .plusHours(ldt.getHour())
+                                        .plusMinutes(ldt.getMinute())
+                                        .plusSeconds(ldt.getSecond());
+            this.duration = Duration.between(this.start, finis);
         } else
             this.duration = Duration.parse(strDuration);
     }
