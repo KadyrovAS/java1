@@ -25,7 +25,7 @@ public class SessionManager {
 
         System.out.println("checkValid " + dateTime.toString() + " " + ZonedDateTime.now().toString());
         System.out.println("Сравниваем " + this.sessionValid + " > " + sessionDuration);
-        if (this.sessionValid > sessionDuration) return true;
+        if (this.sessionValid >= sessionDuration) return true;
         return false;
     }
 
