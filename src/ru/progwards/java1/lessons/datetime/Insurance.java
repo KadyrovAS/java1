@@ -1,5 +1,8 @@
 package ru.progwards.java1.lessons.datetime;
 
+import jdk.swing.interop.SwingInterOpUtils;
+
+import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -10,8 +13,10 @@ public class Insurance {
     private Duration duration; // продолжительность действия.
     public Insurance(ZonedDateTime start) {
         this.start = start;
+        System.out.println("Insurance " + start.toString());
     }
     public Insurance(String strStart, FormatStyle style) {
+        System.out.println("Insurance " + strStart + "  " + style);
         Locale locale = Locale.US;
         Locale.setDefault(locale);
         LocalDate ld;
@@ -28,15 +33,23 @@ public class Insurance {
         else if (style == FormatStyle.FULL)
             this.start = ZonedDateTime.parse(strStart, DateTimeFormatter.ISO_ZONED_DATE_TIME);
     }
-    public void setDuration(Duration duration) {this.duration = duration;}
-    public void setDuration(ZonedDateTime expiration) {this.duration = Duration.between(this.start, expiration);}
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+        System.out.println("setDuration(Duration duration) " + duration.toString());
+    }
+    public void setDuration(ZonedDateTime expiration) {
+        this.duration = Duration.between(this.start, expiration);
+        System.out.println("setDuration(ZonedDateTime expiration) " + expiration.toString());
+    }
     public void setDuration(int months, int days, int hours) {
+        System.out.println("setDuration(int months, int days, int hours) " + months + " " + days + " " + hours);
         ZonedDateTime zdt = start.plusMonths(months);
         zdt = zdt.plusDays(days);
         zdt = zdt.plusHours(hours);
         this.duration = Duration.between(start, zdt);
     }
     public void setDuration(String strDuration, FormatStyle style) {
+        System.out.println("setDuration(String strDuration, FormatStyle style) " + strDuration + " " + style);
         LocalDateTime ldt;
         Long milisec;
         if (style == FormatStyle.SHORT) {
@@ -55,6 +68,8 @@ public class Insurance {
     }
 
     public boolean checkValid(ZonedDateTime dateTime) {
+        System.out.println("checkValid(ZonedDateTime dateTime) " + dateTime.toString());
+        System.out.println("Сравниваем " + this.start.toString() + " и " + dateTime.toString());
         if (this.start.compareTo(dateTime) > 0) return false;
         if (this.duration == null) return true;
         Duration durationCalculate = Duration.between(this.start, dateTime);
