@@ -37,7 +37,7 @@ public class Profiler {
 
         mapStatistic.put(name, currentInfo);
         listCurrentInfo.removeLast();
-        if (listCurrentInfo.size() > 0) { //на внешнем уровне
+        if (listCurrentInfo.size() > 0) { //корректировка selfTime на внешнем уровне
             currentInfo = mapStatistic.get(listCurrentInfo.getLast().nameSection);
             currentInfo.selfTime -= durationTime;
             mapStatistic.put(currentInfo.sectionName, currentInfo);
