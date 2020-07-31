@@ -10,7 +10,10 @@ public class UserSession {
     public  int getSessionHandle() {return this.sessionHandle;}
     public  String getUserName() {return this.userName;}
     public ZonedDateTime getLastAccess() {return this.lastAccess;}
-    public void updateLastAccess() {this.lastAccess = ZonedDateTime.now();}
+    public void updateLastAccess() {
+        this.lastAccess = ZonedDateTime.now();
+        System.out.println("обновление " + userName + " " + lastAccess.toString());
+    }
     public UserSession(String userName) {
         Random random = new Random();
         this.userName = userName;
