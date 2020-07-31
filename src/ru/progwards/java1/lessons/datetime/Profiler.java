@@ -19,7 +19,7 @@ public class Profiler {
 
     public static void enterSection(String name) {
         long currentTime = System.currentTimeMillis();
-//        System.out.println("enterSection(" + name + ") " + currentTime);
+        System.out.println("enterSection(" + name + ") " + currentTime);
         StatisticInfo currentInfo = new StatisticInfo();
         if (mapStatistic.get(name) == null) currentInfo.sectionName = name;
         else currentInfo = mapStatistic.get(name);
@@ -32,7 +32,7 @@ public class Profiler {
         long timeExit = System.currentTimeMillis();
         Long durationTime;
 
-//        System.out.println("exitSection(" + name + ") " + timeExit);
+        System.out.println("exitSection(" + name + ") " + timeExit);
         StatisticInfo currentInfo = mapStatistic.get(name);
         durationTime = timeExit - listCurrentInfo.getLast().entryTime;
         currentInfo.fullTime += durationTime;
@@ -43,8 +43,8 @@ public class Profiler {
             currentInfo = mapStatistic.get(listCurrentInfo.getLast().nameSection);
             currentInfo.selfTime -= durationTime;
             mapStatistic.put(currentInfo.sectionName, currentInfo);
-//            System.out.println(currentInfo.sectionName + "(selfTime-" + durationTime + "=" +
-//                    currentInfo.selfTime);
+            System.out.println(currentInfo.sectionName + "(selfTime-" + durationTime + "=" +
+                    currentInfo.selfTime);
         }
     }
 
