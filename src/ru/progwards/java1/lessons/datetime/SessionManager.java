@@ -15,7 +15,7 @@ public class SessionManager {
 
     public void add(UserSession userSession) { //добавляет новую сессию пользователя
         if (sessions.get(userSession.getUserName()) == null)
-             sessions.put(userSession.getUserName(), userSession);
+            sessions.put(userSession.getUserName(), userSession);
     }
 
     public boolean checkValid(ZonedDateTime dateTime) {
