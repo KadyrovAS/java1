@@ -40,7 +40,7 @@ public class OrderProcessor {
     private void readOrder(Path path, LocalDate start, LocalDate finish, String shopId) {
         Order order = new Order();
         String[] orderItem;
-        String goodsName;
+        String googsName;
         int count;
         double price;
         String fileName = path.getFileName().toString();
@@ -59,10 +59,12 @@ public class OrderProcessor {
             for (String line: Files.readAllLines(path)) {
                 orderItem = line.split(",");
                 if (orderItem.length != 3) continue;
-                goodsName = orderItem[0];
+                googsName = orderItem[0];
                 count = Integer.valueOf(orderItem[1].trim());
                 price = Double.valueOf(orderItem[2].trim());
-                order.items.add(new OrderItem(goodsName, count, price));
+                System.out.println("readOrder() googsName = '" + googsName+ "'; " +
+                        "count = " + count + " price = " + price);
+                order.items.add(new OrderItem(googsName, count, price));
                 order.sum += count * price;
             }
             listOrder.add(order);
@@ -98,10 +100,10 @@ public class OrderProcessor {
         Map<String, Double> calculateByGoods = new TreeMap<>();
         for (Order order: listOrder) {
             for (OrderItem orderItem : order.items) {
-                if (calculateByGoods.get(orderItem.goodsName) == null)
-                    calculateByGoods.put(orderItem.goodsName, orderItem.price * orderItem.count);
-                else calculateByGoods.put(orderItem.goodsName, orderItem.price * orderItem.count +
-                        calculateByGoods.get(orderItem.goodsName));
+                if (calculateByGoods.get(orderItem.googsName) == null)
+                    calculateByGoods.put(orderItem.googsName, orderItem.price * orderItem.count);
+                else calculateByGoods.put(orderItem.googsName, orderItem.price * orderItem.count +
+                        calculateByGoods.get(orderItem.googsName));
             }
         }
         return calculateByGoods;
@@ -122,7 +124,7 @@ public class OrderProcessor {
         orderProcessor.loadOrders(null, null, null);
         for (Order order: orderProcessor.process(null)) {
             for (OrderItem orderItem : order.items)
-                System.out.println(orderItem.goodsName + " " + orderItem.count + " " + orderItem.price);
+                System.out.println(orderItem.googsName + " " + orderItem.count + " " + orderItem.price);
         }
     }
 
