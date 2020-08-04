@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
@@ -24,7 +23,7 @@ public class OrderProcessor {
             Files.walkFileTree(startPath, new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
-                    if (pathMatcher.matches(path)) readOrder(path);
+                    if (pathMatcher.matches(path)) readOrder(path, start, finish, shopId);
                     else errorCount++;
                     return FileVisitResult.CONTINUE;
                 }
@@ -38,7 +37,7 @@ public class OrderProcessor {
     return errorCount;
     }
 
-    private void readOrder(Path path) {
+    private void readOrder(Path path, LocalDate start, LocalDate finish, String shopId) {
         Order order = new Order();
         String[] orderItem;
         String googsName;
@@ -46,6 +45,7 @@ public class OrderProcessor {
         double price;
         String fileName = path.getFileName().toString();
         order.shopId = fileName.substring(0, 3);
+        if (shopId != null && shopId.compareTo(order.shopId) != 0) return;
         order.orderId = fileName.substring(4, 10);
         order.customerId = fileName.substring(11, 15);
         try {
@@ -54,14 +54,18 @@ public class OrderProcessor {
                     .atZone(ZoneId.systemDefault())
                     .toLocalDateTime();
 
+            if (start != null && start.compareTo(order.datetime.toLocalDate()) > 0) return;
+            if (finish != null && finish.compareTo(order.datetime.toLocalDate()) < 0) return;
             for (String line: Files.readAllLines(path)) {
                 orderItem = line.split(",");
+                if (orderItem.length != 3) continue;
                 googsName = orderItem[0];
-                count = Integer.valueOf(orderItem[1]);
-                price = Double.valueOf(orderItem[2]);
+                count = Integer.valueOf(orderItem[1].trim());
+                price = Double.valueOf(orderItem[2].trim());
                 order.items.add(new OrderItem(googsName, count, price));
                 order.sum += count * price;
             }
+            listOrder.add(order);
 
         } catch (IOException e) {return;}
 
@@ -113,5 +117,13 @@ public class OrderProcessor {
         return calculateByDate;
     }
 
+    public static void main(String[] args) {
+        OrderProcessor orderProcessor = new OrderProcessor("d:/Orders");
+        orderProcessor.loadOrders(null, null, null);
+        for (Order order: orderProcessor.process(null)) {
+            for (OrderItem orderItem : order.items)
+                System.out.println(orderItem.googsName + " " + orderItem.count + " " + orderItem.price);
+        }
+    }
 
 }
