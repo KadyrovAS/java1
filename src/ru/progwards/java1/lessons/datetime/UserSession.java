@@ -16,6 +16,10 @@ public class UserSession {
         this.userName = userName;
         lastAccess = ZonedDateTime.now();
         this.sessionHandle = random.nextInt();
+
+        //Для #traceout
+        System.out.println("add() + " + this.userName + " " +
+                this.sessionHandle + " " + this.lastAccess);
     }
 
 }

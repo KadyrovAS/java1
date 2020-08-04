@@ -25,8 +25,8 @@ public class Profiler {
         currentInfo.count++;
 
 // Для #traceout
-//        System.out.println("enterSection" + name + " " + currentInfo.count + " " + currentInfo.fullTime + " " +
-//                           currentInfo.selfTime);
+        System.out.println("enterSection" + name + " " + currentInfo.count + " " + currentInfo.fullTime + " " +
+                           currentInfo.selfTime);
 
         listCurrentInfo.add(new CurrentLevel(name, currentTime));
         mapStatistic.put(name, currentInfo);
@@ -41,8 +41,8 @@ public class Profiler {
         mapStatistic.put(name, currentInfo);
 
 // Для #traceout
-//        System.out.println("exitSection " + currentInfo.sectionName + " " + currentInfo.count + " " +
-//                             currentInfo.fullTime + " " + currentInfo.selfTime);
+        System.out.println("exitSection " + currentInfo.sectionName + " " + currentInfo.count + " " +
+                             currentInfo.fullTime + " " + currentInfo.selfTime);
 
         listCurrentInfo.removeLast();
         if (listCurrentInfo.size() > 0) { //корректировка selfTime на внешнем уровне
@@ -50,8 +50,8 @@ public class Profiler {
             currentInfo.selfTime -= durationTime;
             mapStatistic.put(currentInfo.sectionName, currentInfo);
 //Для #traceout
-//            System.out.println("afterExit " + currentInfo.sectionName + " " + currentInfo.count + " " +
-//                    currentInfo.fullTime + " " + currentInfo.selfTime);
+            System.out.println("afterExit " + currentInfo.sectionName + " " + currentInfo.count + " " +
+                    currentInfo.fullTime + " " + currentInfo.selfTime);
 
         }
     }
