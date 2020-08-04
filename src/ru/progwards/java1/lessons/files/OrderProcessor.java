@@ -40,7 +40,7 @@ public class OrderProcessor {
     private void readOrder(Path path, LocalDate start, LocalDate finish, String shopId) {
         Order order = new Order();
         String[] orderItem;
-        String googsName;
+        String goodsName;
         int count;
         double price;
         String fileName = path.getFileName().toString();
@@ -59,10 +59,10 @@ public class OrderProcessor {
             for (String line: Files.readAllLines(path)) {
                 orderItem = line.split(",");
                 if (orderItem.length != 3) continue;
-                googsName = orderItem[0];
+                goodsName = orderItem[0];
                 count = Integer.valueOf(orderItem[1].trim());
                 price = Double.valueOf(orderItem[2].trim());
-                order.items.add(new OrderItem(googsName, count, price));
+                order.items.add(new OrderItem(goodsName, count, price));
                 order.sum += count * price;
             }
             listOrder.add(order);
