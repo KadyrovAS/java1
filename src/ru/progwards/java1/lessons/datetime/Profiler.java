@@ -25,8 +25,8 @@ public class Profiler {
         currentInfo.count++;
 
 // Для #traceout
-        System.out.println("enterSection" + name + " " + currentInfo.count + " " + currentInfo.fullTime + " " +
-                           currentInfo.selfTime);
+//        System.out.println("enterSection" + name + " " + currentInfo.count + " " + currentInfo.fullTime + " " +
+//                           currentInfo.selfTime);
 
         listCurrentInfo.add(new CurrentLevel(name, currentTime));
         mapStatistic.put(name, currentInfo);
@@ -41,8 +41,8 @@ public class Profiler {
         mapStatistic.put(name, currentInfo);
 
 // Для #traceout
-        System.out.println("exitSection " + currentInfo.sectionName + " " + currentInfo.count + " " +
-                             currentInfo.fullTime + " " + currentInfo.selfTime);
+//        System.out.println("exitSection " + currentInfo.sectionName + " " + currentInfo.count + " " +
+//                             currentInfo.fullTime + " " + currentInfo.selfTime);
 
         listCurrentInfo.removeLast();
         if (listCurrentInfo.size() > 0) { //корректировка selfTime на внешнем уровне
@@ -50,8 +50,8 @@ public class Profiler {
             currentInfo.selfTime -= durationTime;
             mapStatistic.put(currentInfo.sectionName, currentInfo);
 //Для #traceout
-            System.out.println("afterExit " + currentInfo.sectionName + " " + currentInfo.count + " " +
-                    currentInfo.fullTime + " " + currentInfo.selfTime);
+//            System.out.println("afterExit " + currentInfo.sectionName + " " + currentInfo.count + " " +
+//                    currentInfo.fullTime + " " + currentInfo.selfTime);
 
         }
     }
@@ -75,26 +75,20 @@ public class Profiler {
         return statisticInfo;
     }
 
-    public static void main(String[] args) throws InterruptedException {
-        for (int i = 0; i < 2; i++) {
-            enterSection("Process1");
-            Thread.sleep(100);
-            exitSection("Process1");
+    public static void main(String[] args){
+        for (int n = 0; n < 2; n++){
+            Profiler.enterSection("Process1");
+            try { Thread.sleep(100); } catch (InterruptedException e) {}
+            Profiler.exitSection("Process1");
         }
-        enterSection("Process1");
-        Thread.sleep(100);
-        for (int i = 0; i < 3; i ++) {
-            enterSection("Process2");
-            Thread.sleep(200);
-            enterSection("Process3");
-            Thread.sleep(100);
-            exitSection("Process3");
-            exitSection("Process2");
-        }
-        exitSection("Process1");
+        printInfo();
+        printInfo();
+        printInfo();
+    }
 
-        for (StatisticInfo item : getStatisticInfo())
-            System.out.println(item.sectionName + " " +
-                    item.fullTime / 100 * 100 + " " + item.selfTime / 100 * 100 + " " + item.count);
+    private static void printInfo(){
+        for (StatisticInfo si : Profiler.getStatisticInfo()){
+            System.out.println(si.sectionName + " " + (si.fullTime  / 100 * 100) + " " + (si.selfTime  / 100 * 100) + " " + si.count);
+        }
     }
 }

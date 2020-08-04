@@ -15,9 +15,6 @@ public class SessionManager {
     public void add(UserSession userSession) { //добавляет новую сессию пользователя
         if (sessions.get(userSession.getUserName()) == null)
             sessions.put(userSession.getUserName(), userSession);
-        //Для #traceout
-        System.out.println("add() + " + userSession.getUserName() + " " +
-                userSession.getSessionHandle() + " " + userSession.getLastAccess());
         userSession.updateLastAccess();
     }
 
@@ -42,11 +39,6 @@ public class SessionManager {
             if (currentSession.getSessionHandle() == sessionHandle)
                 if (checkValid(currentSession.getLastAccess()) == true) {
                     currentSession.updateLastAccess();
-
-                    //Для #traceout
-                    System.out.println("get() + " + currentSession.getUserName() + " " +
-                            currentSession.getSessionHandle() + " " + currentSession.getLastAccess());
-
                     return sessions.get(currentSession.getUserName());
                 }
         return null;
