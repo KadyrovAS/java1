@@ -98,10 +98,10 @@ public class OrderProcessor {
         Map<String, Double> calculateByGoods = new TreeMap<>();
         for (Order order: listOrder) {
             for (OrderItem orderItem : order.items) {
-                if (calculateByGoods.get(orderItem.googsName) == null)
-                    calculateByGoods.put(orderItem.googsName, orderItem.price * orderItem.count);
-                else calculateByGoods.put(orderItem.googsName, orderItem.price * orderItem.count +
-                        calculateByGoods.get(orderItem.googsName));
+                if (calculateByGoods.get(orderItem.goodsName) == null)
+                    calculateByGoods.put(orderItem.goodsName, orderItem.price * orderItem.count);
+                else calculateByGoods.put(orderItem.goodsName, orderItem.price * orderItem.count +
+                        calculateByGoods.get(orderItem.goodsName));
             }
         }
         return calculateByGoods;
@@ -122,7 +122,7 @@ public class OrderProcessor {
         orderProcessor.loadOrders(null, null, null);
         for (Order order: orderProcessor.process(null)) {
             for (OrderItem orderItem : order.items)
-                System.out.println(orderItem.googsName + " " + orderItem.count + " " + orderItem.price);
+                System.out.println(orderItem.goodsName + " " + orderItem.count + " " + orderItem.price);
         }
     }
 
