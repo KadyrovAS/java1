@@ -44,7 +44,7 @@ public class SessionManager {
                     currentSession.updateLastAccess();
 
                     //Для #traceout
-                    System.out.println("add() + " + currentSession.getUserName() + " " +
+                    System.out.println("get() + " + currentSession.getUserName() + " " +
                             currentSession.getSessionHandle() + " " + currentSession.getLastAccess());
 
                     return sessions.get(currentSession.getUserName());

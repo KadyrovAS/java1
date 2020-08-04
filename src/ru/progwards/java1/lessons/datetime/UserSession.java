@@ -18,7 +18,7 @@ public class UserSession {
         this.sessionHandle = random.nextInt();
 
         //Для #traceout
-        System.out.println("add() + " + this.userName + " " +
+        System.out.println("UserSession() + " + this.userName + " " +
                 this.sessionHandle + " " + this.lastAccess);
     }
 
