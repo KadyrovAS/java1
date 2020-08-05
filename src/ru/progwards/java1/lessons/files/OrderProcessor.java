@@ -39,7 +39,7 @@ public class OrderProcessor {
 
     private void readOrder(Path path, LocalDate start, LocalDate finish, String shopId) {
         Order order = new Order();
-        String[] orderItem;
+        String[] items;
         String googsName;
         int count;
         double price;
@@ -57,13 +57,13 @@ public class OrderProcessor {
             if (start != null && start.compareTo(order.datetime.toLocalDate()) > 0) return;
             if (finish != null && finish.compareTo(order.datetime.toLocalDate()) < 0) return;
             for (String line: Files.readAllLines(path)) {
-                orderItem = line.split(",");
-                if (orderItem.length != 3) continue;
-                googsName = orderItem[0];
-                count = Integer.valueOf(orderItem[1].trim());
-                price = Double.valueOf(orderItem[2].trim());
-                System.out.println("readOrder() googsName = '" + googsName+ "'; " +
-                        "count = " + count + " price = " + price);
+                items = line.split(",");
+                if (items.length != 3) continue;
+                googsName = items[0];
+                count = Integer.valueOf(items[1].trim());
+                price = Double.valueOf(items[2].trim());
+//                System.out.println("readOrder() googsName = '" + googsName+ "'; " +
+//                        "count = " + count + " price = " + price);
                 order.items.add(new OrderItem(googsName, count, price));
                 order.sum += count * price;
             }
