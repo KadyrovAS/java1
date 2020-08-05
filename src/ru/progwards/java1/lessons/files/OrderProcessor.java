@@ -80,7 +80,7 @@ public class OrderProcessor {
                 order.items.add(new OrderItem(googsName, count, price));
                 order.sum += count * price;
             }
-            listOrder.add(order);
+            if (order.sum > 0) listOrder.add(order);
 
         } catch (IOException e) {return;}
 
