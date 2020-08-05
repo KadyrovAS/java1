@@ -67,6 +67,10 @@ public class OrderProcessor {
         order.orderId = fileName.substring(4, 10);
         order.customerId = fileName.substring(11, 15);
         try {
+            order.datetime = Files.getLastModifiedTime(path)
+                    .toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime();
             for (String line : Files.readAllLines(path)) {
                 items = line.split(",");
                 if (items.length != 3) continue;
