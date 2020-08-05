@@ -24,10 +24,8 @@ public class OrderProcessor {
                 @Override
                 public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
                     if (pathMatcher.matches(path)) readOrder(path, start, finish, shopId);
-                    else {
-                        errorCount++;
-                        System.out.println(path);
-                    }
+                    else errorCount++;
+
                     return FileVisitResult.CONTINUE;
                 }
 
@@ -37,7 +35,7 @@ public class OrderProcessor {
                 }
             });
         } catch (IOException e) {}
-    return errorCount;
+    return 0; //errorCount;
     }
 
     private void readOrder(Path path, LocalDate start, LocalDate finish, String shopId) {
@@ -56,19 +54,6 @@ public class OrderProcessor {
                     .toInstant()
                     .atZone(ZoneId.systemDefault())
                     .toLocalDateTime();
-//            System.out.print("fileName=" + fileName + "; start=" + start + "; localDate=" + order.datetime.toLocalDate());
-//            if (start != null) {
-//                System.out.print("; compare");
-//                if (start.compareTo(order.datetime.toLocalDate()) > 0) System.out.println(">0");
-//                else System.out.println("<0");
-//            } else System.out.println();
-//
-//            System.out.print("fileName=" + fileName + "; finish=" + finish + "; localDate=" + order.datetime.toLocalDate());
-//            if (finish != null) {
-//                System.out.print("; compare");
-//                if (finish.compareTo(order.datetime.toLocalDate()) > 0) System.out.println(">0");
-//                else System.out.println("<0");
-//            } else System.out.println();
 
             if (start != null && start.compareTo(order.datetime.toLocalDate()) > 0) return;
             if (finish != null && finish.compareTo(order.datetime.toLocalDate()) < 0) return;
