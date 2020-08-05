@@ -24,7 +24,10 @@ public class OrderProcessor {
                 @Override
                 public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
                     if (pathMatcher.matches(path)) readOrder(path, start, finish, shopId);
-                    else errorCount++;
+                    else {
+                        errorCount++;
+                        System.out.println(path);
+                    }
                     return FileVisitResult.CONTINUE;
                 }
 
@@ -53,19 +56,19 @@ public class OrderProcessor {
                     .toInstant()
                     .atZone(ZoneId.systemDefault())
                     .toLocalDateTime();
-            System.out.print("fileName=" + fileName + "; start=" + start + "; localDate=" + order.datetime.toLocalDate());
-            if (start != null) {
-                System.out.print("; compare");
-                if (start.compareTo(order.datetime.toLocalDate()) > 0) System.out.println(">0");
-                else System.out.println("<0");
-            } else System.out.println();
-
-            System.out.print("fileName=" + fileName + "; finish=" + finish + "; localDate=" + order.datetime.toLocalDate());
-            if (finish != null) {
-                System.out.print("; compare");
-                if (finish.compareTo(order.datetime.toLocalDate()) > 0) System.out.println(">0");
-                else System.out.println("<0");
-            } else System.out.println();
+//            System.out.print("fileName=" + fileName + "; start=" + start + "; localDate=" + order.datetime.toLocalDate());
+//            if (start != null) {
+//                System.out.print("; compare");
+//                if (start.compareTo(order.datetime.toLocalDate()) > 0) System.out.println(">0");
+//                else System.out.println("<0");
+//            } else System.out.println();
+//
+//            System.out.print("fileName=" + fileName + "; finish=" + finish + "; localDate=" + order.datetime.toLocalDate());
+//            if (finish != null) {
+//                System.out.print("; compare");
+//                if (finish.compareTo(order.datetime.toLocalDate()) > 0) System.out.println(">0");
+//                else System.out.println("<0");
+//            } else System.out.println();
 
             if (start != null && start.compareTo(order.datetime.toLocalDate()) > 0) return;
             if (finish != null && finish.compareTo(order.datetime.toLocalDate()) < 0) return;
@@ -75,12 +78,18 @@ public class OrderProcessor {
                 googsName = items[0];
                 count = Integer.valueOf(items[1].trim());
                 price = Double.valueOf(items[2].trim());
-//                System.out.println("readOrder() googsName = '" + googsName+ "'; " +
-//                        "count = " + count + " price = " + price);
                 order.items.add(new OrderItem(googsName, count, price));
                 order.sum += count * price;
             }
-            if (order.sum > 0) listOrder.add(order);
+            if (order.sum > 0) {
+                order.items.sort(new Comparator<OrderItem>() {
+                    @Override
+                    public int compare(OrderItem o1, OrderItem o2) {
+                        return o1.googsName.compareTo(o2.googsName);
+                    }
+                });
+                listOrder.add(order);
+            }
 
         } catch (IOException e) {return;}
 
