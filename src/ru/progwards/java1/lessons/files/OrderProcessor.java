@@ -33,7 +33,7 @@ public class OrderProcessor {
 
                         if (start != null && start.compareTo(datetime.toLocalDate()) > 0)
                             return FileVisitResult.CONTINUE;
-                        if (finish != null && finish.compareTo(datetime.toLocalDate()) < 0)
+                        if (finish != null && finish.compareTo(datetime.toLocalDate()) <= 0)
                             return FileVisitResult.CONTINUE;
                     } catch (IOException e) {
                         return FileVisitResult.CONTINUE;
