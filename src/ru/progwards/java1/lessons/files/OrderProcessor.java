@@ -52,12 +52,19 @@ public class OrderProcessor {
                     .toInstant()
                     .atZone(ZoneId.systemDefault())
                     .toLocalDateTime();
-            System.out.println("start=" + start + "; datetime=" + order.datetime +
-                    "; localDate=" + order.datetime.toLocalDate() +
-                    "; compare=" + start.compareTo(order.datetime.toLocalDate()));
-            System.out.println("finish=" + finish + "; datetime=" + order.datetime +
-                    "; localDate=" + order.datetime.toLocalDate() +
-                    "; compare=" + finish.compareTo(order.datetime.toLocalDate()));
+            System.out.print("fileName=" + fileName + "; start=" + start + "; localDate=" + order.datetime.toLocalDate());
+            if (start != null) {
+                System.out.print("; compare");
+                if (start.compareTo(order.datetime.toLocalDate()) > 0) System.out.println(">0");
+                else System.out.println("<0");
+            } else System.out.println();
+
+            System.out.print("fileName=" + fileName + "; finish=" + finish + "; localDate=" + order.datetime.toLocalDate());
+            if (finish != null) {
+                System.out.print("; compare");
+                if (finish.compareTo(order.datetime.toLocalDate()) > 0) System.out.println(">0");
+                else System.out.println("<0");
+            } else System.out.println();
 
             if (start != null && start.compareTo(order.datetime.toLocalDate()) > 0) return;
             if (finish != null && finish.compareTo(order.datetime.toLocalDate()) < 0) return;
@@ -146,13 +153,18 @@ public class OrderProcessor {
 
 //            System.out.println("----------------");
 //
-        }
-//        OrderProcessor orderProcessor = new OrderProcessor("d:/Orders");
-//        orderProcessor.loadOrders(null, null, null);
-//        for (Order order: orderProcessor.process(null)) {
-//            for (OrderItem orderItem : order.items)
-//                System.out.println(orderItem.googsName + " " + orderItem.count + " " + orderItem.price);
 //        }
-//    }
+        OrderProcessor orderProcessor = new OrderProcessor("d:/Orders");
+        orderProcessor.loadOrders(null, null, null);
+        for (Order order: orderProcessor.process(null)) {
+            for (OrderItem orderItem : order.items)
+                System.out.println(orderItem.googsName + " " + orderItem.count + " " + orderItem.price);
+        }
+
+//        LocalDate localDate1 = LocalDate.now();
+//        LocalDate localDate2 = localDate1.minusMonths(1);
+//        int res = localDate1.compareTo(localDate2);
+//        System.out.println(res);
+    }
 
 }
