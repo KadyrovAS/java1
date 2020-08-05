@@ -10,11 +10,13 @@ public class OrderProcessor {
     private Path startPath;
     private int errorCount = 0;
     private List<Order> listOrder;
-    public OrderProcessor(String startPath){
+
+    public OrderProcessor(String startPath) {
         this.startPath = Paths.get(startPath);
         listOrder = new LinkedList<Order>();
         this.errorCount = 0;
     }
+
     public int loadOrders(LocalDate start, LocalDate finish, String shopId) {
         errorCount = 0;
         String findMask = "glob:**/???-??????-????.csv";
@@ -23,7 +25,20 @@ public class OrderProcessor {
             Files.walkFileTree(startPath, new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
-                    if (pathMatcher.matches(path)) readOrder(path, start, finish, shopId);
+                    try {
+                        LocalDateTime datetime = Files.getLastModifiedTime(path)
+                                .toInstant()
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDateTime();
+
+                        if (start != null && start.compareTo(datetime.toLocalDate()) > 0)
+                            return FileVisitResult.CONTINUE;
+                        if (finish != null && finish.compareTo(datetime.toLocalDate()) < 0)
+                            return FileVisitResult.CONTINUE;
+                    } catch (IOException e) {
+                        return FileVisitResult.CONTINUE;
+                    }
+                    if (pathMatcher.matches(path)) readOrder(path, shopId);
                     else errorCount++;
 
                     return FileVisitResult.CONTINUE;
@@ -34,16 +49,13 @@ public class OrderProcessor {
                     return FileVisitResult.CONTINUE;
                 }
             });
-        } catch (IOException e) {}
-        //В каталоге присутствует файл S02-P01X03-000.csv с неправильным customerId.
-        //Имя каждого файла имеет формат: AAA-999999-ZZZZ.csv где AAA - обязательные 3 символа
-        // shopId - идентификатор магазина, 999999 - обязательные 6 символов orderId - номер заказа,
-        // ZZZZ - обязательные 4 символа customerId - идентификатор покупателя, расширение файла - csv
-        //return errorCount; возвращает 1, а робот хочет видеть 0
-    return 0; //errorCount;
+        } catch (IOException e) {
+        }
+
+        return errorCount;
     }
 
-    private void readOrder(Path path, LocalDate start, LocalDate finish, String shopId) {
+    private void readOrder(Path path, String shopId) {
         Order order = new Order();
         String[] items;
         String googsName;
@@ -55,14 +67,7 @@ public class OrderProcessor {
         order.orderId = fileName.substring(4, 10);
         order.customerId = fileName.substring(11, 15);
         try {
-            order.datetime = Files.getLastModifiedTime(path)
-                    .toInstant()
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDateTime();
-
-            if (start != null && start.compareTo(order.datetime.toLocalDate()) > 0) return;
-            if (finish != null && finish.compareTo(order.datetime.toLocalDate()) < 0) return;
-            for (String line: Files.readAllLines(path)) {
+            for (String line : Files.readAllLines(path)) {
                 items = line.split(",");
                 if (items.length != 3) continue;
                 googsName = items[0];
@@ -81,26 +86,30 @@ public class OrderProcessor {
                 listOrder.add(order);
             }
 
-        } catch (IOException e) {return;}
+        } catch (IOException e) {
+            return;
+        }
 
     }
+
     public List<Order> process(String shopId) {
         List<Order> listShopId = new LinkedList<>();
-        for (Order order: listOrder) {
+        for (Order order : listOrder) {
             if (shopId == null || shopId.compareTo(order.shopId) == 0)
                 listShopId.add(order);
-        listShopId.sort(new Comparator<Order>() {
-            @Override
-            public int compare(Order o1, Order o2) {
-                return o1.datetime.compareTo(o2.datetime);
-            }
-        });
+            listShopId.sort(new Comparator<Order>() {
+                @Override
+                public int compare(Order o1, Order o2) {
+                    return o1.datetime.compareTo(o2.datetime);
+                }
+            });
         }
         return listShopId;
     }
-    public Map<String, Double> statisticsByShop(){
+
+    public Map<String, Double> statisticsByShop() {
         Map<String, Double> calculateByShop = new TreeMap<>();
-        for (Order order: listOrder) {
+        for (Order order : listOrder) {
             if (calculateByShop.get(order.shopId) == null)
                 calculateByShop.put(order.shopId, order.sum);
             else calculateByShop.put(order.shopId, order.sum +
@@ -108,9 +117,10 @@ public class OrderProcessor {
         }
         return calculateByShop;
     }
-    public Map<String, Double> statisticsByGoods(){
+
+    public Map<String, Double> statisticsByGoods() {
         Map<String, Double> calculateByGoods = new TreeMap<>();
-        for (Order order: listOrder) {
+        for (Order order : listOrder) {
             for (OrderItem orderItem : order.items) {
                 if (calculateByGoods.get(orderItem.googsName) == null)
                     calculateByGoods.put(orderItem.googsName, orderItem.price * orderItem.count);
@@ -120,9 +130,10 @@ public class OrderProcessor {
         }
         return calculateByGoods;
     }
-    public Map<LocalDate, Double> statisticsByDay(){
+
+    public Map<LocalDate, Double> statisticsByDay() {
         Map<LocalDate, Double> calculateByDate = new TreeMap<>();
-        for (Order order: listOrder) {
+        for (Order order : listOrder) {
             if (calculateByDate.get(order.datetime.toLocalDate()) == null)
                 calculateByDate.put(order.datetime.toLocalDate(), order.sum);
             else calculateByDate.put(order.datetime.toLocalDate(), order.sum +
@@ -156,7 +167,7 @@ public class OrderProcessor {
 //        }
         OrderProcessor orderProcessor = new OrderProcessor("d:/Orders");
         orderProcessor.loadOrders(null, null, null);
-        for (Order order: orderProcessor.process(null)) {
+        for (Order order : orderProcessor.process(null)) {
             for (OrderItem orderItem : order.items)
                 System.out.println(orderItem.googsName + " " + orderItem.count + " " + orderItem.price);
         }
