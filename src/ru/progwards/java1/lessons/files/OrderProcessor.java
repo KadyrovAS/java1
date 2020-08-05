@@ -13,6 +13,7 @@ public class OrderProcessor {
     public OrderProcessor(String startPath){
         this.startPath = Paths.get(startPath);
         listOrder = new LinkedList<Order>();
+        this.errorCount = 0;
     }
     public int loadOrders(LocalDate start, LocalDate finish, String shopId) {
         errorCount = 0;
@@ -32,7 +33,7 @@ public class OrderProcessor {
                     return FileVisitResult.CONTINUE;
                 }
             });
-        } catch (IOException e) {errorCount++;}
+        } catch (IOException e) {}
     return errorCount;
     }
 
