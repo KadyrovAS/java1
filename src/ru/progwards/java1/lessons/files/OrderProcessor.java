@@ -3,8 +3,9 @@ package ru.progwards.java1.lessons.files;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.nio.file.attribute.FileTime;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class OrderProcessor {
@@ -53,6 +54,12 @@ public class OrderProcessor {
                     .toInstant()
                     .atZone(ZoneId.systemDefault())
                     .toLocalDateTime();
+            System.out.println("start=" + start + "; datetime=" + order.datetime +
+                    "; localDate=" + order.datetime.toLocalDate() +
+                    "; compare=" + start.compareTo(order.datetime.toLocalDate());
+            System.out.println("finish=" + finish + "; datetime=" + order.datetime +
+                    "; localDate=" + order.datetime.toLocalDate() +
+                    "; compare=" + finish.compareTo(order.datetime.toLocalDate());
 
             if (start != null && start.compareTo(order.datetime.toLocalDate()) > 0) return;
             if (finish != null && finish.compareTo(order.datetime.toLocalDate()) < 0) return;
@@ -119,13 +126,35 @@ public class OrderProcessor {
         return calculateByDate;
     }
 
-    public static void main(String[] args) {
-        OrderProcessor orderProcessor = new OrderProcessor("d:/Orders");
-        orderProcessor.loadOrders(null, null, null);
-        for (Order order: orderProcessor.process(null)) {
-            for (OrderItem orderItem : order.items)
-                System.out.println(orderItem.googsName + " " + orderItem.count + " " + orderItem.price);
+    public static void main(String[] args) throws IOException {
+        Path path = Paths.get("d:/orders/01.txt");
+        Path filePath;
+        String[] attr;
+        String dateStr;
+        String fileName;
+        LocalDateTime dateTime;
+        FileTime fileTime;
+        for (String fileLines: Files.readAllLines(path)) {
+            attr = fileLines.split(",");
+            fileName = attr[0].substring(2);
+            dateStr = attr[1].substring(7);
+//            dateTime = LocalDateTime.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+
+            filePath = Paths.get("d:/orders/" + fileName);
+//            System.out.println(filePath);
+            fileTime = Files.getLastModifiedTime(filePath);
+            dateTime = fileTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+            System.out.println(fileName + "  " + fileTime + "  " + dateTime);
+
+//            System.out.println("----------------");
+//
         }
+//        OrderProcessor orderProcessor = new OrderProcessor("d:/Orders");
+//        orderProcessor.loadOrders(null, null, null);
+//        for (Order order: orderProcessor.process(null)) {
+//            for (OrderItem orderItem : order.items)
+//                System.out.println(orderItem.googsName + " " + orderItem.count + " " + orderItem.price);
+//        }
     }
 
 }
