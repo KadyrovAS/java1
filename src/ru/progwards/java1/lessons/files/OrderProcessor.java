@@ -33,13 +33,12 @@ public class OrderProcessor {
 
                         if (start != null && start.compareTo(datetime.toLocalDate()) > 0)
                             return FileVisitResult.CONTINUE;
-                        if (finish != null && finish.compareTo(datetime.toLocalDate()) <= 0)
+                        if (finish != null && finish.compareTo(datetime.toLocalDate()) < 0)
                             return FileVisitResult.CONTINUE;
                     } catch (IOException e) {
                         return FileVisitResult.CONTINUE;
                     }
                     if (pathMatcher.matches(path)) readOrder(path, shopId);
-                    else errorCount++;
 
                     return FileVisitResult.CONTINUE;
                 }
@@ -73,7 +72,10 @@ public class OrderProcessor {
                     .toLocalDateTime();
             for (String line : Files.readAllLines(path)) {
                 items = line.split(",");
-                if (items.length != 3) continue;
+                if (items.length != 3) {
+                    errorCount ++;
+                    return;
+                }
                 googsName = items[0];
                 count = Integer.valueOf(items[1].trim());
                 price = Double.valueOf(items[2].trim());
@@ -90,7 +92,8 @@ public class OrderProcessor {
                 listOrder.add(order);
             }
 
-        } catch (IOException e) {
+        } catch (Throwable e) {
+            errorCount ++;
             return;
         }
 
