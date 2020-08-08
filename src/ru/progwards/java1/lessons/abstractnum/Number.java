@@ -1,13 +1,12 @@
 package ru.progwards.java1.lessons.abstractnum;
 
 import java.math.BigDecimal;
+import java.util.StringTokenizer;
 
 public class Number {
     private BigDecimal numeric;
 
-    Number() {
-        System.out.println("Конструктор по умолчанию " + this);
-    }
+    Number() {}
 
     Number(int numeric) {
         this.numeric = BigDecimal.valueOf(numeric);
@@ -28,17 +27,18 @@ public class Number {
     public BigDecimal getNumeric() {
         return this.numeric;
     }
+
     public Number mul(Number num) {
         if (this.getClass().getName().compareTo(
                 num.getClass().getName()) == 0) return null;
-        System.out.println(num.numeric);
-        return new Number(); //this.numeric.multiply(num.numeric));
+
+        return new Number(this.getNumeric().multiply(num.getNumeric()));
     }
 
     public Number div(Number num) {
         if (this.getClass().getName().compareTo(
                 num.getClass().getName()) == 0) return null;
-        return new Number(this.numeric.divide(num.numeric));
+        return new Number(this.getNumeric().divide(num.getNumeric()));
 
     }
 
@@ -51,7 +51,10 @@ public class Number {
     }
 
     public static void main(String[] args) {
-        Number num = new Number(25);
-        System.out.println(num.mul(num.newNumber("5")));
-    }
+        String txt =
+                "StringTokenizer - этот класс, " +
+                        "нам строку разобьёт на раз.";
+        StringTokenizer tokenizer = new StringTokenizer(txt, " .,");
+        while (tokenizer.hasMoreTokens())
+            System.out.print(tokenizer.nextToken());    }
 }

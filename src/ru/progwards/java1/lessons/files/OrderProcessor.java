@@ -3,6 +3,7 @@ package ru.progwards.java1.lessons.files;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
 import java.time.*;
 import java.util.*;
 
@@ -150,39 +151,14 @@ public class OrderProcessor {
     }
 
     public static void main(String[] args) throws IOException {
-//        Path path = Paths.get("d:/orders/01.txt");
-//        Path filePath;
-//        String[] attr;
-//        String dateStr;
-//        String fileName;
-//        LocalDateTime dateTime;
-//        FileTime fileTime;
-//        for (String fileLines: Files.readAllLines(path)) {
-//            attr = fileLines.split(",");
-//            fileName = attr[0].substring(2);
-//            dateStr = attr[1].substring(7);
-//            dateTime = LocalDateTime.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-
-//            filePath = Paths.get("d:/orders/" + fileName);
-//            System.out.println(filePath);
-//            fileTime = Files.getLastModifiedTime(filePath);
-//            dateTime = fileTime.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-//            System.out.println(fileName + "  " + fileTime + "  " + dateTime);
-
-//            System.out.println("----------------");
-//
-//        }
-        OrderProcessor orderProcessor = new OrderProcessor("d:/Orders");
-        orderProcessor.loadOrders(null, null, null);
-        for (Order order : orderProcessor.process(null)) {
-            for (OrderItem orderItem : order.items)
-                System.out.println(orderItem.googsName + " " + orderItem.count + " " + orderItem.price);
-        }
-
-//        LocalDate localDate1 = LocalDate.now();
-//        LocalDate localDate2 = localDate1.minusMonths(1);
-//        int res = localDate1.compareTo(localDate2);
-//        System.out.println(res);
+        Path path = Paths.get("d:/orders/01.txt");
+        System.out.println(Files.getLastModifiedTime(path));
+        LocalDateTime datetime = Files.getLastModifiedTime(path)
+                .toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+        System.out.println(datetime);
+        
     }
 
 }

@@ -1,25 +1,43 @@
 package ru.progwards.java1.lessons.abstractnum;
 
-public class DoubleNumber extends Number{
-    public double numeric;
+import java.math.BigDecimal;
+
+public class DoubleNumber extends Number {
+    public BigDecimal numeric;
 
     public DoubleNumber(double num) {
-        this.numeric = num;
+        this.numeric = BigDecimal.valueOf(num);
     }
 
+    @Override
     public Number mul(Number num) {
-        return new Number(0);
+        Number arg = new Number(this.getNumeric());
+        return arg.mul(num);
     }
 
+    @Override
     public Number div(Number num) {
-        return new Number(0);
+        Number arg = new Number(this.getNumeric());
+        return arg.div(num);
     }
 
+    @Override
     public Number newNumber(String strNum) {
-        return new Number(Double.valueOf(strNum));
+        return new DoubleNumber(Double.valueOf(strNum));
     }
 
+    @Override
     public String toString() {
         return String.valueOf(this.numeric);
+    }
+
+    @Override
+    public BigDecimal getNumeric() {
+        return this.numeric;
+    }
+
+    public static void main(String[] args) {
+        DoubleNumber doubleNumber = new DoubleNumber(6.25);
+        System.out.println(doubleNumber.div(new DoubleNumber(2.5)));
     }
 }
