@@ -1,7 +1,5 @@
 package ru.progwards.java1.lessons.abstractnum;
 
-import javax.crypto.spec.PSource;
-
 public class Pyramid extends Figure3D {
     private Number segment;
     Pyramid(Number segment) {

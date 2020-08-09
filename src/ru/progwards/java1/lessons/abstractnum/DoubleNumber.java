@@ -21,7 +21,7 @@ public class DoubleNumber extends Number {
 
     @Override
     public Number div(Number num) {
-        double arg = Integer.valueOf(num.toString());
+        double arg = Double.valueOf(num.toString());
         double res = this.num / arg;
         return new DoubleNumber(res);
     }
