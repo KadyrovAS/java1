@@ -1,43 +1,33 @@
 package ru.progwards.java1.lessons.abstractnum;
 
-import java.math.BigDecimal;
-
 public class IntNumber extends Number {
-    private BigDecimal numeric;
+    int num;
 
-    IntNumber(int num) {
-        this.numeric = BigDecimal.valueOf(num);
-    }
-
-    @Override
-    public Number mul(Number num) {
-        Number arg = new Number(this.getNumeric());
-        return arg.mul(num);
-    }
-
-    @Override
-    public Number div(Number num) {
-        Number arg = new Number(this.getNumeric());
-        return arg.div(num);
-    }
-
-    public Number newNumber(String strNum) {
-        return new IntNumber(Integer.valueOf(strNum));
+    public IntNumber(int num) {
+        this.num = num;
     }
 
     @Override
     public String toString() {
-        return String.valueOf(this.numeric);
+        return String.valueOf(num);
     }
 
     @Override
-    public BigDecimal getNumeric() {
-        return this.numeric;
+    public Number mul(Number num) {
+        int arg = Integer.valueOf(num.toString());
+        int res = this.num * arg;
+        return new IntNumber(res);
     }
 
-    public static void main(String[] args) {
-        Number intNumber = new Number(25);
-        Number number = intNumber.div(new IntNumber(5));
-        System.out.println("number = " + number);
+    @Override
+    public Number div(Number num) {
+        int arg = Integer.valueOf(num.toString());
+        int res = this.num / arg;
+        return new IntNumber(res);
+    }
+
+    @Override
+    Number newNumber(String strNum) {
+        return new IntNumber(Integer.valueOf(strNum));
     }
 }

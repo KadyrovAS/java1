@@ -7,20 +7,14 @@ public class Pyramid extends Figure3D {
     Pyramid(Number segment) {
         this.segment = segment;
     }
-    @Override
-    public Number getSegment() {
-        return this.segment;
-    }
 
     @Override
     public Number volume(){
-        Number sCube = this.getSegment().mul(this.getSegment());
-        sCube = sCube.mul(this.getSegment());
-        return sCube.div(new IntNumber(3));
+        return this.segment.mul(this.segment).mul(this.segment).div(new IntNumber(3));
     }
 
     public static void main(String[] args) {
-        Pyramid pyramid = new Pyramid(new IntNumber(6));
+        Pyramid pyramid = new Pyramid(new IntNumber(3));
         System.out.println(pyramid.volume());
     }
 
