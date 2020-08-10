@@ -13,7 +13,7 @@ public class Summator {
                 move = false;
             }
         }
-        return move;
+        return !move;
     }
 
     public static void main(String[] args) {
