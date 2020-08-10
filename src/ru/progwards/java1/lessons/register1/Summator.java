@@ -17,8 +17,8 @@ public class Summator {
     }
 
     public static void main(String[] args) {
-        byte bt1 = 127;
-        byte bt2 = 127;
+        byte bt1 = 0;
+        byte bt2 = 1;
         ByteRegister byteRegister1 = new ByteRegister(bt1);
         ByteRegister byteRegister2 = new ByteRegister(bt2);
         System.out.println(add(byteRegister1,byteRegister2));
