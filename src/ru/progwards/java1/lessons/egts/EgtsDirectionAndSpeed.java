@@ -18,14 +18,14 @@ public class EgtsDirectionAndSpeed {
     public static int getDirection(byte dirLow, short speedAndDir) {
         short valSpeed = speedAndDir;
         valSpeed >>= 15;
-
         byte btLow = dirLow;
+
         int res = 0;
         int mult = 1;
         for (int i = 0; i < 8; i++) {
             if (i > 0) mult *= 2;
-            if ((speedAndDir & 1) == 1) res += mult;
-            speedAndDir >>= 1;
+            if ((btLow & 1) == 1) res += mult;
+            btLow >>= 1;
         }
         if ((valSpeed & 1) == 1) {
             mult *= 2;
@@ -36,8 +36,8 @@ public class EgtsDirectionAndSpeed {
 
     public static void main(String[] args) {
         short sh = 5;
-        byte bt = 24;
-        getDirection(bt, sh);
-        getSpeed(sh);
+        byte bt = 10;
+        System.out.println(getDirection(bt, sh));
+//        getSpeed(sh);
     }
 }
