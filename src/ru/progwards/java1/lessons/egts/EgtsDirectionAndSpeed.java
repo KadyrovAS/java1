@@ -1,8 +1,5 @@
 package ru.progwards.java1.lessons.egts;
 
-import ru.progwards.java1.lessons.register1.Bit;
-import ru.progwards.java1.lessons.register1.ByteRegister;
-
 public class EgtsDirectionAndSpeed {
     public static int getSpeed(short value) {
         short speedAndDir = value;
@@ -41,5 +38,6 @@ public class EgtsDirectionAndSpeed {
         short sh = 5;
         byte bt = 24;
         getDirection(bt, sh);
+        getSpeed(sh);
     }
 }
