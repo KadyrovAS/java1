@@ -1,4 +1,4 @@
-package ru.progwards.java1.lessons.register1;
+package ru.progwards.java1.lessons.register2;
 
 public class Bit {
     public boolean value;

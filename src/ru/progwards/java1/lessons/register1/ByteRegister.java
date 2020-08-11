@@ -1,6 +1,6 @@
 package ru.progwards.java1.lessons.register1;
 
-public class ByteRegister {
+public class ByteRegister  {
     Bit[] bits = new Bit[8];
     public ByteRegister() {
         for (int i = 0; i < 8; i ++) this.bits[i] = new Bit(false);
@@ -15,6 +15,7 @@ public class ByteRegister {
         }
     }
 
+    @Override
     public String toString() {
         String result = "";
         for (Bit bit: this.bits) result += bit.toString();
@@ -23,13 +24,18 @@ public class ByteRegister {
 
     public String toDecString() {
         int result = 0;
-        for (int i = 0; i < 8; i ++){
-            result += Integer.valueOf(this.bits[i].toString()) * n2Mult(7 - i);
+        int n = this.bits.length;
+        for (int i = 0; i < n; i ++){
+            result += Integer.valueOf(this.bits[i].toString()) * n2Mult(n - i - 1);
         }
         return String.valueOf(result);
     }
 
-    public int n2Mult(int n) { //возведение 2 в степень n
+    public Bit[] getBits() {
+        return this.bits;
+    }
+
+    public static int n2Mult(int n) { //возведение 2 в степень n
         int result = 1;
         if (n == 0) return 1;
         for (int i = 0; i < n; i ++) result *= 2;
@@ -37,11 +43,7 @@ public class ByteRegister {
     }
 
     public static void main(String[] args) {
-        byte bt;
-        bt = -127;
+        byte bt = 5;
 
-        ByteRegister byteRegister = new ByteRegister(bt);
-        System.out.println(byteRegister.toString());
-        System.out.println(byteRegister.toDecString());
     }
 }
