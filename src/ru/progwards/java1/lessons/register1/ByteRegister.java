@@ -7,7 +7,6 @@ public class ByteRegister  {
     }
 
     public ByteRegister(byte value) {
-        int sym;
         for (int i = 0; i < 8; i ++) {
             if ((value & 1) == 1) this.bits[7-i] = new Bit(true);
             else this.bits[7-i] = new Bit(false);

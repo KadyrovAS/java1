@@ -17,8 +17,6 @@ public class Register {
         return result;
     }
 
-    public Register copyRegister() {
-        return null;
-    }
+    public Register copyRegister() {return null;}
     public Register toTwosComplement(Register value){return null;}
 }
