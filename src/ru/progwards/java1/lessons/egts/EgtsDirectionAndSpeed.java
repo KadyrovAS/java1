@@ -17,7 +17,7 @@ public class EgtsDirectionAndSpeed {
             dir >>= 1;
         }
 
-        if ((speedAndDir & 0b10000000) == 0b10000000) res += 256;
+        if ((speedAndDir & 0b10000000) == 0b10000000) res += mul * 2;
         return res;
     }
 
