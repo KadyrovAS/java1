@@ -8,14 +8,23 @@ public class EgtsDirectionAndSpeed {
 
 
     public static int getDirection(byte dirLow, short speedAndDir) {
-        int intDirLow = dirLow & 0b11111111;
-        if ((speedAndDir & 0b10000000) == 0b10000000) intDirLow += 0b1_00000000;
-        return intDirLow;
+        byte dir = dirLow;
+        int res = 0;
+        int mul = 1;
+        for (int i = 0; i < 8; i ++) {
+            if (i > 0) mul *= 2;
+            if ((dir & 0b1) == 0b1) res += mul;
+            dir >>= 1;
+        }
+
+        if ((speedAndDir & 0b10000000) == 0b10000000) res += 256;
+        return res;
     }
+
 
     public static void main(String[] args) {
         short sh = 5;
-        byte bt = 10;
+        byte bt = 113;
         System.out.println(getDirection(bt, sh));
     }
 }
