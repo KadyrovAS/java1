@@ -8,17 +8,22 @@ public class EgtsDirectionAndSpeed {
 
 
     public static int getDirection(byte dirLow, short speedAndDir) {
-        byte dir = dirLow;
-        int res = 0;
-        int mul = 1;
-        for (int i = 0; i < 8; i ++) {
-            if (i > 0) mul *= 2;
-            if ((dir & 0b1) == 0b1) res += mul;
-            dir >>= 1;
-        }
+            short valSpeed = speedAndDir;
+            valSpeed >>= 15;
+            byte btLow = dirLow;
 
-        if ((speedAndDir & 0b10000000) == 0b10000000) res += mul * 2;
-        return res;
+            int res = 0;
+            int mult = 1;
+            for (int i = 0; i < 8; i++) {
+                if (i > 0) mult *= 2;
+                if ((btLow & 1) == 1) res += mult;
+                btLow >>= 1;
+            }
+            if ((valSpeed & 1) == 1) {
+                mult *= 2;
+                res += mult;
+            }
+            return res;
     }
 
 
