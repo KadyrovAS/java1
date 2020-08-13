@@ -8,8 +8,6 @@ public class EgtsDirectionAndSpeed {
 
 
     public static int getDirection(byte dirLow, short speedAndDir) {
-            short valSpeed = speedAndDir;
-            valSpeed >>= 15;
             byte btLow = dirLow;
 
             int res = 0;
@@ -19,10 +17,7 @@ public class EgtsDirectionAndSpeed {
                 if ((btLow & 1) == 1) res += mult;
                 btLow >>= 1;
             }
-            if ((valSpeed & 1) == 1) {
-                mult *= 2;
-                res += mult;
-            }
+            if ((speedAndDir & 0b10000000) == 0b1) res += mult * 2;
             return res;
     }
 
