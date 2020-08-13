@@ -17,7 +17,7 @@ public class EgtsDirectionAndSpeed {
                 if ((btLow & 1) == 1) res += mult;
                 btLow >>= 1;
             }
-            if ((speedAndDir & 0b10000000) == 0b1) res += mult * 2;
+            if ((speedAndDir & 0b10000000) == 0b10000000) res += mult * 2;
             return res;
     }
 
