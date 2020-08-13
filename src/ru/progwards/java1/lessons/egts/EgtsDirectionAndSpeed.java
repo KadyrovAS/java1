@@ -9,7 +9,7 @@ public class EgtsDirectionAndSpeed {
 
     public static int getDirection(byte dirLow, short speedAndDir) {
         int intDirLow = dirLow & 0b11111111;
-        if ((speedAndDir & 0b1000_0000) == 0b1000_0000) intDirLow += 256;
+        if ((speedAndDir & 0b10000000) == 0b10000000) intDirLow += 256;
         return intDirLow;
     }
 
