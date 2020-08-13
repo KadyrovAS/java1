@@ -19,4 +19,8 @@ public class Register {
 
     public Register copyRegister() {return null;}
     public Register toTwosComplement(Register value){return null;}
+
+    public static void main(String[] args) {
+        System.out.println(n2Mult(8));
+    }
 }

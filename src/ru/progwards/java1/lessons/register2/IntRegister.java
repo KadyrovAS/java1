@@ -67,7 +67,7 @@ public class IntRegister extends Register {
         return intRegister;
     }
 
-    public static void main(String[] args) throws Throwable {
+    public static void main(String[] args) {
         IntRegister intRegister = new IntRegister(25);
         System.out.println(intRegister.toString());
         System.out.println(intRegister.toTwosComplement(intRegister).toString());
