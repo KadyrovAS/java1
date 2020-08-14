@@ -6,7 +6,7 @@ public class ArraySort extends Number {
         Comparable <Number> number;
         for (int i = 0; i < a.length-1; i ++)
             for (int k = i + 1; k < a.length; k ++)
-                if (a[i].compareTo(a[k]) < 0) {
+                if (a[i].compareTo(a[k]) > 0) {
                     number = a[i];
                     a[i] = a[k];
                     a[k] = number;
