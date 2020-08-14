@@ -29,10 +29,10 @@ public class Summator {
     }
 
     public static void main(String[] args) {
-        byte bt1 = 75;
-        byte bt2 = 30;
-        ByteRegister byteRegister1 = new ByteRegister(bt1);
-        ByteRegister byteRegister2 = new ByteRegister(bt2);
+        int bt1 = 75;
+        int bt2 = 30;
+        IntRegister byteRegister1 = new IntRegister(bt1);
+        IntRegister byteRegister2 = new IntRegister(bt2);
         sub(byteRegister1,byteRegister2);
         System.out.println(byteRegister1.toDecString());
         System.out.println(bt1 + "   " + bt2);
