@@ -60,10 +60,10 @@ public class Profiler {
         List<StatisticInfo> statisticInfo = new ArrayList<>();
         statisticInfo.addAll(mapStatistic.values());
         for (int i = 0; i < statisticInfo.size(); i ++) {
-            mapStatistic.remove(statisticInfo.get(i).sectionName);
+//            mapStatistic.remove(statisticInfo.get(i).sectionName);
             statisticInfo.get(i).selfTime += statisticInfo.get(i).fullTime;
         }
-        for (int i = 0; i < listCurrentInfo.size(); i ++) listCurrentInfo.removeLast();
+//        for (int i = 0; i < listCurrentInfo.size(); i ++) listCurrentInfo.removeLast();
 
         statisticInfo.sort(new Comparator<StatisticInfo>() {
             @Override
