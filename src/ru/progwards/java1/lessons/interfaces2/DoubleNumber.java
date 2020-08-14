@@ -13,7 +13,7 @@ public class DoubleNumber extends Number implements Comparable{
     }
 
     @Override
-    public int compareNumber(Comparable value) {
+    public int compareTo(Comparable value) {
         if (this.num > Double.valueOf(value.toString())) return 1;
         else if(this.num < Double.valueOf(value.toString())) return -1;
         return 0;

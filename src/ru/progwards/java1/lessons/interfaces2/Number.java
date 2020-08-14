@@ -4,7 +4,7 @@ package ru.progwards.java1.lessons.interfaces2;
 public class Number implements Comparable {
 
     @Override
-    public int compareNumber(Comparable value) {
+    public int compareTo(Comparable value) {
         return 0;
     }
     public Number mul(Number num) {
@@ -26,7 +26,7 @@ public class Number implements Comparable {
     public static void main(String[] args) {
         IntNumber intNumber1 = new IntNumber(45);
         IntNumber intNumber2 = new IntNumber(36);
-        System.out.println(intNumber1.compareNumber(intNumber2));
+        System.out.println(intNumber1.compareTo(intNumber2));
     }
 
 }

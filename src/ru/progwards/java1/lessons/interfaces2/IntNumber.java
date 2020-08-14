@@ -8,7 +8,7 @@ public class IntNumber extends Number implements Comparable {
     }
 
     @Override
-    public int compareNumber(Comparable value) {
+    public int compareTo(Comparable value) {
         if (this.num > Integer.valueOf(value.toString())) return 1;
         else if(this.num < Integer.valueOf(value.toString())) return -1;
         return 0;
