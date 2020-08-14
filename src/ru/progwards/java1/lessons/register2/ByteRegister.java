@@ -16,13 +16,6 @@ public class ByteRegister extends Register {
         }
     }
 
-    public Register copyRegister() {
-        ByteRegister byteRegister = new ByteRegister();
-        for (int i = 0; i < 8; i ++)
-            byteRegister.bits[i] = new Bit(this.bits[i].value);
-        return byteRegister;
-    }
-
     public static void main(String[] args) {
         byte bt = 5;
 

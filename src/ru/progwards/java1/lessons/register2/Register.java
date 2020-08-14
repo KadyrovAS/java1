@@ -28,7 +28,6 @@ public class Register {
         for (int i = 0; i < n; i ++) this.bits[i] = value[i];
     }
 
-    public Register copyRegister() {return null;}
     public Register toTwosComplement(Register value) {
         Register currenRegister = value;
         int n = value.bits.length;

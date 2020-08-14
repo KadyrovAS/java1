@@ -24,10 +24,10 @@ public class Summator {
 
 
     public static void sub(Register value1, Register value2) {
-        Register value = value2.copyRegister();
-        value = value.toTwosComplement(value);
+        Register value = value2.toTwosComplement(value2);
         add(value1, value);
     }
+
     public static void main(String[] args) {
         byte bt1 = 75;
         byte bt2 = 30;
@@ -35,6 +35,7 @@ public class Summator {
         ByteRegister byteRegister2 = new ByteRegister(bt2);
         sub(byteRegister1,byteRegister2);
         System.out.println(byteRegister1.toDecString());
+        System.out.println(bt1 + "   " + bt2);
 
     }
 }

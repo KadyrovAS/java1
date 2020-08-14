@@ -16,13 +16,6 @@ public class IntRegister extends Register {
         }
     }
 
-    public Register copyRegister() {
-        IntRegister intRegister = new IntRegister();
-        for (int i = 0; i < 32; i ++)
-            intRegister.bits[i] = new Bit(this.bits[i].value);
-        return intRegister;
-    }
-
     public static void main(String[] args) {
         IntRegister intRegister = new IntRegister(25);
         System.out.println(intRegister.toString());
