@@ -1,6 +1,6 @@
 package ru.progwards.java1.lessons.datetime;
 import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
 public class SessionManager {
@@ -18,9 +18,9 @@ public class SessionManager {
         userSession.updateLastAccess();
     }
 
-    public boolean checkValid(ZonedDateTime dateTime) {
+    public boolean checkValid(LocalDateTime dateTime) {
         //Если срок сессии истек, возвращает false
-        long sessionDuration = Duration.between(dateTime, ZonedDateTime.now()).toMillis();
+        long sessionDuration = Duration.between(dateTime, LocalDateTime.now()).toMillis();
         if (this.sessionValid >= sessionDuration) return true;
         return false;
     }
@@ -62,11 +62,11 @@ public class SessionManager {
         sessionHandle = us.getSessionHandle();
         SessionManager sm = new SessionManager(1);
         sm.add(us);
-        ZonedDateTime start = ZonedDateTime.now();
+        LocalDateTime start = LocalDateTime.now();
         Thread.sleep(500);
         System.out.println(sm.get(sessionHandle));
         Thread.sleep(500);
-        ZonedDateTime finis = ZonedDateTime.now();
+        LocalDateTime finis = LocalDateTime.now();
         System.out.println(Duration.between(start, finis).toMillis());
         System.out.println(sm.get(sessionHandle));
     }
