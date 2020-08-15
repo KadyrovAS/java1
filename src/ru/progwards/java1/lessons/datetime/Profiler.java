@@ -7,10 +7,12 @@ public class Profiler {
     static class CurrentLevel {
         String nameSection; //имя секции
         long entryTime; //время вызова секции
+        long exitTime; //время выхода из секции
 
         CurrentLevel(String nameSection, long entryTime, long exitTime) {
             this.nameSection = nameSection; //имя секции
             this.entryTime = entryTime; //время входа в секцию
+            this.exitTime = exitTime; //время выхода из секции
         }
     }
 
@@ -19,17 +21,15 @@ public class Profiler {
     static LinkedList<CurrentLevel> listLevel = new LinkedList<>(); //стэк
 
     public static void enterSection(String name) { //вход в секцию
-        long currentTime = System.currentTimeMillis();
-        arrayInfo.add(new CurrentLevel(name, currentTime, 0));
+        arrayInfo.add(new CurrentLevel(name, System.currentTimeMillis(), 0));
     }
 
     public static void exitSection(String name) { //выход из секции
-        long currentTime = System.currentTimeMillis();
-        arrayInfo.add(new CurrentLevel(name, 0, currentTime));
+        arrayInfo.add(new CurrentLevel(name, 0, System.currentTimeMillis()));
     }
 
     public static List<StatisticInfo> getStatisticInfo() {
-        int nFound;
+        int nFound = 0;
         long durationTime;
         boolean hasFound;
         statisticInfo.clear();
@@ -60,7 +60,7 @@ public class Profiler {
                 if (arrayInfo.get(i).nameSection.compareTo(listLevel.getLast().nameSection) != 0)
                     return null; //нарушена последовательность входа-выхода из секций
 
-                durationTime = System.currentTimeMillis() - listLevel.getLast().entryTime;
+                durationTime = arrayInfo.get(i).exitTime - listLevel.getLast().entryTime;
 
                 statisticInfo.get(nFound).fullTime += durationTime;
 
@@ -107,11 +107,11 @@ public class Profiler {
         }
 
         Profiler.exitSection("Process1");
-        getStatisticInfo();
+//        getStatisticInfo();
 
         printInfo();
-        printInfo();
-        printInfo();
+//        printInfo();
+//        printInfo();
     }
 
     private static void printInfo(){
