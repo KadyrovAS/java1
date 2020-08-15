@@ -8,62 +8,72 @@ public class Profiler {
         String nameSection; //имя секции
         long entryTime; //время вызова секции
 
-        CurrentLevel(String nameSection, long entryTime) {
-            this.nameSection = nameSection;
-            this.entryTime = entryTime;
+        CurrentLevel(String nameSection, long entryTime, long exitTime) {
+            this.nameSection = nameSection; //имя секции
+            this.entryTime = entryTime; //время входа в секцию
         }
     }
 
-    static HashMap<String, StatisticInfo> mapStatistic = new HashMap<>();
-    static LinkedList<CurrentLevel> listCurrentInfo = new LinkedList<>();
+    static ArrayList<CurrentLevel> arrayInfo = new ArrayList<>(); // содержит журнал событий (вход-выход)
+    static List<StatisticInfo> statisticInfo = new ArrayList<>(); //оработанная информация
+    static LinkedList<CurrentLevel> listLevel = new LinkedList<>(); //стэк
 
-    public static void enterSection(String name) {
+    public static void enterSection(String name) { //вход в секцию
         long currentTime = System.currentTimeMillis();
-        StatisticInfo currentInfo = new StatisticInfo();
-        if (mapStatistic.get(name) == null) currentInfo.sectionName = name;
-        else currentInfo = mapStatistic.get(name);
-        currentInfo.count++;
-
-// Для #traceout
-//        System.out.println("enterSection" + name + " " + currentInfo.count + " " + currentInfo.fullTime + " " +
-//                           currentInfo.selfTime);
-
-        listCurrentInfo.add(new CurrentLevel(name, currentTime));
-        mapStatistic.put(name, currentInfo);
+        arrayInfo.add(new CurrentLevel(name, currentTime, 0));
     }
 
-    public static void exitSection(String name) {
-        long timeExit = System.currentTimeMillis();
-        Long durationTime;
-        StatisticInfo currentInfo = mapStatistic.get(name);
-        durationTime = timeExit - listCurrentInfo.getLast().entryTime;
-        currentInfo.fullTime += durationTime;
-        mapStatistic.put(name, currentInfo);
-
-// Для #traceout
-//        System.out.println("exitSection " + currentInfo.sectionName + " " + currentInfo.count + " " +
-//                             currentInfo.fullTime + " " + currentInfo.selfTime);
-
-        listCurrentInfo.removeLast();
-        if (listCurrentInfo.size() > 0) { //корректировка selfTime на внешнем уровне
-            currentInfo = mapStatistic.get(listCurrentInfo.getLast().nameSection);
-            currentInfo.selfTime -= durationTime;
-            mapStatistic.put(currentInfo.sectionName, currentInfo);
-//Для #traceout
-//            System.out.println("afterExit " + currentInfo.sectionName + " " + currentInfo.count + " " +
-//                    currentInfo.fullTime + " " + currentInfo.selfTime);
-
-        }
+    public static void exitSection(String name) { //выход из секции
+        long currentTime = System.currentTimeMillis();
+        arrayInfo.add(new CurrentLevel(name, 0, currentTime));
     }
 
     public static List<StatisticInfo> getStatisticInfo() {
-        List<StatisticInfo> statisticInfo = new ArrayList<>();
-        statisticInfo.addAll(mapStatistic.values());
-        for (int i = 0; i < statisticInfo.size(); i ++) {
-//            mapStatistic.remove(statisticInfo.get(i).sectionName);
-            statisticInfo.get(i).selfTime += statisticInfo.get(i).fullTime;
+        int nFound;
+        long durationTime;
+        boolean hasFound;
+        statisticInfo.clear();
+        listLevel.clear();
+
+        for (int i = 0; i < arrayInfo.size(); i ++) {
+            nFound = 0;
+            hasFound = false;
+            if (arrayInfo.get(i).entryTime != 0) {  //вход в секцию
+                listLevel.add(new CurrentLevel(arrayInfo.get(i).nameSection, arrayInfo.get(i).entryTime, 0));
+                if (statisticInfo.size() > 0) //осуществляет поиск секции в statisticInfo
+                    for (int k = 0; k < statisticInfo.size(); k++)
+                        if (statisticInfo.get(k).sectionName.compareTo(arrayInfo.get(i).nameSection) == 0) {
+                            nFound = k;
+                            hasFound = true;
+                        }
+                if (!hasFound) {
+                    statisticInfo.add(new StatisticInfo());
+                    nFound = statisticInfo.size() - 1;
+                    statisticInfo.get(nFound).sectionName = arrayInfo.get(i).nameSection;
+                }
+                statisticInfo.get(nFound).count ++;
+            } else { //выход из секции
+                for (int k = 0; k < statisticInfo.size(); k++)
+                    if (arrayInfo.get(i).nameSection.compareTo(statisticInfo.get(k).sectionName) == 0)
+                        nFound = k; //индекс в statisticInfo
+
+                if (arrayInfo.get(i).nameSection.compareTo(listLevel.getLast().nameSection) != 0)
+                    return null; //нарушена последовательность входа-выхода из секций
+
+                durationTime = System.currentTimeMillis() - listLevel.getLast().entryTime;
+
+                statisticInfo.get(nFound).fullTime += durationTime;
+
+                listLevel.removeLast();
+                if (listLevel.size() > 0)
+                    for (int k = 0; k < statisticInfo.size(); k++)
+                        if (listLevel.getLast().nameSection.compareTo(statisticInfo.get(k).sectionName) == 0)
+                            statisticInfo.get(k).selfTime -= durationTime;
+            }
         }
-//        for (int i = 0; i < listCurrentInfo.size(); i ++) listCurrentInfo.removeLast();
+
+        for (int i = 0; i < statisticInfo.size(); i ++)
+            statisticInfo.get(i).selfTime += statisticInfo.get(i).fullTime;
 
         statisticInfo.sort(new Comparator<StatisticInfo>() {
             @Override
@@ -81,6 +91,24 @@ public class Profiler {
             try { Thread.sleep(100); } catch (InterruptedException e) {}
             Profiler.exitSection("Process1");
         }
+
+        Profiler.enterSection("Process1");
+        try { Thread.sleep(100); } catch (InterruptedException e) {}
+
+        for (int n = 0; n < 3; n++){
+            Profiler.enterSection("Process2");
+            try { Thread.sleep(100); } catch (InterruptedException e) {}
+
+            Profiler.enterSection("Process3");
+            try { Thread.sleep(100); } catch (InterruptedException e) {}
+            Profiler.exitSection("Process3");
+
+            Profiler.exitSection("Process2");
+        }
+
+        Profiler.exitSection("Process1");
+        getStatisticInfo();
+
         printInfo();
         printInfo();
         printInfo();

@@ -16,7 +16,7 @@ public class EgtsDirectionAndSpeed {
 
 
     public static void main(String[] args) {
-        short sh = -5;
+        short sh = 5;
         byte bt = 123;
         System.out.println(getDirection(bt, sh));
     }
