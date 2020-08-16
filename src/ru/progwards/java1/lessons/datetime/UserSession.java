@@ -8,10 +8,22 @@ public class UserSession {
     private int sessionHandle;
     private String userName;
     private LocalDateTime lastAccess;
-    public  int getSessionHandle() {return this.sessionHandle;}
-    public  String getUserName() {return this.userName;}
-    public LocalDateTime getLastAccess() {return this.lastAccess;}
-    public void updateLastAccess() {this.lastAccess = LocalDateTime.now();}
+    public  int getSessionHandle() {
+        System.out.println("getSessionHandle " + LocalDateTime.now()); //TODO
+        return this.sessionHandle;
+    }
+    public  String getUserName() {
+        System.out.println("getUserName " + LocalDateTime.now()); //TODO
+        return this.userName;
+    }
+    public LocalDateTime getLastAccess() {
+        System.out.println("getLastAccess " + LocalDateTime.now()); //TODO
+        return this.lastAccess;
+    }
+    public void updateLastAccess() {
+        this.lastAccess = LocalDateTime.now();
+        System.out.println("Обновлено время " + LocalDateTime.now()); //TODO
+    }
     public UserSession(String userName) {
         Random random = new Random();
         this.userName = userName;
