@@ -13,14 +13,12 @@ public class SessionManager {
     }
 
     public void add(UserSession userSession) { //добавляет новую сессию пользователя
-        System.out.println("add " + userSession.getUserName() + "  " + LocalDateTime.now()); //TODO
         if (sessions.get(userSession.getUserName()) == null)
             sessions.put(userSession.getUserName(), userSession);
         userSession.updateLastAccess();
     }
 
     public boolean checkValid(LocalDateTime dateTime) {
-        System.out.println("checkValid " + dateTime + "  " + LocalDateTime.now()); //TODO
         //Если срок сессии истек, возвращает false
         long sessionDuration = Duration.between(dateTime, LocalDateTime.now()).toMillis();
         if (this.sessionValid >= sessionDuration) return true;
@@ -28,7 +26,6 @@ public class SessionManager {
     }
 
     public UserSession find(String userName) { //проверяет наличие существующей сессии по userName.
-        System.out.println("find " + userName + "   " + LocalDateTime.now()); //TODO
         if (sessions.get(userName) != null)
             if (checkValid(sessions.get(userName).getLastAccess()) == true) {
                 sessions.get(userName).updateLastAccess();
@@ -38,7 +35,6 @@ public class SessionManager {
     }
 
     public UserSession get(int sessionHandle) { //проверяет наличие существующей сессии по хендлу.
-        System.out.println("вызвана get " + LocalDateTime.now()); //TODO
         for (UserSession currentSession : sessions.values())
             if (currentSession.getSessionHandle() == sessionHandle)
                 if (checkValid(currentSession.getLastAccess()) == true) {
