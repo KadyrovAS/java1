@@ -21,7 +21,7 @@ public class SessionManager {
     }
 
     public boolean checkValid(LocalDateTime dateTime) {
-        System.out.println("checkValid");
+        System.out.println("checkValid dateTime="+dateTime + " LocalDateTime.now()=" + LocalDateTime.now());
         //Если срок сессии истек, возвращает false
         long sessionDuration = Duration.between(dateTime, LocalDateTime.now()).toMillis();
         if (this.sessionValid >= sessionDuration) return true;
@@ -29,7 +29,7 @@ public class SessionManager {
     }
 
     public UserSession find(String userName) { //проверяет наличие существующей сессии по userName.
-        System.out.println("find " + userName);
+//        System.out.println("find " + userName);
         deleteExpired();
         for (UserSession value: sessions.values())
             if (value.getUserName().compareTo(userName) == 0)
@@ -46,31 +46,24 @@ public class SessionManager {
     }
 
     public void delete(int sessionHandle) { //удаляет указанную сессию пользователя
-        System.out.println("delete " + sessionHandle);
+//        System.out.println("delete " + sessionHandle);
         sessions.remove(sessionHandle);
     }
 
     public void deleteExpired() { //удаляет все сессии с истекшим сроком годности.
-        System.out.println("deleteExpired");
         for (UserSession value : sessions.values())
             if (!checkValid(value.getLastAccess()))
-                sessions.remove(value.getUserName());
+                sessions.remove(value.getSessionHandle());
     }
 
     public static void main(String[] args) throws InterruptedException {
-        int sessionHandle;
         UserSession us = new UserSession("User1");
-        UserSession us2 = new UserSession("User1");
-        sessionHandle = us.getSessionHandle();
+        us.getSessionHandle();
         SessionManager sm = new SessionManager(1);
         sm.add(us);
-        sm.add(us2);
         LocalDateTime start = LocalDateTime.now();
-        Thread.sleep(500);
-        System.out.println(sm.get(sessionHandle));
-        Thread.sleep(500);
-        LocalDateTime finis = LocalDateTime.now();
-        System.out.println(Duration.between(start, finis).toMillis());
-        System.out.println(sm.get(sessionHandle));
+//        Thread.sleep(500);
+        Thread.sleep(1000);
+        System.out.println(sm.checkValid(us.getLastAccess()));
     }
 }
