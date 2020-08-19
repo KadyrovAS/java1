@@ -1,7 +1,9 @@
 package ru.progwards.java1.lessons.datetime;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class SessionManager {
     private HashMap<Integer, UserSession> sessions = new HashMap<>(); //Коллекция
@@ -45,9 +47,12 @@ public class SessionManager {
     }
 
     public void deleteExpired() { //удаляет все сессии с истекшим сроком годности.
+        List <Integer> keys = new ArrayList<Integer>();
         for (int currentKey : sessions.keySet())
             if (!checkValid(sessions.get(currentKey).getLastAccess()))
-                sessions.remove(currentKey);
+                keys.add(currentKey);
+        for (int currentKey: keys)
+            sessions.remove(currentKey);
     }
 
     public static void main(String[] args) throws InterruptedException {
