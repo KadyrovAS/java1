@@ -13,15 +13,12 @@ public class SessionManager {
     }
 
     public void add(UserSession userSession) { //добавляет новую сессию пользователя
-        System.out.println("add " + userSession.getSessionHandle() + " " + userSession.getUserName());
-
         if (sessions.get(userSession.getSessionHandle()) == null)
             sessions.put(userSession.getSessionHandle(), userSession);
         userSession.updateLastAccess();
     }
 
     public boolean checkValid(LocalDateTime dateTime) {
-        System.out.println("checkValid dateTime="+dateTime + " LocalDateTime.now()=" + LocalDateTime.now());
         //Если срок сессии истек, возвращает false
         long sessionDuration = Duration.between(dateTime, LocalDateTime.now()).toMillis();
         if (this.sessionValid >= sessionDuration) return true;
@@ -29,7 +26,6 @@ public class SessionManager {
     }
 
     public UserSession find(String userName) { //проверяет наличие существующей сессии по userName.
-//        System.out.println("find " + userName);
         deleteExpired();
         for (UserSession value: sessions.values())
             if (value.getUserName().compareTo(userName) == 0)
@@ -38,7 +34,6 @@ public class SessionManager {
     }
 
     public UserSession get(int sessionHandle) { //проверяет наличие существующей сессии по хендлу.
-        System.out.println("get " + sessionHandle);
         deleteExpired();
         if (sessions.get(sessionHandle) != null)
             sessions.get(sessionHandle).updateLastAccess();
@@ -46,7 +41,6 @@ public class SessionManager {
     }
 
     public void delete(int sessionHandle) { //удаляет указанную сессию пользователя
-//        System.out.println("delete " + sessionHandle);
         sessions.remove(sessionHandle);
     }
 
@@ -62,7 +56,6 @@ public class SessionManager {
         SessionManager sm = new SessionManager(1);
         sm.add(us);
         LocalDateTime start = LocalDateTime.now();
-//        Thread.sleep(500);
         Thread.sleep(1000);
         System.out.println(sm.checkValid(us.getLastAccess()));
     }
