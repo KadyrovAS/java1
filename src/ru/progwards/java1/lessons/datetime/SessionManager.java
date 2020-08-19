@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 
 public class SessionManager {
-    private HashMap<String, UserSession> sessions = new HashMap<>(); //Коллекция
+    private HashMap<Integer, UserSession> sessions = new HashMap<>(); //Коллекция
     private int sessionValid;
 
     public SessionManager(int sessionValid) { //Конструктор  создает экземпляр SessionManager и
@@ -13,12 +13,15 @@ public class SessionManager {
     }
 
     public void add(UserSession userSession) { //добавляет новую сессию пользователя
-        if (sessions.get(userSession.getUserName()) == null)
-            sessions.put(userSession.getUserName(), userSession);
+        System.out.println("add " + userSession.getSessionHandle() + " " + userSession.getUserName());
+
+        if (sessions.get(userSession.getSessionHandle()) == null)
+            sessions.put(userSession.getSessionHandle(), userSession);
         userSession.updateLastAccess();
     }
 
     public boolean checkValid(LocalDateTime dateTime) {
+        System.out.println("checkValid");
         //Если срок сессии истек, возвращает false
         long sessionDuration = Duration.between(dateTime, LocalDateTime.now()).toMillis();
         if (this.sessionValid >= sessionDuration) return true;
@@ -26,42 +29,42 @@ public class SessionManager {
     }
 
     public UserSession find(String userName) { //проверяет наличие существующей сессии по userName.
-        if (sessions.get(userName) != null)
-            if (checkValid(sessions.get(userName).getLastAccess()) == true) {
-                sessions.get(userName).updateLastAccess();
-                return sessions.get(userName);
-            }
+        System.out.println("find " + userName);
+        deleteExpired();
+        for (UserSession value: sessions.values())
+            if (value.getUserName().compareTo(userName) == 0)
+                return value;
         return null;
     }
 
     public UserSession get(int sessionHandle) { //проверяет наличие существующей сессии по хендлу.
-        for (UserSession currentSession : sessions.values())
-            if (currentSession.getSessionHandle() == sessionHandle)
-                if (checkValid(currentSession.getLastAccess()) == true) {
-                    currentSession.updateLastAccess();
-                    return sessions.get(currentSession.getUserName());
-                }
-        return null;
+        System.out.println("get " + sessionHandle);
+        deleteExpired();
+        if (sessions.get(sessionHandle) != null)
+            sessions.get(sessionHandle).updateLastAccess();
+        return sessions.get(sessionHandle);
     }
 
     public void delete(int sessionHandle) { //удаляет указанную сессию пользователя
-        for (UserSession currentSession : sessions.values())
-            if (currentSession.getSessionHandle() == sessionHandle)
-                sessions.remove(currentSession.getUserName());
+        System.out.println("delete " + sessionHandle);
+        sessions.remove(sessionHandle);
     }
 
     public void deleteExpired() { //удаляет все сессии с истекшим сроком годности.
-        for (UserSession currentSession : sessions.values())
-            if (checkValid(currentSession.getLastAccess()) == false)
-                sessions.remove(currentSession.getUserName());
+        System.out.println("deleteExpired");
+        for (UserSession value : sessions.values())
+            if (!checkValid(value.getLastAccess()))
+                sessions.remove(value.getUserName());
     }
 
     public static void main(String[] args) throws InterruptedException {
         int sessionHandle;
         UserSession us = new UserSession("User1");
+        UserSession us2 = new UserSession("User1");
         sessionHandle = us.getSessionHandle();
         SessionManager sm = new SessionManager(1);
         sm.add(us);
+        sm.add(us2);
         LocalDateTime start = LocalDateTime.now();
         Thread.sleep(500);
         System.out.println(sm.get(sessionHandle));
