@@ -51,9 +51,9 @@ public class SessionManager {
     }
 
     public void deleteExpired() { //удаляет все сессии с истекшим сроком годности.
-        for (UserSession value : sessions.values())
-            if (!checkValid(value.getLastAccess()))
-                sessions.remove(value.getSessionHandle());
+        for (int currentKey : sessions.keySet())
+            if (!checkValid(sessions.get(currentKey).getLastAccess()))
+                sessions.remove(currentKey);
     }
 
     public static void main(String[] args) throws InterruptedException {
