@@ -12,8 +12,8 @@ public class DiffClass {
     String pathUpdateFile;
     List<RelationFiles> relFiles = new ArrayList<RelationFiles>();
     class RelationFiles {
-        Integer indexLineA; // Индекс в файле A
-        Integer indexLineB; //Индекс в айле B
+        Integer indexLineA; // Индекс в файле A (оригинальный файл)
+        Integer indexLineB; //Индекс в айле B (измененный файл)
         RelationFiles(int indexLineA, int indexLineB) {
             this.indexLineA = indexLineA;
             this.indexLineB = indexLineB;
@@ -39,16 +39,35 @@ public class DiffClass {
 
     }
 
-    public void readPatch(Path path) {
+    public void readPatch(String path) { //TODO пока не реализован
+        String[] diffFiles = new String[3];
+        String pathFileA, pathFileB;
+        Path pathPatch = Paths.get(path);
         patchFile = new ArrayList<>();
+
         try {
-            patchFile = Files.readAllLines(path);
+            patchFile = Files.readAllLines(pathPatch);
+            if (patchFile.get(0).length() > 4 && patchFile.get(0).substring(0,4).compareTo("diff") != 0) return;
+            diffFiles = patchFile.get(0).split(" ");
+            pathFileA = diffFiles[1].substring(3);
+            pathFileA = pathFileA.substring(0, pathFileA.length() - 1);
+            pathFileB = diffFiles[2].substring(3);
+            pathFileB = pathFileB.substring(0, pathFileB.length() - 1);
+
+            readOriginalFile(pathFileA);
+            readUpdateFile(pathFileB);
+
+
         } catch (IOException e) {}
 
     }
 
     public boolean formatDiffMap(HashMap<Integer, List<Integer>> diff) {
-        //если value diffMap содержит список из более 1 элемента, то оставляет только один элемент
+        //Map diff содержит: key - номер строки в оригинальном файле, value - список с совпадающими строками в
+        //измененном файле
+        //если value в diff содержит список из более 1 элемента, тометод оставляет в списке value только один элемент
+        //несколько элементов в списке появляются из-за особенностей алгоритма сравнения файлов по-строчно, например
+        //пробелы, скобки { или { и т.д.
         List<Integer> listNumLines;
         int numLine;
         int numLineWasFind;
@@ -104,6 +123,7 @@ public class DiffClass {
     }
 
     public int hasLine(HashMap<Integer, List<Integer>> diffMap, int numLine) {
+        //возвращает номер строки numLine в diffMap или -1
         for (Map.Entry<Integer, List<Integer>> currentEntry: diffMap.entrySet())
             if (currentEntry.getValue().size() > 0 && currentEntry.getValue().get(0) == numLine)
                 return currentEntry.getKey() - 1;
@@ -111,6 +131,12 @@ public class DiffClass {
     }
 
     public boolean formatRelFiles() {
+        //список relFiles - это построчная связь между двумя файлами A (оригинальным) и B(отредактированным)
+        //indexLineA - индекс строки в файле А
+        //indexLineB - индекс соответствующей строки в файле B
+        //если один из индексов равен 0, значит строка однозначно удалена (indexLineB = 0),
+        //или добавлена (indexLineA = 0) или перемещена.
+        //метод после сортировки списка выстраивает эти связи в их логическом порядке
         RelationFiles currentRelation;
         List<RelationFiles> relFilesSorted = new ArrayList<>();
         boolean wasFound;
@@ -172,7 +198,7 @@ public class DiffClass {
         return true;
     }
 
-    public void diff(String path) { //сравнивает 2 файла
+    public void diff(String path) { //сравнивает 2 файла и формирует патч по ссылке path
         HashMap<Integer, List<Integer>> diffMap = new HashMap<>(); //карта соответствия файлов
         List<Integer> listNumLines;
         Path pathPatch = Paths.get(path);
@@ -219,10 +245,10 @@ public class DiffClass {
         int startB = 0;
     try {
         Files.writeString(pathPatch, "diff " + '"' + "a/" + this.pathOriginalFile + '"' + " " +
-                '"' + pathUpdateFile +'"' + "\n");
-        Files.writeString(pathPatch, "--- " + '"' + "b/" + this.pathOriginalFile + '"' + "\n",
+                '"' + "b/" + pathUpdateFile +'"' + "\n");
+        Files.writeString(pathPatch, "--- " + '"' + "a/" + this.pathOriginalFile + '"' + "\n",
                 StandardOpenOption.APPEND);
-        Files.writeString(pathPatch, "+++ " + '"' + this.pathUpdateFile + '"' + "\n",
+        Files.writeString(pathPatch, "+++ " + '"' + "b/" + this.pathUpdateFile + '"' + "\n",
                 StandardOpenOption.APPEND);
         int numLine = 0;
         int countLineDel;
@@ -274,8 +300,10 @@ public class DiffClass {
         String pathUpdate = "d:/java/project/TestJava2.java";
         String pathPatch = "d:/java/project/TestJava.patch";
         DiffClass diffClass = new DiffClass();
-        diffClass.readOriginalFile(pathOriginal);
-        diffClass.readUpdateFile(pathUpdate);
-        diffClass.diff(pathPatch);
+        diffClass.readOriginalFile(pathOriginal); //Загружаем оригинальный файл
+        diffClass.readUpdateFile(pathUpdate); //Загружаем файл после обновления
+        diffClass.diff(pathPatch); //Сравниваем 2 файла
+
+        diffClass.readPatch(pathPatch);
     }
 }
