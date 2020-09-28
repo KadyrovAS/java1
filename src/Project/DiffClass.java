@@ -19,47 +19,34 @@ public class DiffClass {
             this.indexLineB = indexLineB;
         }
     }
-    public void readOriginalFile(String path) {
+    public void readOriginalFile(String path) throws IOException{
         Path pathFile = Paths.get(path);
         this.pathOriginalFile = path;
         originalFile = new ArrayList<>();
-        try {
-            originalFile = Files.readAllLines(pathFile);
-        } catch (IOException e) {}
-
+        originalFile = Files.readAllLines(pathFile);
     }
 
-    public void readUpdateFile(String path) {
+    public void readUpdateFile(String path) throws IOException{
         Path pathFile = Paths.get(path);
         this.pathUpdateFile = path;
         updateFile = new ArrayList<>();
-        try {
-            updateFile = Files.readAllLines(pathFile);
-        } catch (IOException e) {}
-
+        updateFile = Files.readAllLines(pathFile);
     }
 
-    public void readPatch(String path) { //TODO пока не реализован
+    public void readPatch(String path) throws IOException{ //TODO пока не реализован
         String[] diffFiles = new String[3];
         String pathFileA, pathFileB;
         Path pathPatch = Paths.get(path);
         patchFile = new ArrayList<>();
-
-        try {
-            patchFile = Files.readAllLines(pathPatch);
-            if (patchFile.get(0).length() > 4 && patchFile.get(0).substring(0,4).compareTo("diff") != 0) return;
-            diffFiles = patchFile.get(0).split(" ");
-            pathFileA = diffFiles[1].substring(3);
-            pathFileA = pathFileA.substring(0, pathFileA.length() - 1);
-            pathFileB = diffFiles[2].substring(3);
-            pathFileB = pathFileB.substring(0, pathFileB.length() - 1);
-
-            readOriginalFile(pathFileA);
-            readUpdateFile(pathFileB);
-
-
-        } catch (IOException e) {}
-
+        patchFile = Files.readAllLines(pathPatch);
+        if (patchFile.get(0).length() > 4 && patchFile.get(0).substring(0,4).compareTo("diff") != 0) return;
+        diffFiles = patchFile.get(0).split(" ");
+        pathFileA = diffFiles[1].substring(3);
+        pathFileA = pathFileA.substring(0, pathFileA.length() - 1);
+        pathFileB = diffFiles[2].substring(3);
+        pathFileB = pathFileB.substring(0, pathFileB.length() - 1);
+        readOriginalFile(pathFileA);
+        readUpdateFile(pathFileB);
     }
 
     public boolean formatDiffMap(HashMap<Integer, List<Integer>> diff) {
@@ -72,9 +59,10 @@ public class DiffClass {
         int numLine;
         int numLineWasFind;
         boolean wasFind;
+
         for (int i = 0; i < diff.size(); i++) {
             listNumLines = diff.get(i + 1);
-            if (listNumLines.size() == 1) continue;
+            if (listNumLines.size() <= 1) continue;
             //обнаружены повторяющиеся строки (пробелы, скобки и т.д.).
             //проверяем, если в списке listNumLines есть номер предыдущей строки, увеличенной на 1, то оставляем его
             if (i > 0 && diff.get(i).size() == 1) {
@@ -104,13 +92,26 @@ public class DiffClass {
             }
             //проверяем, есть ли в других value с одним элементом значения из текущего value
             //если есть, то удаляем их
+
             for (int k = 0; k < diff.size(); k ++) {
                 if (diff.get(k + 1).size() > 1) continue;
                 if (diff.get(k + 1).size() == 0) continue;
                 numLineWasFind = -1;
-                for (int l = 0; l < listNumLines.size(); l ++)
-                    if (listNumLines.get(l) == diff.get(k + 1).get(0))
+
+                for (int l = 0; l < listNumLines.size(); l++) {
+                    if (listNumLines.get(l) != diff.get(k + 1).get(0) &&
+                            listNumLines.get(l).compareTo(diff.get(k + 1).get(0)) == 0){
+                Integer a1, a2;
+                a1 = listNumLines.get(l);
+                a2 = diff.get(k + 1).get(0);
+                boolean b = a1.equals(a2);
+                System.out.println(i + " " + k + " " + l);
+            }
+//                    if (listNumLines.get(l) == diff.get(k+1).get(0))
+                    if (listNumLines.get(l).compareTo(diff.get(k+1).get(0)) == 0)
                         numLineWasFind = l;
+                }
+
                 if (numLineWasFind >= 0)
                     listNumLines.remove(numLineWasFind);
             }
@@ -137,8 +138,7 @@ public class DiffClass {
         //если один из индексов равен 0, значит строка однозначно удалена (indexLineB = 0),
         //или добавлена (indexLineA = 0) или перемещена.
         //метод после сортировки списка выстраивает эти связи в их логическом порядке
-        RelationFiles currentRelation;
-        List<RelationFiles> relFilesSorted = new ArrayList<>();
+
         boolean wasFound;
         int num = 0;
         relFiles.sort(new Comparator<RelationFiles>() {
@@ -148,6 +148,16 @@ public class DiffClass {
             }
         });
 
+        if (!addNullLinesInRelFiles()) return false;
+        //сформируем новый список, в котором удаленные строки исходного файла будут перемещены на свое место
+        moveNullLinesInRelFiles();
+        return true;
+    }
+
+    private boolean addNullLinesInRelFiles() {
+        int num = 0;
+        boolean wasFound;
+        RelationFiles currentRelation;
         for (int i = 0; i < relFiles.size(); i ++) {
             if (relFiles.get(i).indexLineA == 0) continue;
             if (relFiles.get(i).indexLineB == 0) continue;
@@ -161,6 +171,7 @@ public class DiffClass {
                 i --;
                 continue;
             }
+
             //строка была перемещена
             for (int k = 0; k < relFiles.size(); k ++)
                 if (relFiles.get(k).indexLineA == num) {
@@ -172,9 +183,14 @@ public class DiffClass {
             relFiles.add(new RelationFiles(num,0));
             return false;
         }
+        return true;
+    }
 
-        //сформируем новый список, в котором удаленные строки исходного файла будут перемещены на свое место
-        num = 0;
+    private void moveNullLinesInRelFiles() {
+        List<RelationFiles> relFilesSorted = new ArrayList<>();
+        int num = 0;
+        int minus;
+
         for (int i = 0; i < relFiles.size(); i ++) {
             if (relFiles.get(i).indexLineB == 0) continue;
             if (relFiles.get(i).indexLineA == 0) {
@@ -183,22 +199,33 @@ public class DiffClass {
             }
             num ++;
 
-            wasFound = false;
-            for (int k = 0; k < relFiles.size(); k ++)
-                if (relFiles.get(k).indexLineA == num && relFiles.get(k).indexLineB == 0) {
-                    wasFound = true;
-                    relFilesSorted.add(relFiles.get(k));
-                    i --;
-                    break;
-                }
-            if (wasFound) continue;
+            if (findNumInRelFiles(num) != null) {
+                relFilesSorted.add(findNumInRelFiles(num));
+                i --;
+                continue;
+            }
             relFilesSorted.add(relFiles.get(i));
         }
+
+        minus = relFiles.size() - relFilesSorted.size();
+        if (minus != 0)
+            for (int i = 0; i < minus; i ++) {
+                num ++;
+                relFilesSorted.add(findNumInRelFiles(num));
+            }
+
         relFiles = relFilesSorted;
-        return true;
     }
 
-    public void diff(String path) { //сравнивает 2 файла и формирует патч по ссылке path
+    private RelationFiles findNumInRelFiles(int num) {
+        boolean wasFound = false;
+        for (int k = 0; k < relFiles.size(); k ++)
+            if (relFiles.get(k).indexLineA == num && relFiles.get(k).indexLineB == 0)
+                return relFiles.get(k);
+        return null;
+    }
+
+    private void diff(String path) { //сравнивает 2 файла и формирует патч по ссылке path
         HashMap<Integer, List<Integer>> diffMap = new HashMap<>(); //карта соответствия файлов
         List<Integer> listNumLines;
         Path pathPatch = Paths.get(path);
@@ -214,9 +241,16 @@ public class DiffClass {
             diffMap.put(countLines, listNumLines);
         }
 
-        for (int i = 0; i < 10; i ++)
+//        for (Map.Entry currentEntry: diffMap.entrySet())
+//            System.out.println(currentEntry.getKey() + " " + currentEntry.getValue());
+
+        for (int i = 0; i < 100; i ++)
             if (formatDiffMap(diffMap)) break; //пока не знаю, как оптимизировать этот блок
                                                //по логике достаточно 2 вызовов formatDiffMap
+
+
+//        for (Map.Entry currentEntry: diffMap.entrySet())
+//            System.out.println(currentEntry.getKey() + " " + currentEntry.getValue());
 
         for (int i = 0; i < diffMap.size(); i ++)
             if (diffMap.get(i + 1).size() == 0)
@@ -230,13 +264,9 @@ public class DiffClass {
 
         while (true)
             if (formatRelFiles()) break;
-
-//            for (RelationFiles rf: relFiles)
-//                System.out.println(rf.indexLineA + " " + rf.indexLineB);
-
+                    
         //Формирование патч-файла
         createPatch(relFiles, pathPatch);
-
     }
 
     public void createPatch(List<RelationFiles> relFiles, Path pathPatch) {
@@ -254,12 +284,15 @@ public class DiffClass {
         int countLineDel;
         int countLineAdd;
 
+//        for (int i = 0; i < relFiles.size(); i ++)
+//            System.out.println(relFiles.get(i).indexLineA + " " + relFiles.get(i).indexLineB);
+
         //формирование патча
         for (int i = 0; i < relFiles.size(); i ++) {
             if (relFiles.get(i).indexLineA != 0) numLine ++;
             if (relFiles.get(i).indexLineB != 0) startB = relFiles.get(i).indexLineB;
             if (relFiles.get(i).indexLineA ==0 || relFiles.get(i).indexLineB == 0) {
-                //либо вставили строку, либо удалили строку
+                //начало блока, который был отредактирован
                 countLineAdd = 0;
                 countLineDel = 0;
 
@@ -267,14 +300,16 @@ public class DiffClass {
                 //считаем количество вставленных и удаленных строк
                 for (int k = i; k < relFiles.size(); k ++)
                     if (relFiles.get(k).indexLineA == 0) {
+                        if (k == relFiles.size() - 1) i = k;
                         countLineAdd++;
                         indexLine = relFiles.get(k).indexLineB - 1;
                         listLinesUpdate.add("+" + updateFile.get(indexLine));
-                        startB = relFiles.get(k).indexLineB;
+//                        startB = relFiles.get(k).indexLineB;
                     }
                     else if (relFiles.get(k).indexLineB == 0) {
+                        if (k == relFiles.size() - 1) i = k;
                         countLineDel++;
-                        numLine = relFiles.get(k).indexLineA;
+//                        numLine = relFiles.get(k).indexLineA;
                         indexLine = relFiles.get(k).indexLineA - 1;
                         listLinesUpdate.add("-" + originalFile.get(indexLine));
                     }
@@ -296,14 +331,16 @@ public class DiffClass {
     }
 
     public static void main(String[] args) {
-        String pathOriginal = "d:/java/project/TestJava1.java";
-        String pathUpdate = "d:/java/project/TestJava2.java";
-        String pathPatch = "d:/java/project/TestJava.patch";
+        String pathOriginal = "d:/java/project/1.java";
+        String pathUpdate = "d:/java/project/2.java";
+        String pathPatch = "d:/java/project/12.patch";
         DiffClass diffClass = new DiffClass();
-        diffClass.readOriginalFile(pathOriginal); //Загружаем оригинальный файл
-        diffClass.readUpdateFile(pathUpdate); //Загружаем файл после обновления
-        diffClass.diff(pathPatch); //Сравниваем 2 файла
-
-        diffClass.readPatch(pathPatch);
+        try {
+            diffClass.readOriginalFile(pathOriginal); //Загружаем оригинальный файл
+            diffClass.readUpdateFile(pathUpdate); //Загружаем файл после обновления
+            diffClass.diff(pathPatch); //Сравниваем 2 файла
+        } catch (IOException e){
+            System.out.println(e.getMessage());
+        }
     }
 }
