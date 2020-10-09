@@ -81,8 +81,9 @@ public class HanoiTower {
     }
 
     public static void main(String[] args) {
-        HanoiTower tow = new HanoiTower(10, 1);
+        HanoiTower tow = new HanoiTower(10, 0);
         tow.setTrace(true);
-        tow.move(1, 0);
+        tow.move(0, 2);
+//        tow.print();
     }
 }

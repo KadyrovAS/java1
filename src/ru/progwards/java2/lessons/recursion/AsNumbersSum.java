@@ -1,7 +1,7 @@
 package ru.progwards.java2.lessons.recursion;
 
 public class AsNumbersSum {
-    //Одной функцией не смог решить задачу. Интересно Ваше решение
+
     static int numberSum;
     public static String asNumbersSum(int number) {
         numberSum = number;
@@ -10,8 +10,7 @@ public class AsNumbersSum {
     }
     public static String numbersSum(int number) {
         if (number <= 1) return "";
-        String res = nums(number, number - 1);
-        res += numbersSum(number - 1);
+        String res = nums(number, number - 1) + numbersSum(number - 1);
         return res;
     }
     public static String nums(int number, int num) {
@@ -31,6 +30,6 @@ public class AsNumbersSum {
     }
 
     public static void main(String[] args) {
-        System.out.println(asNumbersSum(15));
+        System.out.println(asNumbersSum(6));
     }
 }
