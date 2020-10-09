@@ -1,8 +1,9 @@
 package ru.progwards.java2.lessons.basetypes;
 
-public class DoubleHashTable <K, V> {
+public class DoubleHashTable <K extends Number, V> {
 //При удалении item из таблицы ячейку как удаленную не помечал. Не понял как это работает
 //Предполагается, что запрашивать item с несуществующим key не будут. Защиты от зацикливания не делал
+//В хэш-функциях key привожу к Integer и только потом работаю. Не понял, как решить задачу с обобщением
 
     private int nСollisions; //количество коллизий
     private int nAllRequest; //общее количество запросов
