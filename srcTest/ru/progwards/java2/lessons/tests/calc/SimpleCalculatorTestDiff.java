@@ -7,7 +7,6 @@ import ru.progwards.java2.lessons.tests.SimpleCalculator;
 import java.util.Arrays;
 import static org.junit.Assert.assertEquals;
 
-
 @RunWith(Parameterized.class)
 public class SimpleCalculatorTestDiff {
     public int val1;

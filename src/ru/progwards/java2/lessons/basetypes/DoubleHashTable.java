@@ -1,9 +1,6 @@
 package ru.progwards.java2.lessons.basetypes;
 
 public class DoubleHashTable <K extends Number, V> {
-//При удалении item из таблицы ячейку как удаленную не помечал. Не понял как это работает
-//Предполагается, что запрашивать item с несуществующим key не будут. Защиты от зацикливания не делал
-//В хэш-функциях key привожу к Integer и только потом работаю. Не понял, как решить задачу с обобщением
 
     private int nСollisions; //количество коллизий
     private int nAllRequest; //общее количество запросов
@@ -49,6 +46,7 @@ public class DoubleHashTable <K extends Number, V> {
         HashItem[] table2 = new HashItem[n];
         for (HashItem value: table){
             if (value == null) continue;
+            else if (value.getKey() == null) continue;
             index1 = getHash1(value.key);
             if (table2[index1] == null) table2[index1] = value;
             else {
@@ -71,6 +69,7 @@ public class DoubleHashTable <K extends Number, V> {
         int index, index2;
         nAllRequest++;
         if (table[index1] == null) table[index1] =  new HashItem(key, value);
+        else if(table[index1].getKey() == null) table[index1] =  new HashItem(key, value);
         else {
             index2 = getHash2(key);
             index = index1;
@@ -103,6 +102,7 @@ public class DoubleHashTable <K extends Number, V> {
 
     public V get(K key) { // получить значение по ключу
         int index = findIndex(key);
+        if (index == -1) return null;
         return (V) table[index].getItem();
     }
 
@@ -112,20 +112,24 @@ public class DoubleHashTable <K extends Number, V> {
         if (table[index1] != null && table[index1].getKey() == key) return index1;
         index2 = getHash2(key);
         index = index1;
+
         do {
             index += index2;
             if (index >= table.length) index -= table.length;
-            if (table[index] != null && table[index].getKey() == key) return index;
+            if (table[index] == null) return -1;
+            if (table[index].getKey() == key) return index;
         } while (true);
     }
 
     public void remove(K key) { // удалить элемент по ключу
         int index = findIndex(key);
-        table[index] = null;
+        if (index == -1) return;
+        table[index] = new HashItem(null, null);
     }
 
     public void change(K key1, K key2) { // изменить значение ключа у элемента с key1 на key2
         int index = findIndex(key1);
+        if (index == -1) return;
         HashItem value = table[index];
         table[index] = null;
         value.setKey(key2);
@@ -146,7 +150,7 @@ public class DoubleHashTable <K extends Number, V> {
             table.add(i, i);
 
         table.change(0,100);
-
+        table.remove(50);
         for (int i = 1; i <= 100; i++)
             System.out.println(table.get(i) + "   " + table.findIndex(i));
     }
