@@ -2,7 +2,7 @@ package ru.progwards.java2.lessons.basetypes;
 
 public class DoubleHashTable <K extends Number, V> {
 
-    private int nСollisions; //количество коллизий
+    private double nСollisions; //количество коллизий
     private int nAllRequest; //общее количество запросов
     private final int ALLOWCOLLISIONS = 10; //доля коллизий в процентах
 
@@ -20,8 +20,8 @@ public class DoubleHashTable <K extends Number, V> {
     }
 
     HashItem[] table;
-    DoubleHashTable(int n) {
-        table = new HashItem[n];
+    DoubleHashTable() {
+        table = new HashItem[101];
         nAllRequest = 0;
         nСollisions = 0;
     }
@@ -145,7 +145,7 @@ public class DoubleHashTable <K extends Number, V> {
 
     public static void main(String[] args) {
         int n = simpleValue(14);
-        DoubleHashTable table = new DoubleHashTable<>(n);
+        DoubleHashTable table = new DoubleHashTable<>();
         for (int i = 0; i < 100; i++)
             table.add(i, i);
 

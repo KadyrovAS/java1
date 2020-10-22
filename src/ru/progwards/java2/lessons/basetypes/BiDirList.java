@@ -1,7 +1,6 @@
 package ru.progwards.java2.lessons.basetypes;
 
 import java.util.Iterator;
-import java.util.ListIterator;
 
 public class BiDirList <T extends Comparable> implements Iterable<T> {
 
@@ -38,12 +37,6 @@ public class BiDirList <T extends Comparable> implements Iterable<T> {
                 if (current.getNext() == null) return false;
                 else return true;
             }
-
-//            @Override
-//            public boolean hasPrevious() {
-//                if (current.getPrevios() == null) return false;
-//                else return true;
-//            }
 
             @Override
             public T next() {
@@ -87,7 +80,7 @@ public class BiDirList <T extends Comparable> implements Iterable<T> {
     public<T extends Comparable> void remove(T item) { //удалить
         int count = 0;
         ListItem currentItem = getHead();
-        while (item.compareTo(currentItem.item) != 0 & currentItem.itemNext != null)
+        while (item != currentItem.item && currentItem.itemNext != null)
             currentItem = currentItem.getNext();
         if (item.compareTo(currentItem.item) == 0) {
             if (currentItem.getPrevios() != null)
