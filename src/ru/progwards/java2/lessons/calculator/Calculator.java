@@ -89,8 +89,7 @@ public class Calculator {
         return expression.substring(indexStart, indexEnd);
     }
 
-
     public static void main(String[] args) {
-        System.out.println(calculate("(8+2)*(30+70)"));
+        System.out.println(calculate("(2+3)*3"));
     }
 }
