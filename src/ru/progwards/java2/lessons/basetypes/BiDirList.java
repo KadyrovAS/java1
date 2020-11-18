@@ -31,7 +31,6 @@ public class BiDirList <T extends Comparable> implements Iterable<T> {
         Iterator<T> myIterator = new Iterator<T>() {
             ListItem<T>current = head;
             boolean firstTime = true;
-
             @Override
             public boolean hasNext() {
                 if (current.getNext() == null) return false;

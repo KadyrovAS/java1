@@ -1,4 +1,4 @@
-package ru.progwards.java2.lessons.tree;
+package ru.progwards.java2.lessons.trees;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
