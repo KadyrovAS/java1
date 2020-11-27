@@ -30,7 +30,8 @@ public class BiDirList <T extends Comparable> implements Iterable<T> {
     public Iterator<T> iterator() {
         Iterator<T> myIterator = new Iterator<T>() {
             ListItem<T>current = head;
-            boolean firstTime = true;
+            boolean firstItem = true;
+
             @Override
             public boolean hasNext() {
                 if (current.getNext() == null) return false;
@@ -39,8 +40,8 @@ public class BiDirList <T extends Comparable> implements Iterable<T> {
 
             @Override
             public T next() {
-                if (firstTime) {
-                    firstTime = false;
+                if (firstItem) {
+                    firstItem = false;
                     return current.item;
                 }
                 else {
