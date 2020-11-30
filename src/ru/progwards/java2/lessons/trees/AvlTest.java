@@ -1,4 +1,4 @@
-package ru.progwards.java2.lessons.trees;
+    package ru.progwards.java2.lessons.trees;
 
 import java.util.ArrayList;
 import java.util.TreeMap;

@@ -6,6 +6,16 @@ public class AvlTree<K extends Comparable<K>, V> {
     private static final String KEYEXIST = "Key already exist";
     private static final String KEYNOTEXIST = "Key not exist";
 
+    public AvlTree(TreeLeaf<K, V> root) {
+        this.root = root;
+    }
+    public AvlTree() {
+
+    }
+    public AvlTree(TreeLeaf<K,V> root, int count) {
+
+    }
+
     class TreeLeaf<K extends Comparable<K>, V> {
         K key;
         V value;
