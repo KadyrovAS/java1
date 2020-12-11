@@ -67,11 +67,11 @@ public class AvlTest {
         System.out.println("------------------------");
         System.out.println("Тест на операцию удаления");
 
-//        start = System.currentTimeMillis();
-//        for (AvlTree.TreeLeaf leaf: sorted)
-//            tree.delete((int) leaf.key);
-//        finis = System.currentTimeMillis();
-//        System.out.println("AvlTree: " + (finis - start));
+        start = System.currentTimeMillis();
+        for (AvlTree.TreeLeaf leaf: sorted)
+            tree.delete((int) leaf.key);
+        finis = System.currentTimeMillis();
+        System.out.println("AvlTree: " + (finis - start));
 
         start = System.currentTimeMillis();
         for (AvlTree.TreeLeaf leaf: sorted)

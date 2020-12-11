@@ -4,7 +4,16 @@ import java.io.IOException;
 import java.lang.reflect.*;
 import java.nio.file.*;
 
+/**
+ * Класс анализирует структуру классов с использованием Reflection
+ */
 public class ClassInspector {
+    /**
+     *
+     * @param clazz Класс для анализа структуры
+     * @throws ClassNotFoundException Если исследуемый класс не найден
+     * @throws IOException Если попытка записи по указанному path сгенерировала Exception
+     */
     public static void inspect(String clazz) throws ClassNotFoundException, IOException {
         Class insClass = Class.forName(clazz);
         //Необходимо указать path
@@ -58,6 +67,11 @@ public class ClassInspector {
         Files.writeString(pathFile,"}",StandardOpenOption.APPEND);
     }
 
+    /**
+     *Сложную структуру типа преобразует к простой без излишней информации
+     * @param type Строка с типом параметра
+     * @return Тип параметра в простом формате без лишней информации
+     */
     public static String parseType(String type) {
         String line = "";
         String[] words = type.toString().split(" ");

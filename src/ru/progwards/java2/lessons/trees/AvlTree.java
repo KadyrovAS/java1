@@ -2,20 +2,35 @@ package ru.progwards.java2.lessons.trees;
 
 import java.util.function.Consumer;
 
+/**
+ * Класс реализует сбалансированное двоичное дерево - AvlTree
+ * @see BinaryTree
+ * @param <K> - Ключ узла
+ * @param <V> - Значение узла
+ */
 public class AvlTree<K extends Comparable<K>, V> {
     private static final String KEYEXIST = "Key already exist";
     private static final String KEYNOTEXIST = "Key not exist";
 
+    /**
+     * Конструктор
+     * @param root - корень дерева
+     */
     public AvlTree(TreeLeaf<K, V> root) {
         this.root = root;
     }
-    public AvlTree() {
 
-    }
-    public AvlTree(TreeLeaf<K,V> root, int count) {
+    /**
+     * Конструктор по умолчанию
+     */
+    public AvlTree() {}
 
-    }
-
+    /**
+     * Узел дерева {@link TreeLeaf}. Содержит 3 ссылки: parent - родитель, left - корень левого поддерева,
+     * right - корень правого поддерева
+     * @param <K> - ключ узла
+     * @param <V> - значение узла
+     */
     class TreeLeaf<K extends Comparable<K>, V> {
         K key;
         V value;
@@ -24,11 +39,21 @@ public class AvlTree<K extends Comparable<K>, V> {
         TreeLeaf left;
         TreeLeaf right;
 
+        /**
+         * Конструктор узла дерева {@link TreeLeaf}
+         * @param key - ключ
+         * @param value - значение узла
+         */
         public TreeLeaf(K key, V value) {
             this.key = key;
             this.value = value;
         }
 
+        /**
+         * Метод, осуществляющий поиск узла по ключу key
+         * @param key
+         * @return возвращает найденный узел {@link TreeLeaf}
+         */
         private TreeLeaf<K, V> find(K key) {
             int cmp = key.compareTo(this.key);
             if (cmp > 0)
@@ -44,6 +69,10 @@ public class AvlTree<K extends Comparable<K>, V> {
             return this;
         }
 
+        /**
+         * Добавляет новый узел в дерево {@link AvlTree}
+         * @param leaf Новый узел {@link TreeLeaf}
+         */
         void put(TreeLeaf<K, V> leaf) {
             int cmp = leaf.key.compareTo(key);
             if (cmp == 0)
@@ -58,10 +87,19 @@ public class AvlTree<K extends Comparable<K>, V> {
             leaf.height = 1;
         }
 
+        @Override
+        /**
+         * Переопределение toString()
+         * @return Возвращает строку в формате: "key(value)", где key - ключ узла, а value - его значение
+         */
         public String toString() {
             return key + "(" + value + ")";
         }
 
+        /**
+         * Используется в лямбда-функции для получения всех узлов дерева {@link AvlTree}
+         * @param consumer узел дерева {@link TreeLeaf}
+         */
         public void process(Consumer<TreeLeaf<K, V>> consumer) {
             if (left != null)
                 left.process(consumer);
@@ -73,6 +111,11 @@ public class AvlTree<K extends Comparable<K>, V> {
 
     private TreeLeaf<K, V> root;
 
+    /**
+     * Осуществляет поиск узла дерева {@link AvlTree} по ключу (key)
+     * @param key - Ключ
+     * @return - Значение узла дерева (value)
+     */
     public V find(K key) {
         if (root == null)
             return null;
@@ -80,6 +123,10 @@ public class AvlTree<K extends Comparable<K>, V> {
         return found.key.compareTo(key) == 0 ? (V) found.value : null;
     }
 
+    /**
+     * Добавляет новый узел {@link TreeLeaf} в {@link AvlTree} дерево
+     * @param leaf {@link TreeLeaf}
+     */
     public void put(TreeLeaf<K, V> leaf)  {
         if (root == null)
             root = leaf;
@@ -89,6 +136,10 @@ public class AvlTree<K extends Comparable<K>, V> {
         checkBalance(leaf); //проверка баланса и, при необходимости, вращение с пересчетом высот
     }
 
+    /**
+     * В случае, если баланс нарушен, то принимается решение о повороте дерева либо вправо, либо влево
+     * @param leaf - узел {@link TreeLeaf} дерева {@link AvlTree}
+     */
     private void checkBalance(TreeLeaf<K, V> leaf) {
         TreeLeaf treeLeaf = leaf;
         int bal;
@@ -102,6 +153,12 @@ public class AvlTree<K extends Comparable<K>, V> {
         checkBalance(leaf.parent);
     }
 
+    /**
+     * Выполняет расчет высоты для каждого узла дерева {@link AvlTree}
+     * @param leaf - узел {@link TreeLeaf}
+     * @param height - высота узла {@link TreeLeaf}
+     */
+
     private void calculateHeight(TreeLeaf<K, V> leaf, int height) {
         //пересчет высоты поддеревьев после add от leaf до корневого узла, не включая его
         leaf.height = height;
@@ -110,6 +167,12 @@ public class AvlTree<K extends Comparable<K>, V> {
         calculateHeight(leaf.parent, height + 1);
     }
 
+    /**
+     * Рассчитывает баланс каждого узла {@link TreeLeaf} дерева {@link AvlTree} как разность между
+     * правым поддеревом {@link TreeLeaf} и левым поддеревом {@link TreeLeaf}
+     * @param leaf - узел {@link TreeLeaf}
+     * @return Баланс
+     */
     private int balance(TreeLeaf<K, V> leaf) {
         int left, right;
         left = (leaf.left == null ? 0 : leaf.left.height);
@@ -117,6 +180,10 @@ public class AvlTree<K extends Comparable<K>, V> {
         return right - left;
     }
 
+    /**
+     * Осуществляет левое вращение (большое или малое)
+     * @param leaf - узел {@link TreeLeaf}
+     */
     private void rotateLeft(TreeLeaf<K, V> leaf) {
         //Левое вращение
         if (balance(leaf.right) < 0) {
@@ -130,6 +197,10 @@ public class AvlTree<K extends Comparable<K>, V> {
         }
     }
 
+    /**
+     * Осуществляет правое вращение (большое или малое)
+     * @param leaf - узел {@link TreeLeaf}
+     */
     private void rotateRight(TreeLeaf<K, V> leaf) {
         //Правое вращение
         if (balance(leaf.left) > 0) {
@@ -207,10 +278,21 @@ public class AvlTree<K extends Comparable<K>, V> {
             leaf.parent.height = leaf.parent.right.height + 1;
     }
 
-    public void put(K key, V value) throws TreeException {
+    /**
+     * Добавляет новый узел {@link TreeLeaf} к дереву {@link AvlTree}
+     * @param key - ключ
+     * @param value - значение
+     */
+    public void put(K key, V value) {
         put(new TreeLeaf<>(key, value));
     }
 
+    /**
+     * Удаляет узел {@link TreeLeaf} с ключем key. После удаления узла осуществляется пересчет высот и балансов всех
+     * узлов. При необходимости осуществляется левое или правое вращение вокруг узла, баланс которого был нарушен
+     * @param key - ключ
+     * @throws TreeException - если узел {@link TreeLeaf} с ключем key не найден
+     */
     public void delete(K key) throws TreeException {
         internaldDelete(key);
     }
@@ -253,6 +335,10 @@ public class AvlTree<K extends Comparable<K>, V> {
         return found;
     }
 
+    /**
+     * Осуществляет балансровку дерева {@link AvlTree} после удаления узла {@link TreeLeaf}
+     * @param leaf узел {@link TreeLeaf} дерева {@link AvlTree}
+     */
     private void checkBalanceAfterDelete(TreeLeaf leaf){
         if (balance(leaf) == 2)
             rotateLeft(leaf);
@@ -264,7 +350,12 @@ public class AvlTree<K extends Comparable<K>, V> {
         if (leaf.right != null)
             checkBalanceAfterDelete(leaf.right);
     }
-    
+
+    /**
+     * Пересчитывет высоты всех узлов {@link TreeLeaf} дерева {@link AvlTree} после удаления узла
+     * @param leaf узел {@link TreeLeaf}
+     * @return высота узла leaf {@link TreeLeaf}
+     */
     private int calculateHeightAfterDelete(TreeLeaf leaf){
         //Пересчет баланса после удаления узла
         int left = 0;
@@ -281,6 +372,11 @@ public class AvlTree<K extends Comparable<K>, V> {
         return leaf.height;
     }
 
+    /**
+     * После удаления узла leafDelete {@link TreeLeaf} все его связи переопределяются для newLeaf {@link TreeLeaf}
+     * @param leafDelete Удаленный узел {@link TreeLeaf}
+     * @param newLeaf Узел {@link TreeLeaf}, который наследует связи удаленного узла leafDelete {@link TreeLeaf}
+     */
     private void changeConnections(TreeLeaf leafDelete, TreeLeaf newLeaf){
         //Создаем копию leaf
         TreeLeaf leaf = new TreeLeaf(newLeaf.key,"");
@@ -315,18 +411,34 @@ public class AvlTree<K extends Comparable<K>, V> {
             this.root = newLeaf;
     }
 
+    /**
+     * Находит узел в поддереве leaf {@link TreeLeaf} с самым маленьким ключем key
+     * @param leaf узел {@link TreeLeaf}
+     * @return узел {@link TreeLeaf}
+     */
     private TreeLeaf<K,V> findMin(TreeLeaf<K,V> leaf) {
         if (leaf.left == null)
             return leaf;
         return findMin(leaf.left);
     }
 
+    /**
+     * Находит узел в поддереве leaf {@link TreeLeaf} с самым большим ключем key
+     * @param leaf
+     * @return
+     */
     private TreeLeaf<K,V> findMax(TreeLeaf<K,V> leaf) {
         if (leaf.right == null)
             return leaf;
         return findMax(leaf.right);
     }
 
+    /**
+     * Находит узел {@link TreeLeaf} с ключем равным oldKey и меняет в этом узле ключ на newKey
+     * @param oldKey ключ узла {@link TreeLeaf}, подлежащий замене
+     * @param newKey новый ключ узла {@link TreeLeaf}
+     * @throws TreeException если узел {@link TreeLeaf} с ключем oldKey найден не был
+     */
     public void change(K oldKey, K newKey) throws TreeException {
         TreeLeaf<K, V> current = internaldDelete(oldKey);
         current.key = newKey;
@@ -335,6 +447,10 @@ public class AvlTree<K extends Comparable<K>, V> {
         put(current);
     }
 
+    /**
+     * Используется лямбда функцией для получения всех узлов {@link TreeLeaf} дерева {@link AvlTree}
+     * @param consumer узел {@link TreeLeaf}
+     */
     public void process(Consumer<TreeLeaf<K, V>> consumer) {
         if (root != null)
             root.process(consumer);

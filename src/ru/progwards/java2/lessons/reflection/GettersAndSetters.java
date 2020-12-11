@@ -6,7 +6,15 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 
+/**
+ * Определяет геттеры и сеттеры, необходимые для private полей
+ */
 public class GettersAndSetters {
+    /**
+     *
+     * @param clazz Исследуемый класс
+     * @throws ClassNotFoundException исследуемый класс не был найден
+     */
     public static void check(String clazz) throws ClassNotFoundException {
         class Prms {
             String name; //имя

@@ -1,5 +1,7 @@
 package ru.progwards.java2.lessons.gc;
 
+import com.google.inject.internal.cglib.proxy.$Enhancer;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,19 +10,24 @@ public class Heap {
     byte[] bytes; //куча
     HashMap<Integer,Integer> mapFree = new HashMap<>();
     HashMap<Integer,Integer> mapBusy = new HashMap<>();
+    
     Heap(int maxHeapSize){
         this.bytes = new byte[maxHeapSize];
         mapFree.put(0,maxHeapSize);
     }
+
     public int malloc(int size) throws OutOfMemoryException {
         int ptr = 0;
         int dif;
         int min = Integer.MAX_VALUE;
+        //Находим блок памяти, размер которого максимально соответствует запрашиваемому
+
         for (Map.Entry<Integer,Integer> entry: mapFree.entrySet())
             if (entry.getValue() - size < min && entry.getValue() >= size){
                 min = entry.getValue() - size;
                 ptr = entry.getKey();
             }
+
         if (min == Integer.MAX_VALUE)
             throw new  OutOfMemoryException("Нет свободного блока подходящего размера");
         mapBusy.put(ptr, size);
