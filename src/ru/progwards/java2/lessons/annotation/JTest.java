@@ -74,12 +74,7 @@ public class JTest {
             throw new RuntimeException("В классе не обнаружено ни одного метода, проаннотированного Before");
 
         //Сортировка listMethods в порядке возрастания приоритетов
-        listMethods.sort(new Comparator<MethodAtributes>() {
-            @Override
-            public int compare(MethodAtributes o1, MethodAtributes o2) {
-                return o1.priority - o2.priority;
-            }
-        });
+        listMethods.sort(Comparator.comparingInt(o -> o.priority));
 
 //        listMethods.forEach(mtd-> System.out.println(mtd));
 

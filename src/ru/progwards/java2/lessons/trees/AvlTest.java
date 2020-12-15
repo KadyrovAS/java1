@@ -1,6 +1,5 @@
     package ru.progwards.java2.lessons.trees;
 
-import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 // Для пересчета и проверки баланса, c последующими вращениями при необходимости я использовал рекурсивный подход
@@ -14,34 +13,41 @@ public class AvlTest {
     static final int ITERATIONS = 100_000;
     public static void main(String[] args) throws TreeException{
 
+        int [] arr = new int[ITERATIONS];
+
         TreeMap<Integer, String> map = new TreeMap<>();
         AvlTree<Integer, String> tree = new AvlTree<>();
 
         long start, finis;
-        int key;
+        int key = 0;
+        boolean wasFound;
+
+        for (int i = 0; i < ITERATIONS; i ++) {
+            wasFound = true;
+            while (wasFound) {
+                wasFound = false;
+                key = ThreadLocalRandom.current().nextInt();
+                for (int k = 0; i < i; i ++)
+                    if (arr[k] == key)
+                        wasFound = true;
+            }
+            arr[i] = key;
+        }
 
         //Вставка случайных чисел
         System.out.println("Тест на операцию: вставка случайных чисел");
         start = System.currentTimeMillis();
 
-        for(int i=0; i<ITERATIONS; i++) {
-            key = ThreadLocalRandom.current().nextInt();
-            if (!map.containsKey(key)) {
-                tree.put(key, "key=" + key);
-            }
-        }
+        for(int i=0; i<ITERATIONS; i++)
+            tree.put(arr[i], "key=" + arr[i]);
 
         finis = System.currentTimeMillis();
         System.out.println("AvlTree: " + (finis - start) );
 
         start = System.currentTimeMillis();
 
-        for(int i=0; i<ITERATIONS; i++) {
-            key = ThreadLocalRandom.current().nextInt();
-            if (!map.containsKey(key)) {
-                map.put(key, "key=" + key);
-            }
-        }
+        for(int i=0; i<ITERATIONS; i++)
+                map.put(arr[i], "key=" + arr[i]);
 
         finis = System.currentTimeMillis();
         System.out.println("TreeMap: " + (finis - start) );
@@ -49,18 +55,15 @@ public class AvlTest {
         System.out.println("------------------------");
         System.out.println("Тест на операцию: поиск:");
 
-        ArrayList<AvlTree.TreeLeaf> sorted = new ArrayList<>();
-        tree.process(sorted::add);
-
         start = System.currentTimeMillis();
-        for (AvlTree.TreeLeaf leaf: sorted)
-            tree.find((int) leaf.key);
+        for (int i = 0; i < ITERATIONS; i ++)
+            tree.find(arr[i]);
         finis = System.currentTimeMillis();
         System.out.println("AvlTree: " + (finis - start));
 
         start = System.currentTimeMillis();
-        for (AvlTree.TreeLeaf leaf: sorted)
-            map.get(leaf.key);
+        for (int i = 0; i < ITERATIONS; i ++)
+            map.get(arr[i]);
         finis = System.currentTimeMillis();
         System.out.println("TreeMap: " + (finis - start));
 
@@ -68,14 +71,16 @@ public class AvlTest {
         System.out.println("Тест на операцию удаления");
 
         start = System.currentTimeMillis();
-        for (AvlTree.TreeLeaf leaf: sorted)
-            tree.delete((int) leaf.key);
+        for (int i = 0; i < ITERATIONS; i++)
+            tree.delete(arr[i]);
+
         finis = System.currentTimeMillis();
         System.out.println("AvlTree: " + (finis - start));
 
         start = System.currentTimeMillis();
-        for (AvlTree.TreeLeaf leaf: sorted)
-            map.remove(leaf.key);
+        for (int i = 0; i < ITERATIONS; i ++)
+            map.remove(arr[i]);
+
         finis = System.currentTimeMillis();
         System.out.println("TreeMap: " + (finis - start));
     }

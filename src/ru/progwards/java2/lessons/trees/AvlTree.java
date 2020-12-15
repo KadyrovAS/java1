@@ -132,39 +132,34 @@ public class AvlTree<K extends Comparable<K>, V> {
             root = leaf;
         else
             root.find(leaf.key).put(leaf);
-        calculateHeight(leaf, 1); //пересчет высот узлов
-        checkBalance(leaf); //проверка баланса и, при необходимости, вращение с пересчетом высот
+        calculateHeight(leaf); //пересчет высот узлов
     }
 
-    /**
-     * В случае, если баланс нарушен, то принимается решение о повороте дерева либо вправо, либо влево
-     * @param leaf - узел {@link TreeLeaf} дерева {@link AvlTree}
-     */
-    private void checkBalance(TreeLeaf<K, V> leaf) {
-        TreeLeaf treeLeaf = leaf;
-        int bal;
-        bal = balance(treeLeaf);
-        if (bal == 2)
-            rotateLeft(treeLeaf);
-        else if (bal == -2)
-            rotateRight(treeLeaf);
-        if (treeLeaf.parent == null)
-            return;
-        checkBalance(leaf.parent);
-    }
 
     /**
      * Выполняет расчет высоты для каждого узла дерева {@link AvlTree}
      * @param leaf - узел {@link TreeLeaf}
-     * @param height - высота узла {@link TreeLeaf}
      */
 
-    private void calculateHeight(TreeLeaf<K, V> leaf, int height) {
+    private void calculateHeight(TreeLeaf<K, V> leaf) {
         //пересчет высоты поддеревьев после add от leaf до корневого узла, не включая его
-        leaf.height = height;
+        int left = 0;
+        int right = 0;
+        if (leaf.left != null)
+            left = leaf.left.height;
+        if (leaf.right != null)
+            right = leaf.right.height;
+
+        leaf.height = (left > right ? left : right) + 1;
+        int bal = 0;
+        bal = balance(leaf);
+        if (bal == 2)
+            rotateLeft(leaf);
+        else if (bal == -2)
+            rotateRight(leaf);
         if (leaf.parent == null)
             return;
-        calculateHeight(leaf.parent, height + 1);
+        calculateHeight(leaf.parent);
     }
 
     /**
@@ -304,72 +299,31 @@ public class AvlTree<K extends Comparable<K>, V> {
         TreeLeaf found = root.find(key);
         TreeLeaf newRoot;
         int cmp = found.key.compareTo(key);
-        if (cmp != 0)
+        if (cmp != 0) {
+            System.out.println(key);
             throw new TreeException(KEYNOTEXIST);
+        }
 
         if (balance(found) < 0 && found.left != null) {
             newRoot = findMax(found.left);
             changeConnections(found,newRoot);
-            calculateHeightAfterDelete(root);
         }
         else if (balance(found) >= 0 && found.right != null) {
             newRoot = findMin(found.right);
             changeConnections(found, newRoot);
-            calculateHeightAfterDelete(root);
         }
         else if (found.parent == null)
             root = null;
         else {
             //удаляем лист
-            newRoot = found.parent;
             if (found.parent.right == found)
                 found.parent.right = null;
             else
                 found.parent.left = null;
-            calculateHeightAfterDelete(root);
-
+            calculateHeight(found.parent);
         }
-        if (root != null)
-            checkBalanceAfterDelete(root);
 
         return found;
-    }
-
-    /**
-     * Осуществляет балансровку дерева {@link AvlTree} после удаления узла {@link TreeLeaf}
-     * @param leaf узел {@link TreeLeaf} дерева {@link AvlTree}
-     */
-    private void checkBalanceAfterDelete(TreeLeaf leaf){
-        if (balance(leaf) == 2)
-            rotateLeft(leaf);
-        else if (balance(leaf) == -2)
-            rotateRight(leaf);
-
-        if (leaf.left != null)
-            checkBalanceAfterDelete(leaf.left);
-        if (leaf.right != null)
-            checkBalanceAfterDelete(leaf.right);
-    }
-
-    /**
-     * Пересчитывет высоты всех узлов {@link TreeLeaf} дерева {@link AvlTree} после удаления узла
-     * @param leaf узел {@link TreeLeaf}
-     * @return высота узла leaf {@link TreeLeaf}
-     */
-    private int calculateHeightAfterDelete(TreeLeaf leaf){
-        //Пересчет баланса после удаления узла
-        int left = 0;
-        int right = 0;
-        if (leaf.left == null && leaf.right == null) {
-            leaf.height = 1;
-            return 1;
-        }
-        if (leaf.left != null)
-            left += calculateHeightAfterDelete(leaf.left) + 1;
-        if (leaf.right != null)
-            right += calculateHeightAfterDelete(leaf.right) + 1;
-        leaf.height = (left > right ? left : right);
-        return leaf.height;
     }
 
     /**
@@ -378,37 +332,28 @@ public class AvlTree<K extends Comparable<K>, V> {
      * @param newLeaf Узел {@link TreeLeaf}, который наследует связи удаленного узла leafDelete {@link TreeLeaf}
      */
     private void changeConnections(TreeLeaf leafDelete, TreeLeaf newLeaf){
-        //Создаем копию leaf
-        TreeLeaf leaf = new TreeLeaf(newLeaf.key,"");
-        leaf.right = newLeaf.right;
-        leaf.left = newLeaf.left;
-        leaf.parent = newLeaf.parent;
-
-        if (leafDelete.right != newLeaf)
-            newLeaf.right =  leafDelete.right;
-        if (leafDelete.left != newLeaf)
-            newLeaf.left = leafDelete.left;
-
-        if (newLeaf.parent.right == newLeaf)
-            newLeaf.parent.right = leaf.left;
-        else
-            newLeaf.parent.left = leaf.right;
-
-        newLeaf.parent = leafDelete.parent;
-
-        if (newLeaf.left != null)
-            newLeaf.left.parent = newLeaf;
-        if (newLeaf.right != null)
-            newLeaf.right.parent = newLeaf;
-
         if (newLeaf.parent != null) {
-            if (newLeaf.parent.right == leafDelete)
-                newLeaf.parent.right = newLeaf;
-            else
-                newLeaf.parent.left = newLeaf;
+            if (newLeaf.parent.left == newLeaf) {
+                newLeaf.parent.left = (newLeaf.left != null ? newLeaf.left : newLeaf.right);
+            } else {
+                newLeaf.parent.right = (newLeaf.left != null ? newLeaf.left : newLeaf.right);
+            }
+            if (newLeaf.left != null)
+                newLeaf.left.parent = newLeaf.parent;
+            if (newLeaf.right != null)
+                newLeaf.right.parent = newLeaf.parent;
         }
-        if (newLeaf.parent == null)
-            this.root = newLeaf;
+        leafDelete.key = newLeaf.key;
+        leafDelete.value = newLeaf.value;
+
+        if (leafDelete.parent == null) {
+            this.root = leafDelete;
+            int left = (leafDelete.left == null ? 0 : leafDelete.left.height);
+            int right = (leafDelete.right == null ? 0 : leafDelete.right.height);
+            this.root.height = (left > right ? left : right) + 1;
+        }
+        else
+            calculateHeight(newLeaf.parent);
     }
 
     /**
