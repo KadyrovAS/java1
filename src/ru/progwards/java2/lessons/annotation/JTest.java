@@ -44,6 +44,7 @@ public class JTest {
     //1. Метод с аннотацией @Before
     //2. Все методы с аннотацией Test в порядке возрастания приоритета
     //3. Метод с аннотацией After
+
     void run(String name) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         Class testClass = Class.forName(name);
         Constructor constructor = testClass.getConstructor();

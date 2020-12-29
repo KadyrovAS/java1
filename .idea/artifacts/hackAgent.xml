@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="hackAgent">
+    <output-path>$PROJECT_DIR$/out/artifacts/hackAgent</output-path>
+    <root id="archive" name="hackAgent.jar">
+      <element id="file-copy" path="$PROJECT_DIR$/out/production/AllLessons/ru/progwards/java2/lessons/instrumentation2/TextAgent.class" />
+      <element id="file-copy" path="$PROJECT_DIR$/out/production/AllLessons/ru/progwards/java2/lessons/instrumentation2/TextTransformer.class" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/ru/progwards/java2/lessons/instrumentation2/META-INF/MANIFEST.MF" />
+      </element>
+    </root>
+  </artifact>
+</component>

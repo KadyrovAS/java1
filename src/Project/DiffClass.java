@@ -33,7 +33,7 @@ public class DiffClass {
         updateFile = Files.readAllLines(pathFile);
     }
 
-    public void readPatch(String path) throws IOException{ //TODO пока не реализован
+    public void readPatch(String path) throws IOException{
         String[] diffFiles = new String[3];
         String pathFileA, pathFileB;
         Path pathPatch = Paths.get(path);
