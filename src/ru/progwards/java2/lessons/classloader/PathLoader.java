@@ -7,9 +7,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.time.ZonedDateTime;
 
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 public class PathLoader extends ClassLoader {
@@ -27,7 +26,7 @@ public class PathLoader extends ClassLoader {
         this.basePath = basePath;
     }
 
-    static class Tsk{
+    static class Tsk {
         int date; //Дата создания
         Target target; //код
 
@@ -65,10 +64,10 @@ public class PathLoader extends ClassLoader {
 
     private static void updateTaskList(Map<String, Tsk> tasks)
             throws IOException {
-                Path logPath = Paths.get(PATH_OF_TASKS + "patchloader.log");
-                if (!Files.exists(logPath))
-                    Files.writeString(logPath,"");
-                Files.walkFileTree(Paths.get(PATH_OF_TASKS), new SimpleFileVisitor<Path>() {
+        Path logPath = Paths.get(PATH_OF_TASKS + "patchloader.log");
+        if (!Files.exists(logPath))
+            Files.writeString(logPath, "");
+        Files.walkFileTree(Paths.get(PATH_OF_TASKS), new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
                 if (path.toString().endsWith(DOT_CLASS)) {
@@ -96,6 +95,7 @@ public class PathLoader extends ClassLoader {
                 }
                 return FileVisitResult.CONTINUE;
             }
+
             @Override
             public FileVisitResult visitFileFailed(Path file, IOException e) {
                 return FileVisitResult.CONTINUE;
@@ -131,16 +131,9 @@ public class PathLoader extends ClassLoader {
 
     public static void main(String[] args) throws Exception {
         Map<String, Tsk> tasks = new LinkedHashMap<>();
-        while(true) {
-//            System. out.println("Проверка классов и запуск задач: " +
-//                    String. format("%1$tI:%1$tM:%1$tS.%1$tN", new Date()));
-
-        updateTaskList(tasks);
-
-//            String data = ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-//            for (var task : tasks.entrySet())
-//                System. out.println(" " + task.getValue().target.process(data));
-            Thread. sleep(5_000);
+        while (true) {
+            updateTaskList(tasks);
+            Thread.sleep(5_000);
         }
     }
 }
