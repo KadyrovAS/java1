@@ -37,7 +37,7 @@ public class Boruvka<N,E> {
         set.add(list.get(0).out);
         set = createSet(set);
 
-        while (set.size() != graph.nodes.size()){
+        while (list.size() != graph.nodes.size() - 1){
             for (int i = 0; i < graph.edges.size(); i++){
                 Edge edge = (Edge) graph.edges.get(i);
                 boolean contA = set.contains(edge.in);

@@ -61,7 +61,6 @@ public class MinHeap<K,V extends Comparable> {
             else
                 index = swap(index, son);
             son = ((index + 1) << 1) - 1;
-//            prt();
         }
     }
 
@@ -80,10 +79,6 @@ public class MinHeap<K,V extends Comparable> {
 
     public K getKey(int index) {
         return (K) nodeHeap[index].key;
-    }
-
-    public V getValue(int index) {
-        return (V) nodeHeap[index].value;
     }
 
     public int getSize() {
