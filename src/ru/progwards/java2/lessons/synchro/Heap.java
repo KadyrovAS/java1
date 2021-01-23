@@ -1,4 +1,4 @@
-package ru.progwards.java2.lessons.gc;
+package ru.progwards.java2.lessons.synchro;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -112,21 +112,19 @@ public class Heap{
             this.bytes[i] = bytes[i - ptr];
     }
 
+
     public static void main(String[] args) throws OutOfMemoryException, InvalidPointerException {
-//        Heap myHeap = new Heap(20);
-//        for (int i = 0; i < 10; i ++) myHeap.malloc(2);
-//        for (int i = 2; i < 20; i += 4) myHeap.free(i);
-//        myHeap.free(8);
-//        myHeap.malloc(3);
-//        myHeap.malloc(4);
-//
-//        System.out.println("Занятые блоки");
-//        myHeap.mapBusy.entrySet().forEach((value)->System.out.println(value.getKey() + "--" + value.getValue()));
-//        System.out.println("Свободные блоки");
-//        myHeap.mapFree.entrySet().forEach((value)->System.out.println(value.getKey() + "--" + value.getValue()));
+        Heap myHeap = new Heap(20);
+        for (int i = 0; i < 10; i ++) myHeap.malloc(2);
+        for (int i = 2; i < 20; i += 4) myHeap.free(i);
+        myHeap.free(8);
+        myHeap.malloc(3);
+        myHeap.malloc(4);
 
-        int value = 10;
-        System.out.println(Integer.toBinaryString(value));
+        System.out.println("Занятые блоки");
+        myHeap.mapBusy.entrySet().forEach((value)->System.out.println(value.getKey() + " -- " + value.getValue()));
+        System.out.println("Свободные блоки");
+        myHeap.mapFree.entrySet().forEach((value)->System.out.println(value.getKey() + " -- " + value.getValue()));
 
-    }
+     }
 }
