@@ -1,4 +1,4 @@
-package ru.progwards.java1.src.Ant;
+package ru.progwards.java2.lessons.recursion;
 
 import java.util.ArrayList;
 import java.util.Formatter;

@@ -1,18 +1,21 @@
 package ru.progwards.java2.lessons.synchro;
 
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.locks.ReadWriteLock;
 
-//Потокобезопасный Heap с использованием synchronized
-
-public class Heap implements HeapInterface{
+//Потокобезопасный Heap с использованием ReadWriteLock
+public class Heap2 implements HeapInterface{
     volatile byte[] bytes; //куча
-    ConcurrentSkipListMap<Integer,Integer> mapFree = new ConcurrentSkipListMap<>();
-    ConcurrentSkipListMap<Integer,Integer> mapBusy = new ConcurrentSkipListMap<>();
-    ConcurrentSkipListMap<Integer, Integer> mapMamory = new ConcurrentSkipListMap<>();
+    TreeMap<Integer,Integer> mapFree = new TreeMap<>();
+    TreeMap<Integer,Integer> mapBusy = new TreeMap<>();
+    TreeMap<Integer, Integer> mapMamory = new TreeMap<>();
+    ReadWriteLock lock;
 
-    Heap(int maxHeapSize){
+    Heap2(int maxHeapSize, ReadWriteLock lock){
         this.bytes = new byte[maxHeapSize];
+        this.lock = lock;
         mapFree.put(0,maxHeapSize);
     }
 
@@ -22,6 +25,7 @@ public class Heap implements HeapInterface{
 
         //Находим блок памяти, который больше или равен size
 
+        lock.writeLock().lock();
         for (int i = 0; i < 2; i ++) {
             for (Map.Entry<Integer, Integer> entry : mapFree.entrySet())
                 if (entry.getValue() >= size) {
@@ -33,17 +37,20 @@ public class Heap implements HeapInterface{
                         mapFree.put(ptr + size, dif);
 
                     mapMamory.put(ptr, ptr);
+                    lock.writeLock().unlock();
                     return ptr;
                 }
             //Размещение в памяти не получилось
             compact();
         }
+        lock.writeLock().unlock();
         throw new  OutOfMemoryException("Нет свободного блока подходящего размера для " +
                 Thread.currentThread().getName());
     }
 
     @Override
-    public synchronized void free(int ptr) throws InvalidPointerException {
+    public void free(int ptr) throws InvalidPointerException {
+        lock.writeLock().lock();
         Map.Entry<Integer, Integer> lowerEntry;
         Map.Entry<Integer, Integer> higherEntry;
         if (mapBusy.get(ptr) == null)
@@ -68,6 +75,7 @@ public class Heap implements HeapInterface{
             mapFree.put(ptr, size + higherEntry.getValue());
             mapFree.remove(higherEntry.getKey());
         }
+        lock.writeLock().unlock();
     }
 
     private void defrag(){
@@ -93,7 +101,9 @@ public class Heap implements HeapInterface{
     private void compact() {
         int ptr = 0;
         int size = 0;
-        ConcurrentSkipListMap<Integer, Integer> map = new ConcurrentSkipListMap<>();
+
+        lock.writeLock().lock();
+        TreeMap<Integer, Integer> map = new TreeMap<>();
         for (Map.Entry<Integer, Integer> entry: mapBusy.entrySet()){
             move(entry.getKey(), ptr);
             size = entry.getValue();
@@ -105,9 +115,11 @@ public class Heap implements HeapInterface{
         mapFree.clear();
         if (ptr < bytes.length - 1)
             mapFree.put(ptr, bytes.length - ptr);
+        lock.writeLock().unlock();
     }
 
     private void move(int ptrFrom, int ptrTo){
+        lock.writeLock().lock();
         for (int key: mapMamory.keySet())
             if (mapMamory.get(key) == ptrFrom)
                 mapMamory.put(key, ptrTo);
@@ -115,25 +127,30 @@ public class Heap implements HeapInterface{
 
         for (int i = ptrFrom; i < ptrFrom + mapBusy.get(ptrFrom); i ++)
             bytes[i - ptrFrom + ptrTo] = bytes[i];
+        lock.writeLock().unlock();
     }
 
     @Override
     public String getBytes(int ptr) {
+        lock.readLock().lock();
         ptr = mapMamory.get(ptr);
         byte[] byteValue = new byte[mapBusy.get(ptr)];
         for (int i = ptr; i < ptr + mapBusy.get(ptr); i ++)
             byteValue[i - ptr] = this.bytes[i];
+        lock.readLock().unlock();
         return new String(byteValue);
     }
 
     private void setBytes(int ptr, byte[] bytes) {
+        lock.writeLock().lock();
         ptr = mapMamory.get(ptr);
         for (int i = ptr; i < ptr + mapBusy.get(ptr); i ++)
             this.bytes[i] = bytes[i - ptr];
+        lock.writeLock().unlock();
     }
 
     @Override
-    public synchronized int put(String value) throws OutOfMemoryException {
+    public int put(String value) throws OutOfMemoryException {
         byte[] batyValue = value.getBytes();
         int ptr = malloc(batyValue.length);
         setBytes(ptr, batyValue);
