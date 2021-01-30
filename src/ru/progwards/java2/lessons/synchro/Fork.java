@@ -1,41 +1,33 @@
 package ru.progwards.java2.lessons.synchro;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-
-public class Fork {
+public class Fork{
     private boolean condition;
     String forkName;
-    Philosopher philosopher;
-    ConcurrentLinkedQueue<Philosopher> linkedQueue = new ConcurrentLinkedQueue<>();
+    Philosopher philosopher = null;
 
-    public Fork(String forkName){
-        //Вилка свободна
+    public Fork(String forkName) {
         this.forkName = forkName;
-        this.condition = true;
+        this.condition = true; //Вилка свободна
     }
 
-    public boolean get(){
+    public boolean get() {
         return this.condition;
     }
 
-    public synchronized boolean take(Philosopher philosopher){
-        if (!this.condition && !linkedQueue.contains(philosopher)) {
-            linkedQueue.add(philosopher);
-            return false;
+    public boolean take(Philosopher philosopher) {
+        if (!this.condition) {
+            return false; //Вилка занята
         }
-        if (linkedQueue.isEmpty() || linkedQueue.peek().equals(philosopher)) {
-
+        synchronized (this) {
             this.condition = false;
-            this.philosopher = philosopher;
-            linkedQueue.poll();
-            return true;
+            this.philosopher = philosopher; //Филосов взял вилку
         }
-        return false;
+        return true;
     }
 
     public void put(Philosopher philosopher) {
         if (philosopher.equals(this.philosopher))
-            this.condition = true;
+            this.condition = true; //Филосов положил вилку. Вилка свободна
     }
 
     @Override
@@ -45,4 +37,3 @@ public class Fork {
                 '}';
     }
 }
-

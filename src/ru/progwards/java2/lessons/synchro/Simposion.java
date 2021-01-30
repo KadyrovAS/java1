@@ -3,7 +3,7 @@ package ru.progwards.java2.lessons.synchro;
 import java.util.concurrent.*;
 
 public class Simposion {
-    static final long ALLTIME = 900_000;
+    static final long ALLTIME = 100_000;
     long reflectTime; // время в мс, через которое философ проголодается
     long eatTime; // время в мс, через которое получив 2 вилки философ наестся и положит вилки на место
     ExecutorService executor;
@@ -22,7 +22,6 @@ public class Simposion {
         for (int i = 0; i < 5; i ++)
             forks[i] = new Fork("Fork №" + (i + 1));
 
-
         for (int i = 0; i < 5; i ++){
             int k = (i == 4 ? 0: i + 1);
             futures[i] = executor.submit(new Philosopher(forks[i], forks[k], reflectTime, eatTime));
@@ -35,9 +34,7 @@ public class Simposion {
 
     void stop(){
         //завершает философскую беседу
-        while (!executor.isTerminated()) {
-            executor.shutdownNow();
-        }
+        executor.shutdownNow();
     }
 
     void print() throws ExecutionException, InterruptedException {

@@ -23,63 +23,58 @@ public class Philosopher implements Callable<Philosopher>{
 
     @Override
     public Philosopher call() {
-        System.out.println("Я филосов " + Thread.currentThread().getName());
 
         long timeStartReflecting; //начало ожидания
         long timeStartEating; //начал есть
         this.name = Thread.currentThread().getName();
         timeStartReflecting = System.currentTimeMillis();
-        int count = 0;
+        boolean interruptFlag = false;
 
         while (true) {
-                count = reflect(timeStartReflecting, count);
-
-                if (Thread.interrupted()) break;
-
-                //пытаемся взять две вилки
-            if (left.take(this) && right.take(this)) {
-                //филосов кушает
+            if (Thread.interrupted()) break;
+            if (System.currentTimeMillis() - timeStartReflecting < this.reflectTime) {
+                interruptFlag = reflect();
                 reflectSum += System.currentTimeMillis() - timeStartReflecting;
-
-                timeStartEating = System.currentTimeMillis();
-                eat(timeStartEating);
-                eatSum += System.currentTimeMillis() - timeStartEating;
+                if (interruptFlag) break;
                 timeStartReflecting = System.currentTimeMillis();
-                count = 0;
             }
-                //филосов поел и кладет вилки
+
+                //филосов пытается взять две вилки
+            if (left.take(this) && right.take(this)) {
+                //филосов взял 2 вилки
+
+                reflectSum += System.currentTimeMillis() - timeStartReflecting;
+                timeStartEating = System.currentTimeMillis();
+                interruptFlag = eat();
+                eatSum += System.currentTimeMillis() - timeStartEating;
+                if (interruptFlag) break;
+                timeStartReflecting = System.currentTimeMillis();
+            }
+                //филосов кладет вилки назад
             left.put(this);
             right.put(this);
-
-            if (Thread.interrupted()) break;
         }
 
-        System.out.println(Thread.currentThread().getName() + " завершил работу!!!");
         return this;
     }
 
-    int reflect(long timeStartReflecting, int count) {
+    boolean reflect() {
         //филосов размышляет
-        while (System.currentTimeMillis() - timeStartReflecting < this.reflectTime) {
-            if (Thread.interrupted()) return count;
-            if (period * count < System.currentTimeMillis() - timeStartReflecting) {
-                System.out.println("Размышляет " + Thread.currentThread().getName());
-                count++;
-            }
+        try {
+            Thread.sleep(this.reflectTime);
+        } catch (InterruptedException e) {
+            return true;
         }
-        return count;
+        return false;
     }
 
-    void eat(long timeStartEating){
+    boolean eat(){
         //филосов ест
-        int count = 0;
-
-        while (System.currentTimeMillis() - timeStartEating < this.eatTime) {
-            if (Thread.interrupted()) return;
-            if (period * count < System.currentTimeMillis() - timeStartEating) {
-                System.out.println("Ест " + Thread.currentThread().getName());
-                count++;
-            }
+        try {
+            Thread.sleep(this.eatTime);
+        } catch (InterruptedException e) {
+            return true;
         }
+        return false;
     }
 }
