@@ -5,13 +5,13 @@ import java.util.concurrent.ConcurrentSkipListMap;
 
 //Потокобезопасный Heap с использованием synchronized
 
-public class Heap implements HeapInterface{
+public class Heap1 implements HeapInterface{
     volatile byte[] bytes; //куча
     ConcurrentSkipListMap<Integer,Integer> mapFree = new ConcurrentSkipListMap<>();
     ConcurrentSkipListMap<Integer,Integer> mapBusy = new ConcurrentSkipListMap<>();
     ConcurrentSkipListMap<Integer, Integer> mapMamory = new ConcurrentSkipListMap<>();
 
-    Heap(int maxHeapSize){
+    Heap1(int maxHeapSize){
         this.bytes = new byte[maxHeapSize];
         mapFree.put(0,maxHeapSize);
     }

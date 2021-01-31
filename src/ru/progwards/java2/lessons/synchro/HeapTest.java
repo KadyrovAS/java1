@@ -54,32 +54,29 @@ class ThreadHeap implements Runnable{
 public class HeapTest{
     static final int ARRAY_SIZE = 100_000;
     static final int THREAD_COUNT = 10;
-    static final int PROCENT = 2; //Увеличиваем требуемую память в процентах для каждого потока
+    static final int PROCENT = 0; //Увеличиваем требуемую память в процентах для каждого потока
 
     public static void main(String[] args) throws InterruptedException {
 
         ReadWriteLock lock = new ReentrantReadWriteLock();
-        Heap heap = new Heap(ARRAY_SIZE);
-        Heap2 heap2 = new Heap2(ARRAY_SIZE, lock);
+        HeapInterface heap = null;
+        long timeStart;
         int proc = ARRAY_SIZE / (THREAD_COUNT * 5) * PROCENT / 100;
         Thread[] threads = new Thread[THREAD_COUNT];
 
-        //Тестируем класс Heap с использованием synchronized
-        long timeStart = System.currentTimeMillis();
-        for (int i = 0; i < THREAD_COUNT; i++) {
-            threads[i] = new Thread(new ThreadHeap(heap,ARRAY_SIZE / (THREAD_COUNT * (i + 5)) + proc, i ));
-            threads[i].start();
-            threads[i].join();
-        }
-        System.out.println("Время работы HEAP: " + (System.currentTimeMillis() - timeStart));
+        for (int i = 1; i <= 2; i ++) {
+            //Тестируем классы Heap с различными алгоритмами
+            if (i == 1) heap = new Heap1(ARRAY_SIZE);
+            else if (i == 2) heap = new Heap2(ARRAY_SIZE, lock);
 
-        //Тестируем класс Heap2 с использованием ReadWriteLock
-        timeStart = System.currentTimeMillis();
-        for (int i = 0; i < THREAD_COUNT; i++) {
-            threads[i] = new Thread(new ThreadHeap(heap2,ARRAY_SIZE / (THREAD_COUNT * (i + 5)) + proc, i ));
-            threads[i].start();
-            threads[i].join();
+            timeStart = System.currentTimeMillis();
+            for (int k = 0; k < THREAD_COUNT; k++) {
+                threads[k] = new Thread(new ThreadHeap(heap, ARRAY_SIZE / (THREAD_COUNT * (k + 5)) + proc, k));
+                threads[k].start();
+                threads[k].join();
+            }
+            System.out.println("Время работы HEAP" + i + ": " + (System.currentTimeMillis() - timeStart));
         }
-        System.out.println("Время работы HEAP2: " + (System.currentTimeMillis() - timeStart));
+
     }
 }
