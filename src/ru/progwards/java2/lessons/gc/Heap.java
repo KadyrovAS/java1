@@ -1,12 +1,14 @@
 package ru.progwards.java2.lessons.gc;
 
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 public class Heap{
     volatile byte[] bytes; //куча
-    ConcurrentSkipListMap<Integer,Integer> mapFree = new ConcurrentSkipListMap<>();
-    ConcurrentSkipListMap<Integer,Integer> mapBusy = new ConcurrentSkipListMap<>();
+    TreeMap<Integer,Integer> mapFree = new TreeMap<>();
+    TreeMap<Integer,Integer> mapBusy = new TreeMap<>();
 
     Heap(int maxHeapSize){
         this.bytes = new byte[maxHeapSize];
@@ -83,7 +85,7 @@ public class Heap{
     public void compact() {
         int ptr = 0;
         int size = 0;
-        ConcurrentSkipListMap<Integer, Integer> map = new ConcurrentSkipListMap<>();
+        TreeMap<Integer, Integer> map = new TreeMap<>();
         for (Map.Entry<Integer, Integer> entry: mapBusy.entrySet()){
             move(entry.getKey(), ptr);
             size = entry.getValue();
