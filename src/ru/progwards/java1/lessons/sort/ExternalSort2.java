@@ -8,12 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExternalSort2{
-    static final String PATH_DIRECTORY = "c:/work/own/java/data/";
+    static final String PATH_DIRECTORY = "d:/own/sorts/data/";
     static final int ARRAY_SIZE = 10_000;
 
     static int countFiles = 0;
     static int[] ar = new int[ARRAY_SIZE];
     static int countArray = 0;
+    static StringBuilder builderLine = new StringBuilder();
+    static int bufferCount = 0;
 
     static void sort(String inFileName, String outFileName) {
         try {
@@ -50,10 +52,10 @@ public class ExternalSort2{
         //Запись отсортированных массивов в соответствующие временные файлы
         String tempOutPath = PATH_DIRECTORY + "temp" + String.valueOf(countFiles++) + ".txt";
         Path path = Paths.get(tempOutPath);
-        String valuesString = "";
         for (int i = 0; i < arraySize; i++)
-            valuesString += String.valueOf(ar[i]) + "\n";
-        Files.writeString(path, valuesString);
+            builderLine.append(String.valueOf(ar[i]) + "\n");
+        Files.writeString(path, builderLine.toString());
+        builderLine.delete(0, builderLine.length());
     }
 
     static void mergeFiles(int start, int finis) throws IOException {
@@ -117,7 +119,7 @@ public class ExternalSort2{
             if (!wasReadedAll)
                 break;
             //Записываем найденный минимальный элемент в файл
-            Files.writeString(path, String.valueOf(min) + "\n", StandardOpenOption.APPEND);
+            bufferWrite(path, String.valueOf(min));
 
             if (readers[indexMin].ready())
                 list.set(indexMin, Integer.valueOf(readers[indexMin].readLine()));
@@ -128,11 +130,21 @@ public class ExternalSort2{
         }
     }
 
+    static void bufferWrite(Path path, String line) throws IOException {
+        bufferCount++;
+        builderLine.append(line + "\n");
+        if (bufferCount == ARRAY_SIZE) {
+            bufferCount = 0;
+            Files.writeString(path, builderLine.toString(), StandardOpenOption.APPEND);
+            builderLine.delete(0, builderLine.length());
+        }
+    }
+
     public static void main(String[] args) throws IOException {
         String inFileName = PATH_DIRECTORY + "data.txt";
         String outFileName = PATH_DIRECTORY + "SortData.txt";
         long time = System.currentTimeMillis();
         sort(inFileName, outFileName);
-        System.out.println(System.currentTimeMillis() - time);
+        System.out.println("Время сортировки: " + (System.currentTimeMillis() - time) + " мс.");
     }
 }
