@@ -20,6 +20,9 @@ public class Heap<T extends Comparable<T>>{
         shiftUp();
     }
 
+    public T get() {
+        return (size() == 0 ? null : list.get(0));
+    }
     public T poll() {
         T result = list.get(0);
         T item = list.remove(list.size() - 1);

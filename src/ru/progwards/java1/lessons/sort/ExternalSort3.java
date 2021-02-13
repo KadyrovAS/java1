@@ -1,15 +1,19 @@
 package ru.progwards.java1.lessons.sort;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.*;
 
-public class ExternalSort4 {
+public class ExternalSort3{
     static final String PATH_DIRECTORY = "d:/own/sorts/data/";
     static final int ARRAY_SIZE = 10_000;
 
     static int countFiles = 0;
     static int[] ar = new int[ARRAY_SIZE];
     static int countArray = 0;
+    static StringBuilder builderLine = new StringBuilder();
+    static int bufferCount = 0;
 
     static class DeleteTempFiles implements Runnable{
         int start;
@@ -21,7 +25,6 @@ public class ExternalSort4 {
 
         @Override
         public void run() {
-            //Удаляет временные файлы отдельным процессом
             String fileName;
             Path path;
             for (int i = start; i <= finis; i++) {
@@ -69,13 +72,12 @@ public class ExternalSort4 {
 
     static void writeSort(int[] ar, int arraySize) throws IOException {
         //Запись отсортированных массивов в соответствующие временные файлы
-        String tempOutputFile = PATH_DIRECTORY + "temp" + String.valueOf(countFiles++) + ".txt";
-        FileOutputStream fos = new FileOutputStream(new File(tempOutputFile));
-        PrintWriter tempFile = new PrintWriter(fos);
-
+        String tempOutPath = PATH_DIRECTORY + "temp" + String.valueOf(countFiles++) + ".txt";
+        Path path = Paths.get(tempOutPath);
         for (int i = 0; i < arraySize; i++)
-            tempFile.println(ar[i]);
-        tempFile.close();
+            builderLine.append(String.valueOf(ar[i]) + "\n");
+        Files.writeString(path, builderLine.toString());
+        builderLine.delete(0, builderLine.length());
     }
 
     static void mergeFiles(int start, int finis) throws IOException {
@@ -107,30 +109,40 @@ public class ExternalSort4 {
                 break;
         }
     }
-
     static void merge(BufferedReader[] readers, int size, int overSize) throws IOException {
         Heap heap = new Heap();
         EntryHeap entryHeap;
-        String tempOutputFile = PATH_DIRECTORY + "temp" + String.valueOf(countFiles + overSize) + ".txt";
-        FileOutputStream fos = new FileOutputStream(new File(tempOutputFile));
-        PrintWriter tempFile = new PrintWriter(fos);
+        String fileName = PATH_DIRECTORY + "temp" + String.valueOf(countFiles + overSize) + ".txt";
+
+        Path path = Paths.get(fileName);
+        Files.writeString(path, "");
 
         for (int i = 0; i < size; i++)
             heap.add(new EntryHeap(i, Integer.valueOf(readers[i].readLine())));
 
 
         while (true) {
+
             if (heap.size() == 0) break;
             //Записываем найденный минимальный элемент в файл
             entryHeap = (EntryHeap) heap.poll();
-            tempFile.println(entryHeap.value);
+            bufferWrite(path, String.valueOf(entryHeap.value));
 
             if (readers[entryHeap.key].ready())
                 heap.add(new EntryHeap(entryHeap.key, Integer.valueOf(readers[entryHeap.key].readLine())));
             else
                 readers[entryHeap.key].close();
         }
-        tempFile.close();
+    }
+
+    static void bufferWrite(Path path, String line) throws IOException {
+        bufferCount++;
+        builderLine.append(line + "\n");
+        if (bufferCount == ARRAY_SIZE) {
+            bufferCount = 0;
+            Files.writeString(path, builderLine.toString(), StandardOpenOption.APPEND);
+            builderLine.delete(0, builderLine.length());
+        }
     }
 
     public static void main(String[] args) throws IOException {

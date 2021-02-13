@@ -1,9 +1,13 @@
 package ru.progwards.java1.lessons.sort;
 
 import java.io.*;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.concurrent.Exchanger;
 
-public class ExternalSort4 {
+public class ExternalSort5 {
     static final String PATH_DIRECTORY = "d:/own/sorts/data/";
     static final int ARRAY_SIZE = 10_000;
 
@@ -53,7 +57,7 @@ public class ExternalSort4 {
             Path path = Paths.get(PATH_DIRECTORY + "temp" + String.valueOf(countFiles) + ".txt");
             Path pathOut = Paths.get(outFileName);
             Files.move(path, pathOut, StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -78,7 +82,7 @@ public class ExternalSort4 {
         tempFile.close();
     }
 
-    static void mergeFiles(int start, int finis) throws IOException {
+    static void mergeFiles(int start, int finis) throws IOException, InterruptedException {
         int countLocal = 0; //счетчик открытых файлов
         int countAll = start; //счетчик всех файлов
         int overSize = 0; // счетчик добавленных временных файлов
@@ -108,32 +112,26 @@ public class ExternalSort4 {
         }
     }
 
-    static void merge(BufferedReader[] readers, int size, int overSize) throws IOException {
-        Heap heap = new Heap();
-        EntryHeap entryHeap;
+    static void merge(BufferedReader[] readers, int size, int overSize) throws IOException, InterruptedException {
+        Exchanger<Integer> exchanger = new Exchanger();
+        Thread thread = new Thread(new ThreadExchangeData(exchanger, readers, size));
+        thread.start();
+
+        Integer value;
         String tempOutputFile = PATH_DIRECTORY + "temp" + String.valueOf(countFiles + overSize) + ".txt";
         FileOutputStream fos = new FileOutputStream(new File(tempOutputFile));
         PrintWriter tempFile = new PrintWriter(fos);
 
-        for (int i = 0; i < size; i++)
-            heap.add(new EntryHeap(i, Integer.valueOf(readers[i].readLine())));
-
-
         while (true) {
-            if (heap.size() == 0) break;
-            //Записываем найденный минимальный элемент в файл
-            entryHeap = (EntryHeap) heap.poll();
-            tempFile.println(entryHeap.value);
-
-            if (readers[entryHeap.key].ready())
-                heap.add(new EntryHeap(entryHeap.key, Integer.valueOf(readers[entryHeap.key].readLine())));
-            else
-                readers[entryHeap.key].close();
+            value = exchanger.exchange(null);
+            if (value == null)
+                break;
+            tempFile.println(value);
         }
         tempFile.close();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args)  {
         String inFileName = PATH_DIRECTORY + "data.txt";
         String outFileName = PATH_DIRECTORY + "SortData.txt";
         long time = System.currentTimeMillis();
@@ -141,3 +139,4 @@ public class ExternalSort4 {
         System.out.println("Время сортировки: " + (System.currentTimeMillis() - time) + " мс.");
     }
 }
+
