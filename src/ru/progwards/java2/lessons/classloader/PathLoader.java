@@ -103,7 +103,6 @@ public class PathLoader extends ClassLoader {
         });
     }
 
-
     private static int dateFromPath(Path path) throws IOException {
         path = path.toAbsolutePath().toRealPath();
         Path relPath = Paths.get(PATH_OF_TASKS).relativize(path);
