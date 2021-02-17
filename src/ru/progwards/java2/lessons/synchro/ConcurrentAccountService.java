@@ -2,9 +2,7 @@ package ru.progwards.java2.lessons.synchro;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.text.ParseException;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 

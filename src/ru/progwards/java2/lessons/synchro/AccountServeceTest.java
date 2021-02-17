@@ -1,10 +1,5 @@
 package ru.progwards.java2.lessons.synchro;
 
-
-import ru.progwards.java2.lessons.synchro.Account;
-import ru.progwards.java2.lessons.synchro.ConcurrentAccountService;
-import ru.progwards.java2.lessons.synchro.FileStoreService;
-
 import java.io.IOException;
 import java.util.Collection;
 import java.util.concurrent.locks.ReadWriteLock;

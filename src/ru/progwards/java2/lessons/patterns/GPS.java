@@ -10,4 +10,11 @@ public class GPS {
         this.lon = lon;
         this.time = time;
     }
+
+    @Override
+    public String toString() {
+        return "(lat=" + lat +
+                ", lon=" + lon +
+                ", time=" + time + ")";
+    }
 }

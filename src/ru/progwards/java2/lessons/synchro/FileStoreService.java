@@ -11,7 +11,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class FileStoreService implements StoreService{
-    //Предполагается, что данный класс создается один раз и передается потокам
+    //Предполагается, что данный класс создается один раз и вызывается потоками
     public Path path;
     private List<Account> collection = new ArrayList<>();
     private ReadWriteLock lock = new ReentrantReadWriteLock();
@@ -20,13 +20,7 @@ public class FileStoreService implements StoreService{
         this.path = Paths.get(pathString);
         if (!Files.exists(path))
             Files.writeString(path, "");
-        Files.lines(path).forEach(line -> {
-            try {
-                collection.add(parseAccount(line));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        });
+        Files.lines(path).forEach(line ->collection.add(parseAccount(line)));
     }
 
     @Override
@@ -114,7 +108,7 @@ public class FileStoreService implements StoreService{
         lock.writeLock().unlock();
     }
 
-    private Account parseAccount(String accountString) throws ParseException {
+    private Account parseAccount(String accountString) {
         String[] line = accountString.split(",");
         line[0] = line[0].substring(3).replaceAll("'", "");
         line[1] = line[1].substring(8).replaceAll("'", "");
@@ -125,7 +119,11 @@ public class FileStoreService implements StoreService{
         Account account = new Account();
         account.setId(line[0]);
         account.setHolder(line[1]);
-        account.setDate(account.simpleDateFormat.parse(line[2]));
+        try {
+            account.setDate(account.simpleDateFormat.parse(line[2]));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         account.setAmount(Double.valueOf(line[3]));
         account.setPin(Integer.valueOf(line[4]));
         return account;
