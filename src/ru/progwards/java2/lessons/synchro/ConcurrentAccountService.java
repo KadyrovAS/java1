@@ -8,11 +8,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ConcurrentAccountService implements AccountService{
     private FileStoreService service;
-    private ReadWriteLock lock;
 
-    public ConcurrentAccountService(FileStoreService fileStoreService, ReadWriteLock lock) {
+    public ConcurrentAccountService(FileStoreService fileStoreService) {
         this.service = fileStoreService;
-        this.lock = lock;
     }
 
     @Override
@@ -22,28 +20,20 @@ public class ConcurrentAccountService implements AccountService{
 
     @Override
     public void deposit(Account account, double amount) {
-        lock.readLock().lock();
         Account accountFound = service.get(account.getId());
         double ammountFound = accountFound.getAmount() + amount;
-        lock.readLock().unlock();
 
-        lock.writeLock().lock();
         accountFound.setAmount(ammountFound);
         service.update(accountFound);
-        lock.writeLock().unlock();
     }
 
     @Override
     public void withdraw(Account account, double amount)  {
-        lock.readLock().lock();
         Account accountFound = service.get(account.getId());
         double ammountFound = accountFound.getAmount() - amount;
-        lock.readLock().unlock();
 
-        lock.writeLock().lock();
         accountFound.setAmount(ammountFound);
         service.update(accountFound);
-        lock.writeLock().unlock();
     }
 
     @Override
@@ -53,10 +43,10 @@ public class ConcurrentAccountService implements AccountService{
     }
 
     public static void main(String[] args) throws IOException {
-        FileStoreService service = new FileStoreService("d:/java/account.csv");
-        Files.writeString(service.path, "");
         ReadWriteLock lock = new ReentrantReadWriteLock();
-        ConcurrentAccountService accountService = new ConcurrentAccountService(service, lock);
+        FileStoreService service = new FileStoreService("d:/java/account.csv", lock);
+        Files.writeString(service.path, "");
+        ConcurrentAccountService accountService = new ConcurrentAccountService(service);
 
         Store.getStore().forEach((key, account) -> {
             service.insert(account);

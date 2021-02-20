@@ -7,9 +7,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 class ThreadTest extends Thread {
     ConcurrentAccountService accountService;
     FileStoreService service;
-    ThreadTest(FileStoreService service, ReadWriteLock lock){
+    ThreadTest(FileStoreService service){
         this.service = service;
-        this.accountService = new ConcurrentAccountService(service, lock);
+        this.accountService = new ConcurrentAccountService(service);
     }
     @Override
     public void run() {
@@ -25,11 +25,11 @@ class ThreadTest extends Thread {
 
 public class AccountServeceTest{
     public static void main(String[] args) {
-        FileStoreService service = new FileStoreService("d:/java/account.csv");
         ReadWriteLock lock = new ReentrantReadWriteLock();
+        FileStoreService service = new FileStoreService("d:/java/account.csv", lock);
         Thread[] myThread = new Thread[10];
         for (int i = 0; i < 10; i ++) {
-            myThread[i] = new ThreadTest(service, lock);
+            myThread[i] = new ThreadTest(service);
             myThread[i].start();
         }
     }
