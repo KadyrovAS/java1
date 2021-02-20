@@ -8,7 +8,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ConcurrentAccountService implements AccountService{
     private FileStoreService service;
-    ReadWriteLock lock;
+    private ReadWriteLock lock;
 
     public ConcurrentAccountService(FileStoreService fileStoreService, ReadWriteLock lock) {
         this.service = fileStoreService;
@@ -21,7 +21,7 @@ public class ConcurrentAccountService implements AccountService{
     }
 
     @Override
-    public void deposit(Account account, double amount) throws IOException, InvalidPointerException {
+    public void deposit(Account account, double amount) {
         lock.readLock().lock();
         Account accountFound = service.get(account.getId());
         double ammountFound = accountFound.getAmount() + amount;
@@ -34,7 +34,7 @@ public class ConcurrentAccountService implements AccountService{
     }
 
     @Override
-    public void withdraw(Account account, double amount) throws IOException, InvalidPointerException {
+    public void withdraw(Account account, double amount)  {
         lock.readLock().lock();
         Account accountFound = service.get(account.getId());
         double ammountFound = accountFound.getAmount() - amount;
@@ -47,25 +47,19 @@ public class ConcurrentAccountService implements AccountService{
     }
 
     @Override
-    public void transfer(Account from, Account to, double amount) throws IOException, InvalidPointerException {
+    public void transfer(Account from, Account to, double amount)  {
         withdraw(from, amount);
         deposit(to, amount);
     }
 
-    public static void main(String[] args) throws IOException, InvalidPointerException {
-        FileStoreService service = new FileStoreService("c:/work/own/java/account.csv");
+    public static void main(String[] args) throws IOException {
+        FileStoreService service = new FileStoreService("d:/java/account.csv");
         Files.writeString(service.path, "");
         ReadWriteLock lock = new ReentrantReadWriteLock();
         ConcurrentAccountService accountService = new ConcurrentAccountService(service, lock);
 
         Store.getStore().forEach((key, account) -> {
-            try {
-                service.insert(account);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InvalidPointerException e) {
-                e.printStackTrace();
-            }
+            service.insert(account);
         });
 
         Collection<Account> list = service.get();

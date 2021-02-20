@@ -1,16 +1,15 @@
 package ru.progwards.java2.lessons.synchro;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 class ThreadTest extends Thread {
-    ConcurrentAccountService Accountservice;
+    ConcurrentAccountService accountService;
     FileStoreService service;
     ThreadTest(FileStoreService service, ReadWriteLock lock){
         this.service = service;
-        this.Accountservice = new ConcurrentAccountService(service, lock);
+        this.accountService = new ConcurrentAccountService(service, lock);
     }
     @Override
     public void run() {
@@ -18,17 +17,15 @@ class ThreadTest extends Thread {
 
         for (int i = 0; i < 10; i ++)
         for (Account value: collection) {
-
-//            if (currentThread().getName().endsWith("0"))
-
+            accountService.deposit(value, 500);
         }
 
     }
 }
 
 public class AccountServeceTest{
-    public static void main(String[] args) throws IOException {
-        FileStoreService service = new FileStoreService("c:/work/own/java/account.csv");
+    public static void main(String[] args) {
+        FileStoreService service = new FileStoreService("d:/java/account.csv");
         ReadWriteLock lock = new ReentrantReadWriteLock();
         Thread[] myThread = new Thread[10];
         for (int i = 0; i < 10; i ++) {

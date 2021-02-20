@@ -7,31 +7,29 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.text.ParseException;
 import java.util.*;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class FileStoreService implements StoreService{
     //Предполагается, что данный класс создается один раз и вызывается потоками
     public Path path;
     private List<Account> collection = new ArrayList<>();
-    private ReadWriteLock lock = new ReentrantReadWriteLock();
 
-    public FileStoreService(String pathString) throws IOException {
+    public FileStoreService(String pathString) {
         this.path = Paths.get(pathString);
-        if (!Files.exists(path))
-            Files.writeString(path, "");
-        Files.lines(path).forEach(line ->collection.add(parseAccount(line)));
+        try {
+            if (!Files.exists(path))
+                Files.writeString(path, "");
+            Files.lines(path).forEach(line -> collection.add(parseAccount(line)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public Account get(String id) {
-        lock.readLock().lock();
         for (Account account : collection)
             if (account != null && account.getId().compareTo(id) == 0) {
-                lock.readLock().unlock();
                 return account;
             }
-        lock.readLock().unlock();
         return null;
     }
 
@@ -43,69 +41,66 @@ public class FileStoreService implements StoreService{
     @Override
     public void delete(String id) throws IOException, InvalidPointerException {
         Account account = null;
-        lock.readLock().lock();
         for (Account value : collection)
             if (value.getId().compareTo(id) == 0) {
                 account = value;
                 break;
             }
-        lock.readLock().unlock();
         if (account == null)
             throw new InvalidPointerException("Аккаунт с id = " + id + " в базе данных отсутствует!");
 
-        lock.writeLock().lock();
         collection.remove(account);
-        lock.writeLock().lock();
         rewrite();
     }
 
     @Override
-    public void insert(Account account) throws IOException, InvalidPointerException {
-        lock.readLock().lock();
+    public void insert(Account account) {
         for (Account value : collection)
             if (value.getId().compareTo(account.getId()) == 0) {
-                lock.readLock().unlock();
                 update(account);
                 return;
             }
-        lock.readLock().unlock();
-        lock.writeLock().lock();
         collection.add(account);
-        Files.writeString(path, account.toString(), StandardOpenOption.APPEND);
-        lock.writeLock().unlock();
+        try {
+            Files.writeString(path, account.toString(), StandardOpenOption.APPEND);
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void update(Account account) throws IOException, InvalidPointerException {
+    public synchronized void update(Account account)  {
         boolean wasFound = false;
-        lock.readLock().lock();
         for (int i = 0; i < collection.size(); i ++) {
             if (collection.get(i).getId().compareTo(account.getId()) == 0){
-                lock.readLock().unlock();
-                lock.writeLock().lock();
                 collection.set(i, account);
-                lock.writeLock().unlock();
                 wasFound = true;
                 break;
             }
         }
         if (!wasFound)
-            throw new InvalidPointerException("Аккаунт с id = " + account.getId() + " в базе данных отсутствует!");
+            try {
+                throw new InvalidPointerException("Аккаунт с id = " + account.getId() + " в базе данных отсутствует!");
+            } catch (InvalidPointerException e){
+                e.printStackTrace();
+            }
         rewrite();
     }
 
-    private void rewrite() throws IOException {
+    private synchronized void rewrite()  {
         //Перезаписываем всю коллекцию в файл
-        lock.writeLock().lock();
-        Files.writeString(path, "");
-        collection.forEach(value -> {
-            try {
-                Files.writeString(path, value.toString(), StandardOpenOption.APPEND);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        lock.writeLock().unlock();
+        try {
+            Files.writeString(path, "");
+            collection.forEach(value -> {
+                try {
+                    Files.writeString(path, value.toString(), StandardOpenOption.APPEND);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private Account parseAccount(String accountString) {
@@ -128,5 +123,4 @@ public class FileStoreService implements StoreService{
         account.setPin(Integer.valueOf(line[4]));
         return account;
     }
-
 }
