@@ -13,8 +13,12 @@ public class ConcurrentAccountService implements AccountService{
         this.service = fileStoreService;
     }
 
+    public Account get(String id){
+        return service.get(id);
+    }
+
     @Override
-    public synchronized double balance(Account account) {
+    public  double balance(Account account) {
         return service.get(account.getId()).getAmount();
     }
 

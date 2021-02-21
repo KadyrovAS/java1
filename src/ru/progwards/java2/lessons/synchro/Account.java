@@ -12,6 +12,13 @@ public class Account {
     private int pin;
     public SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/mm/yyyy");
 
+    public Account(String id, int pin){
+        this.id = id;
+        this.pin = pin;
+    }
+    public Account() {
+        this.id ="";
+    }
     public String getId() {
         return id;
     }
