@@ -163,7 +163,7 @@ class RequestProcessing implements Runnable {
     }
 
     public void fResponse(OutputStream os, int code, String line){
-
+        //Отправляет ответ клиенту
         String lineResponse = "HTTP/1.1 " + code +
                               (code == 200 ? " OK" : " Bad Request") + "\n" +
                               "Content-Type: text/html; charset=utf-8\n" +
