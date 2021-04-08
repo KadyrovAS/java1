@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AllLessons.iml" filepath="$PROJECT_DIR$/AllLessons.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/ ru/progwards/java2/lessons/builders/MavenEmailSend/MavenEmailSend.iml" filepath="$PROJECT_DIR$/src/ ru/progwards/java2/lessons/builders/MavenEmailSend/MavenEmailSend.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/ ru/progwards/java2/lessons/builders/Calculator/maven-archetype-plugin.iml" filepath="$PROJECT_DIR$/src/ ru/progwards/java2/lessons/builders/Calculator/maven-archetype-plugin.iml" />
     </modules>
   </component>

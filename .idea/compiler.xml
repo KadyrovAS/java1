@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="Calculator" />
+        <module name="MavenEmailSend" />
         <module name="maven-archetype-plugin" />
       </profile>
     </annotationProcessing>
@@ -14,6 +15,7 @@
       <module name="Calculator" target="1.5" />
       <module name="EmptyMaven" target="8" />
       <module name="maven-archetype-plugin" target="1.7" />
+      <module name="MavenEmailSend" target="1.7" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

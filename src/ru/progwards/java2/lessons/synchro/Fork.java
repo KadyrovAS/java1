@@ -14,14 +14,13 @@ public class Fork{
         return this.condition;
     }
 
-    public boolean take(Philosopher philosopher) {
-        if (!this.condition) {
-            return false; //Вилка занята
+    public synchronized boolean take(Philosopher philosopher) {
+        if (!this.condition && (this.philosopher == null || !this.philosopher.equals(philosopher))) {
+            return false; //Вилка занята или очередь должна перейти к другому философу
         }
-        synchronized (this) {
-            this.condition = false;
-            this.philosopher = philosopher; //Филосов взял вилку
-        }
+
+        this.condition = false;
+        this.philosopher = philosopher; //Филосов взял вилку
         return true;
     }
 

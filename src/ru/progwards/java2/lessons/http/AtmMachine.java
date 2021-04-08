@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -19,16 +20,22 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class AtmMachine {
     //Путь к файлу с клиентской базой
     private static final String FILEPATH = "d:/java/account.csv";
+
     public static void main(String[] args) {
         //Клиент запускается отдельным потоком
         new Thread(new AtmClient()).start();
 
         ReadWriteLock lock = new ReentrantReadWriteLock();
         FileStoreService service = new FileStoreService(FILEPATH, lock);
-
+        Socket server;
         try (ServerSocket serverSocket = new ServerSocket(80)){
+            serverSocket.setSoTimeout(2000);
             while (true){
-                Socket server = serverSocket.accept();
+                try {
+                    server = serverSocket.accept();
+                } catch (SocketTimeoutException e){
+                    break;
+                }
                 new Thread(new RequestProcessing(server, service)).start();
             }
         } catch (IOException e){
