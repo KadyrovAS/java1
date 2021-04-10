@@ -22,23 +22,27 @@ public class Philosopher implements Callable<Philosopher>{
 
     @Override
     public Philosopher call() {
-        this.name = Thread.currentThread().getName();
+        ForkCondition takeForkLeft; //состояние левой вилки
+        ForkCondition takeForkRight; //состояние правой вилки
+        String line = Thread.currentThread().getName();
+        this.name = "Философ №" + line.substring(line.length() - 1);
+
         while (true) {
-            if (Thread.interrupted()) break;
-            //филосов пытается взять две вилки
-            if (left.take(this) && right.take(this)) {
-                //филосов взял 2 вилки
-                this.eatSum += this.eatTime;
-                if (eat()) break;
-            }
-            //филосов кладет вилки назад
+            takeForkLeft = left.take(this);
+            if (takeForkLeft == ForkCondition.Interrapted) return this;
+            if (takeForkLeft == ForkCondition.Released) continue;
+
+            takeForkRight = right.take(this);
+            if (takeForkRight == ForkCondition.Interrapted) return this;
+            if (takeForkRight == ForkCondition.Released) continue;
+
+            this.eatSum += this.eatTime;
+            if (eat()) return this;
             left.put(this);
             right.put(this);
             this.reflectSum += this.reflectTime;
-            if (reflect()) break;
+            if (reflect()) return this;
         }
-
-        return this;
     }
 
     boolean reflect() {
@@ -54,7 +58,7 @@ public class Philosopher implements Callable<Philosopher>{
 
     boolean eat(){
     //филосов ест
-        System.out.println(this.name + " кушает");
+        System.out.println(this.name + " кушает вилками " + left.forkName + " и " + right.forkName);
         try {
             Thread.sleep(this.eatTime);
         } catch (InterruptedException e) {

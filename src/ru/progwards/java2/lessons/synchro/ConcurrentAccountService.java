@@ -8,9 +8,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ConcurrentAccountService implements AccountService{
     private FileStoreService service;
+    ReadWriteLock lock;
 
-    public ConcurrentAccountService(FileStoreService fileStoreService) {
+    public ConcurrentAccountService(FileStoreService fileStoreService, ReadWriteLock lock) {
         this.service = fileStoreService;
+        this.lock = lock;
     }
 
     public Account get(String id){
@@ -24,19 +26,25 @@ public class ConcurrentAccountService implements AccountService{
 
     @Override
     public void deposit(Account account, double amount) {
+        lock.writeLock().lock();
         Account accountFound = service.get(account.getId());
         double ammountFound = accountFound.getAmount() + amount;
 
         accountFound.setAmount(ammountFound);
+        lock.writeLock().unlock();
+
         service.update(accountFound);
     }
 
     @Override
     public void withdraw(Account account, double amount)  {
+        lock.writeLock().lock();
         Account accountFound = service.get(account.getId());
         double ammountFound = accountFound.getAmount() - amount;
 
         accountFound.setAmount(ammountFound);
+        lock.writeLock().unlock();
+
         service.update(accountFound);
     }
 
@@ -50,7 +58,7 @@ public class ConcurrentAccountService implements AccountService{
         ReadWriteLock lock = new ReentrantReadWriteLock();
         FileStoreService service = new FileStoreService("d:/java/account.csv", lock);
         Files.writeString(service.path, "");
-        ConcurrentAccountService accountService = new ConcurrentAccountService(service);
+        ConcurrentAccountService accountService = new ConcurrentAccountService(service, lock);
 
         Store.getStore().forEach((key, account) -> {
             service.insert(account);

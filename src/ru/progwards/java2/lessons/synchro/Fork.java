@@ -14,25 +14,27 @@ public class Fork{
         return this.condition;
     }
 
-    public synchronized boolean take(Philosopher philosopher) {
-        if (!this.condition && (this.philosopher == null || !this.philosopher.equals(philosopher))) {
-            return false; //Вилка занята или очередь должна перейти к другому философу
+    public synchronized ForkCondition take(Philosopher philosopher)  {
+        if (this.condition && (this.philosopher == null || !this.philosopher.equals(philosopher))) {
+            this.condition = false;
+            this.philosopher = philosopher;
+            return ForkCondition.WasTaken; //Филосов взял вилку
         }
-
-        this.condition = false;
-        this.philosopher = philosopher; //Филосов взял вилку
-        return true;
+        //если ранее философ взял какую-либо вилку, то нужно ее положить
+        philosopher.left.put(philosopher);
+        philosopher.right.put(philosopher);
+        try {
+            wait();
+            return ForkCondition.Released; //вилка освободилась
+        }
+        catch (InterruptedException e) {
+            return ForkCondition.Interrapted; //поток был прерван извне
+        }
     }
 
-    public void put(Philosopher philosopher) {
+    public synchronized void put(Philosopher philosopher) {
         if (philosopher.equals(this.philosopher))
             this.condition = true; //Филосов положил вилку. Вилка свободна
-    }
-
-    @Override
-    public String toString() {
-        return "Fork{" +
-                "forkName='" + forkName + '\'' +
-                '}';
+        notify();
     }
 }

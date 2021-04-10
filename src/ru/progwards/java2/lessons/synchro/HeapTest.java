@@ -54,7 +54,7 @@ class ThreadHeap implements Runnable{
 public class HeapTest{
     static final int ARRAY_SIZE = 100_000;
     static final int THREAD_COUNT = 10;
-    static final int PROCENT = 0; //Увеличиваем требуемую память в процентах для каждого потока
+    static final int PROCENT = 07; //Увеличиваем требуемую память в процентах для каждого потока
 
     public static void main(String[] args) throws InterruptedException {
 

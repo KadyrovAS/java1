@@ -1,9 +1,10 @@
 package ru.progwards.java2.lessons.synchro;
 
 import java.util.concurrent.*;
+enum ForkCondition{WasTaken, Released, Interrapted} //была взята, освободилась, прерывание извне
 
 public class Simposion {
-    static final long ALLTIME = 100_000;
+    static final long ALLTIME = 20_000;
     long reflectTime; // время в мс, через которое философ проголодается
     long eatTime; // время в мс, через которое получив 2 вилки философ наестся и положит вилки на место
     ExecutorService executor;
@@ -20,7 +21,7 @@ public class Simposion {
         //запускает философскую беседу
         Fork[] forks = new Fork[5];
         for (int i = 0; i < 5; i ++)
-            forks[i] = new Fork("Fork №" + (i + 1));
+            forks[i] = new Fork("№" + (i + 1));
 
         for (int i = 0; i < 5; i ++){
             int k = (i == 4 ? 0: i + 1);

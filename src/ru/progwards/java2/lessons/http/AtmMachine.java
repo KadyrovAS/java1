@@ -36,7 +36,7 @@ public class AtmMachine {
                 } catch (SocketTimeoutException e){
                     break;
                 }
-                new Thread(new RequestProcessing(server, service)).start();
+                new Thread(new RequestProcessing(server, service, lock)).start();
             }
         } catch (IOException e){
             e.printStackTrace();
@@ -46,10 +46,12 @@ public class AtmMachine {
 
 class RequestProcessing implements Runnable {
     Socket server;
+    ReadWriteLock lock;
     ConcurrentAccountService service;
-    public RequestProcessing(Socket server, FileStoreService fileStoreService){
+    public RequestProcessing(Socket server, FileStoreService fileStoreService, ReadWriteLock lock){
         this.server = server;
-        this.service = new ConcurrentAccountService(fileStoreService);
+        this.lock = lock;
+        this.service = new ConcurrentAccountService(fileStoreService,lock);
     }
 
     @Override
