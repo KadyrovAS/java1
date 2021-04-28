@@ -8,11 +8,13 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Calculator" />
         <module name="MavenEmailSend" />
+        <module name="consult" />
         <module name="maven-archetype-plugin" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="Calculator" target="1.5" />
+      <module name="consult" target="11" />
       <module name="EmptyMaven" target="8" />
       <module name="maven-archetype-plugin" target="1.7" />
       <module name="MavenEmailSend" target="1.7" />
