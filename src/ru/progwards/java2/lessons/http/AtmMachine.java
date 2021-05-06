@@ -26,7 +26,6 @@ public class AtmMachine {
         new Thread(new AtmClient()).start();
 
         ReadWriteLock lock = new ReentrantReadWriteLock();
-        FileStoreService service = new FileStoreService(FILEPATH, lock);
         Socket server;
         try (ServerSocket serverSocket = new ServerSocket(80)){
             serverSocket.setSoTimeout(2000);
@@ -36,7 +35,7 @@ public class AtmMachine {
                 } catch (SocketTimeoutException e){
                     break;
                 }
-                new Thread(new RequestProcessing(server, service, lock)).start();
+                new Thread(new RequestProcessing(server, lock)).start();
             }
         } catch (IOException e){
             e.printStackTrace();
@@ -48,10 +47,10 @@ class RequestProcessing implements Runnable {
     Socket server;
     ReadWriteLock lock;
     ConcurrentAccountService service;
-    public RequestProcessing(Socket server, FileStoreService fileStoreService, ReadWriteLock lock){
+    public RequestProcessing(Socket server, ReadWriteLock lock){
         this.server = server;
         this.lock = lock;
-        this.service = new ConcurrentAccountService(fileStoreService,lock);
+        this.service = new ConcurrentAccountService();
     }
 
     @Override

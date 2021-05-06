@@ -26,4 +26,8 @@ public class Store {
     public static Map<String, Account> getStore(){
         return store;
     }
+
+    public static void main(String[] args) {
+        getStore().forEach((key,value)->FileStoreService.INSTANCE.insert(value));
+    }
 }

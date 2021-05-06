@@ -8,16 +8,19 @@ import java.nio.file.StandardOpenOption;
 import java.text.ParseException;
 import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class FileStoreService implements StoreService{
+public enum FileStoreService implements StoreService{
+    INSTANCE;
     //Предполагается, что данный класс создается один раз и вызывается потоками
-    public Path path;
+
+    public final Path path;
     private List<Account> collection = new ArrayList<>();
     private ReadWriteLock lock;
 
-    public FileStoreService(String pathString, ReadWriteLock lock) {
-        this.path = Paths.get(pathString);
-        this.lock = lock;
+    FileStoreService() {
+        this.path = Paths.get( "d:/java/account.csv");
+        this.lock = new ReentrantReadWriteLock();
         try {
             if (!Files.exists(path))
                 Files.writeString(path, "");
@@ -103,10 +106,9 @@ public class FileStoreService implements StoreService{
             } catch (InvalidPointerException e){
                 e.printStackTrace();
             }
-        rewrite();
     }
 
-    private void rewrite()  {
+    public void rewrite()  {
         //Перезаписываем всю коллекцию в файл
         lock.writeLock().lock();
         try {
