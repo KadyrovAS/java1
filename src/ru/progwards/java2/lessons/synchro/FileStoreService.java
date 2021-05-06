@@ -12,14 +12,14 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public enum FileStoreService implements StoreService{
     INSTANCE;
-    //Предполагается, что данный класс создается один раз и вызывается потоками
 
+    public final String FILE_DATA_BASE_PATH = "d:/java/account.csv";
     public final Path path;
     private List<Account> collection = new ArrayList<>();
     private ReadWriteLock lock;
 
     FileStoreService() {
-        this.path = Paths.get( "d:/java/account.csv");
+        this.path = Paths.get(FILE_DATA_BASE_PATH);
         this.lock = new ReentrantReadWriteLock();
         try {
             if (!Files.exists(path))

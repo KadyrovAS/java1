@@ -70,6 +70,8 @@ public class ConcurrentAccountService implements AccountService{
     }
 
     private ReadWriteLock getLock(Account account){
+        //возвращает lock из коллекции для account
+        //если lock в коллекции отсутствует - создает новый
         ReadWriteLock lock = locks.get(account.getId());
         if (lock == null) {
             lock = new ReentrantReadWriteLock();
