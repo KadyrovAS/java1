@@ -7,6 +7,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.text.ParseException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -15,12 +17,14 @@ public enum FileStoreService implements StoreService{
 
     public final String FILE_DATA_BASE_PATH = "d:/java/account.csv";
     public final Path path;
-    private List<Account> collection = new ArrayList<>();
+    private List<Account> collection = new CopyOnWriteArrayList<>();
     private ReadWriteLock lock;
+    public ConcurrentHashMap<String, ReadWriteLock> mapLocks;
 
     FileStoreService() {
         this.path = Paths.get(FILE_DATA_BASE_PATH);
         this.lock = new ReentrantReadWriteLock();
+        this.mapLocks = new ConcurrentHashMap<>();
         try {
             if (!Files.exists(path))
                 Files.writeString(path, "");
@@ -32,13 +36,10 @@ public enum FileStoreService implements StoreService{
 
     @Override
     public Account get(String id) {
-        lock.readLock().lock();
         for (Account account : collection)
-            if (account != null && account.getId().compareTo(id) == 0) {
-                lock.readLock().unlock();
+            if (account != null && account.getId().compareTo(id) == 0)
                 return account;
-            }
-        lock.readLock().unlock();
+
         return null;
     }
 
@@ -48,36 +49,26 @@ public enum FileStoreService implements StoreService{
     }
 
     @Override
-    public void delete(String id) throws IOException, InvalidPointerException {
-        Account account = null;
-        lock.readLock().lock();
-        for (Account value : collection)
-            if (value.getId().compareTo(id) == 0) {
-                account = value;
-                break;
+    public void delete(String id) throws InvalidPointerException {
+        for (int i = 0; i < collection.size(); i ++)
+            if (collection.get(i).getId().compareTo(id) == 0) {
+                collection.remove(i);
+                rewrite();
+                return;
             }
-        lock.readLock().unlock();
-        if (account == null)
-            throw new InvalidPointerException("Аккаунт с id = " + id + " в базе данных отсутствует!");
 
-        lock.writeLock().lock();
-        collection.remove(account);
-        lock.writeLock().lock();
-        rewrite();
+        throw new InvalidPointerException("Аккаунт с id = " + id + " в базе данных отсутствует!");
     }
 
     @Override
     public void insert(Account account) {
-        lock.readLock().lock();
         for (Account value : collection)
             if (value.getId().compareTo(account.getId()) == 0) {
-                lock.readLock().unlock();
                 update(account);
                 return;
             }
-        lock.readLock().unlock();
-        lock.writeLock().lock();
         collection.add(account);
+        lock.writeLock().lock();
         try {
             Files.writeString(path, account.toString(), StandardOpenOption.APPEND);
         }catch (IOException e) {
@@ -88,24 +79,17 @@ public enum FileStoreService implements StoreService{
 
     @Override
     public void update(Account account)  {
-        boolean wasFound = false;
-        lock.readLock().lock();
         for (int i = 0; i < collection.size(); i ++) {
             if (collection.get(i).getId().compareTo(account.getId()) == 0){
-                lock.readLock().unlock();
-                lock.writeLock().lock();
                 collection.set(i, account);
-                lock.writeLock().unlock();
-                wasFound = true;
-                break;
+                return;
             }
         }
-        if (!wasFound)
-            try {
-                throw new InvalidPointerException("Аккаунт с id = " + account.getId() + " в базе данных отсутствует!");
-            } catch (InvalidPointerException e){
-                e.printStackTrace();
-            }
+        try {
+            throw new InvalidPointerException("Аккаунт с id = " + account.getId() + " в базе данных отсутствует!");
+        } catch (InvalidPointerException e){
+            e.printStackTrace();
+        }
     }
 
     public void rewrite()  {
@@ -124,6 +108,17 @@ public enum FileStoreService implements StoreService{
             e.printStackTrace();
         }
         lock.writeLock().unlock();
+    }
+
+    public ReadWriteLock getLock(Account account){
+        //возвращает lock из коллекции для account
+        //если lock в коллекции отсутствует - создает новый
+        ReadWriteLock lock = mapLocks.get(account.getId());
+        if (lock == null) {
+            lock = new ReentrantReadWriteLock();
+            mapLocks.put(account.getId(), lock);
+        }
+        return lock;
     }
 
     private Account parseAccount(String accountString) {
