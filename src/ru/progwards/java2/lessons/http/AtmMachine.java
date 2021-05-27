@@ -2,7 +2,7 @@ package ru.progwards.java2.lessons.http;
 
 import ru.progwards.java2.lessons.synchro.Account;
 import ru.progwards.java2.lessons.synchro.ConcurrentAccountService;
-import ru.progwards.java2.lessons.synchro.FileStoreService;
+import ru.progwards.java2.lessons.synchro.InvalidPointerException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -165,7 +166,7 @@ class RequestProcessing implements Runnable {
                 fResponse(os, 400, responseLine);
                 return;
             }
-        }catch (IOException e){
+        }catch (IOException | ParseException | InvalidPointerException e){
             e.printStackTrace();
         }
     }

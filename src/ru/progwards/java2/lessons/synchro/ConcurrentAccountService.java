@@ -1,22 +1,27 @@
 package ru.progwards.java2.lessons.synchro;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.concurrent.locks.ReadWriteLock;
 
 public class ConcurrentAccountService implements AccountService{
-    public Account get(String id){
-        return FileStoreService.INSTANCE.get(id);
+    StoreService dataBase = new FactoryDataBase().createDataBase("file");
+
+    @Override
+    public Account get(String id) throws IOException, ParseException {
+        return dataBase.get(id);
     }
 
     @Override
-    public  double balance(Account account) {
-        return FileStoreService.INSTANCE.get(account.getId()).getAmount();
+    public  double balance(Account account) throws IOException, ParseException {
+        return dataBase.get(account.getId()).getAmount();
     }
 
     @Override
-    public void deposit(Account account, double amount) {
-        ReadWriteLock lock = FileStoreService.INSTANCE.getLock(account);
+    public void deposit(Account account, double amount) throws IOException, ParseException, InvalidPointerException {
+        ReadWriteLock lock = dataBase.getLock(account);
         lock.writeLock().lock();
-            Account accountFound = FileStoreService.INSTANCE.get(account.getId());
+            Account accountFound = dataBase.get(account.getId());
             if (accountFound == null) {
                 //аккуунт не найден
                 lock.writeLock().unlock();
@@ -24,16 +29,16 @@ public class ConcurrentAccountService implements AccountService{
             }
             double ammountFound = accountFound.getAmount() + amount;
             accountFound.setAmount(ammountFound);
-            FileStoreService.INSTANCE.update(accountFound);
+            dataBase.update(accountFound);
         lock.writeLock().unlock();
-        FileStoreService.INSTANCE.rewrite();
+        dataBase.rewrite();
     }
 
     @Override
-    public void withdraw(Account account, double amount)  {
-        ReadWriteLock lock = FileStoreService.INSTANCE.getLock(account);
+    public void withdraw(Account account, double amount) throws IOException, ParseException, InvalidPointerException {
+        ReadWriteLock lock = dataBase.getLock(account);
         lock.writeLock().lock();
-            Account accountFound = FileStoreService.INSTANCE.get(account.getId());
+            Account accountFound = dataBase.get(account.getId());
             if (accountFound == null) {
                 //аккаунт не найден
                 lock.writeLock().unlock();
@@ -42,19 +47,19 @@ public class ConcurrentAccountService implements AccountService{
 
             double ammountFound = accountFound.getAmount() - amount;
             accountFound.setAmount(ammountFound);
-            FileStoreService.INSTANCE.update(accountFound);
+            dataBase.update(accountFound);
         lock.writeLock().unlock();
-        FileStoreService.INSTANCE.rewrite();
+        dataBase.rewrite();
     }
 
     @Override
-    public void transfer(Account from, Account to, double amount)  {
-        ReadWriteLock lockFrom = FileStoreService.INSTANCE.getLock(from);
-        ReadWriteLock lockTo = FileStoreService.INSTANCE.getLock(to);
+    public void transfer(Account from, Account to, double amount) throws IOException, ParseException, InvalidPointerException {
+        ReadWriteLock lockFrom = dataBase.getLock(from);
+        ReadWriteLock lockTo = dataBase.getLock(to);
         lockFrom.writeLock().lock();
         lockTo.writeLock().lock();
-            Account accountFrom = FileStoreService.INSTANCE.get(from.getId());
-            Account accountTo = FileStoreService.INSTANCE.get(to.getId());
+            Account accountFrom = dataBase.get(from.getId());
+            Account accountTo = dataBase.get(to.getId());
             if (accountFrom == null || accountTo == null) {
                 //не наден один из аккаунтов
                 lockFrom.writeLock().unlock();
@@ -65,11 +70,11 @@ public class ConcurrentAccountService implements AccountService{
             accountFrom.setAmount(ammountFrom);
             double ammountTo = accountTo.getAmount() + amount;
             accountTo.setAmount(ammountTo);
-            FileStoreService.INSTANCE.update(accountFrom);
-            FileStoreService.INSTANCE.update(accountTo);
+            dataBase.update(accountFrom);
+            dataBase.update(accountTo);
         lockFrom.writeLock().unlock();
         lockTo.writeLock().unlock();
-        FileStoreService.INSTANCE.rewrite();
+        dataBase.rewrite();
     }
 
 }

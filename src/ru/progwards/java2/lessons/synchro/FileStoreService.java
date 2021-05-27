@@ -18,12 +18,10 @@ public enum FileStoreService implements StoreService{
     public final String FILE_DATA_BASE_PATH = "d:/java/account.csv";
     public final Path path;
     private List<Account> collection = new CopyOnWriteArrayList<>();
-    private ReadWriteLock lock;
     public ConcurrentHashMap<String, ReadWriteLock> mapLocks;
 
     FileStoreService() {
         this.path = Paths.get(FILE_DATA_BASE_PATH);
-        this.lock = new ReentrantReadWriteLock();
         this.mapLocks = new ConcurrentHashMap<>();
         try {
             if (!Files.exists(path))
@@ -68,13 +66,7 @@ public enum FileStoreService implements StoreService{
                 return;
             }
         collection.add(account);
-        lock.writeLock().lock();
-        try {
-            Files.writeString(path, account.toString(), StandardOpenOption.APPEND);
-        }catch (IOException e) {
-            e.printStackTrace();
-        }
-        lock.writeLock().unlock();
+        rewrite();
     }
 
     @Override
@@ -92,9 +84,9 @@ public enum FileStoreService implements StoreService{
         }
     }
 
-    public void rewrite()  {
+    @Override
+    public synchronized void rewrite()  {
         //Перезаписываем всю коллекцию в файл
-        lock.writeLock().lock();
         try {
             Files.writeString(path, "");
             collection.forEach(value -> {
@@ -107,9 +99,9 @@ public enum FileStoreService implements StoreService{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        lock.writeLock().unlock();
     }
 
+    @Override
     public ReadWriteLock getLock(Account account){
         //возвращает lock из коллекции для account
         //если lock в коллекции отсутствует - создает новый

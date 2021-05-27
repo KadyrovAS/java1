@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -43,6 +44,11 @@ public class AtmClient implements AccountService, Runnable {
             e.printStackTrace();
         }
         }
+
+    @Override
+    public Account get(String id) throws IOException, ParseException {
+        return null;
+    }
 
     @Override
     public double balance(Account account)  {

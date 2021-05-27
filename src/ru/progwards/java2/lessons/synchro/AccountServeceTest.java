@@ -1,38 +1,47 @@
 package ru.progwards.java2.lessons.synchro;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.Collection;
-import java.util.List;
 
 class ThreadTest extends Thread {
-    ConcurrentAccountService accountService;
 
     @Override
     public void run() {
-        this.accountService = new ConcurrentAccountService();
-        Collection<Account> collection = FileStoreService.INSTANCE.get();
+        StoreService dataBase = new FactoryDataBase().createDataBase("file");
+        ConcurrentAccountService accountService = new ConcurrentAccountService();
 
+        Collection<Account> collection = null;
+        try {
+            collection = dataBase.get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(Thread.currentThread().getName() + " collection.size = " + collection.size());
         for (int i = 0; i < 10; i++)
-            for (Account value : collection) {
-                accountService.deposit(value, 500);
+            for (Account account : collection) {
+                try {
+                    accountService.deposit(account, 10);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                } catch (InvalidPointerException e) {
+                    e.printStackTrace();
+                }
             }
     }
 }
 
 public class AccountServeceTest {
-    public static void main(String[] args) throws InvalidPointerException {
+    public static void main(String[] args) {
+
         Thread[] myThread = new Thread[10];
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 10; i++) {
             myThread[i] = new ThreadTest();
             myThread[i].start();
         }
-        Collection<Account> list = FileStoreService.INSTANCE.get();
-        Account lastAccount = null;
-        for (Account account : list) {
-            lastAccount = account;
-        }
-        System.out.println(lastAccount.getId());
-        FileStoreService.INSTANCE.delete(lastAccount.getId());
+
     }
 }
