@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Calculator" />
         <module name="MavenEmailSend" />
+        <module name="Topic20" />
         <module name="consult" />
         <module name="maven-archetype-plugin" />
       </profile>
@@ -18,6 +19,7 @@
       <module name="EmptyMaven" target="8" />
       <module name="maven-archetype-plugin" target="1.7" />
       <module name="MavenEmailSend" target="1.7" />
+      <module name="Topic20" target="1.8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
