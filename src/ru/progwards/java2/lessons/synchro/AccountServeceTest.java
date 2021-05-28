@@ -33,6 +33,24 @@ class ThreadTest extends Thread {
                     e.printStackTrace();
                 }
             }
+
+        Account account0 = null;
+        for (Account account: collection)
+            account0 = account;
+
+        for (int i = 0; i < 10; i++)
+            for (Account account : collection) {
+                try {
+                    accountService.transfer(account0, account, 10);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                } catch (InvalidPointerException e) {
+                    e.printStackTrace();
+                }
+            }
+
     }
 }
 

@@ -57,22 +57,32 @@ public class ConcurrentAccountService implements AccountService{
     public void transfer(Account from, Account to, double amount) throws IOException, ParseException, InvalidPointerException {
         ReentrantLock lockFrom = dataBase.getLock(from);
         ReentrantLock lockTo = dataBase.getLock(to);
-        lockFrom.lock();
-        lockTo.lock();
+
+        while (true) {
+            if (lockFrom.tryLock() && lockTo.tryLock()) break;
+            lockFrom.unlock();
+            lockTo.unlock();
+            try {
+                wait();
+            } catch (InterruptedException e) {
+
+            }
+        }
             Account accountFrom = dataBase.get(from.getId());
             Account accountTo = dataBase.get(to.getId());
             if (accountFrom == null || accountTo == null) {
                 //не наден один из аккаунтов
+                notifyAll();
                 lockFrom.unlock();
                 lockTo.unlock();
                 return;
             }
-            double ammountFrom = accountFrom.getAmount() - amount;
-            accountFrom.setAmount(ammountFrom);
-            double ammountTo = accountTo.getAmount() + amount;
-            accountTo.setAmount(ammountTo);
-            dataBase.update(accountFrom);
-            dataBase.update(accountTo);
+        double ammountFrom = accountFrom.getAmount() - amount;
+        accountFrom.setAmount(ammountFrom);
+        double ammountTo = accountTo.getAmount() + amount;
+        accountTo.setAmount(ammountTo);
+        dataBase.update(accountFrom);
+        dataBase.update(accountTo);
         lockFrom.unlock();
         lockTo.unlock();
         dataBase.rewrite();
