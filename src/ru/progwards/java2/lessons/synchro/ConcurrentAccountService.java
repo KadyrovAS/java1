@@ -5,6 +5,8 @@ import java.text.ParseException;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ConcurrentAccountService implements AccountService{
+//    StoreService dataBase = FileStoreService.INSTANCE;
+    //Создание dataBase c помощью фабрики
     StoreService dataBase = new FactoryDataBase().createDataBase("file");
 
     @Override
