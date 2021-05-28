@@ -9,8 +9,7 @@ import java.text.ParseException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public enum FileStoreService implements StoreService{
     INSTANCE;
@@ -18,7 +17,7 @@ public enum FileStoreService implements StoreService{
     public final String FILE_DATA_BASE_PATH = "d:/java/account.csv";
     public final Path path;
     private List<Account> collection = new CopyOnWriteArrayList<>();
-    public ConcurrentHashMap<String, ReadWriteLock> mapLocks;
+    public ConcurrentHashMap<String, ReentrantLock> mapLocks;
 
     FileStoreService() {
         this.path = Paths.get(FILE_DATA_BASE_PATH);
@@ -30,6 +29,7 @@ public enum FileStoreService implements StoreService{
         } catch (IOException e) {
             e.printStackTrace();
         }
+        collection.forEach(account -> mapLocks.put(account.getId(), new ReentrantLock()));
     }
 
     @Override
@@ -66,6 +66,7 @@ public enum FileStoreService implements StoreService{
                 return;
             }
         collection.add(account);
+        mapLocks.put(account.getId(), new ReentrantLock());
         rewrite();
     }
 
@@ -102,15 +103,9 @@ public enum FileStoreService implements StoreService{
     }
 
     @Override
-    public ReadWriteLock getLock(Account account){
+    public ReentrantLock getLock(Account account){
         //возвращает lock из коллекции для account
-        //если lock в коллекции отсутствует - создает новый
-        ReadWriteLock lock = mapLocks.get(account.getId());
-        if (lock == null) {
-            lock = new ReentrantReadWriteLock();
-            mapLocks.put(account.getId(), lock);
-        }
-        return lock;
+       return mapLocks.get(account.getId());
     }
 
     private Account parseAccount(String accountString) {

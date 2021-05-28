@@ -8,7 +8,10 @@ class ThreadTest extends Thread {
 
     @Override
     public void run() {
-        StoreService dataBase = new FactoryDataBase().createDataBase("file");
+        //Вариант с фабрикой
+//        StoreService dataBase = new FactoryDataBase().createDataBase("file");
+        StoreService dataBase = FileStoreService.INSTANCE;
+
         ConcurrentAccountService accountService = new ConcurrentAccountService();
 
         Collection<Account> collection = null;
@@ -18,7 +21,6 @@ class ThreadTest extends Thread {
             e.printStackTrace();
         }
 
-        System.out.println(Thread.currentThread().getName() + " collection.size = " + collection.size());
         for (int i = 0; i < 10; i++)
             for (Account account : collection) {
                 try {
@@ -37,8 +39,8 @@ class ThreadTest extends Thread {
 public class AccountServeceTest {
     public static void main(String[] args) {
 
-        Thread[] myThread = new Thread[10];
-        for (int i = 0; i < 10; i++) {
+        Thread[] myThread = new Thread[100];
+        for (int i = 0; i < 100; i++) {
             myThread[i] = new ThreadTest();
             myThread[i].start();
         }
