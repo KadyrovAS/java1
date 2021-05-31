@@ -1,5 +1,4 @@
 package ru.progwards.java2.lessons.http;
-import com.google.inject.internal.cglib.core.$ClassInfo;
 import ru.progwards.java2.lessons.synchro.Account;
 import ru.progwards.java2.lessons.synchro.AccountService;
 

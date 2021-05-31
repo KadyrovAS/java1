@@ -1,7 +1,6 @@
 package ru.progwards.java2.lessons.synchro;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ConcurrentAccountService implements AccountService{
@@ -10,17 +9,17 @@ public class ConcurrentAccountService implements AccountService{
     StoreService dataBase = new FactoryDataBase().createDataBase("file");
 
     @Override
-    public Account get(String id) throws IOException, ParseException {
+    public Account get(String id) {
         return dataBase.get(id);
     }
 
     @Override
-    public  double balance(Account account) throws IOException, ParseException {
+    public  double balance(Account account)  {
         return dataBase.get(account.getId()).getAmount();
     }
 
     @Override
-    public void deposit(Account account, double amount) throws IOException, ParseException, InvalidPointerException {
+    public void deposit(Account account, double amount)  {
         ReentrantLock lock = dataBase.getLock(account);
         lock.lock();
             Account accountFound = dataBase.get(account.getId());
@@ -38,7 +37,7 @@ public class ConcurrentAccountService implements AccountService{
     }
 
     @Override
-    public void withdraw(Account account, double amount) throws IOException, ParseException, InvalidPointerException {
+    public void withdraw(Account account, double amount) {
         ReentrantLock lock = dataBase.getLock(account);
         lock.lock();
             Account accountFound = dataBase.get(account.getId());
@@ -56,7 +55,7 @@ public class ConcurrentAccountService implements AccountService{
     }
 
     @Override
-    public void transfer(Account from, Account to, double amount) throws IOException, ParseException, InvalidPointerException {
+    public void transfer(Account from, Account to, double amount) {
         ReentrantLock lockFrom = dataBase.getLock(from);
         ReentrantLock lockTo = dataBase.getLock(to);
 

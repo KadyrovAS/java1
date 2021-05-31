@@ -1,7 +1,6 @@
 package ru.progwards.java2.lessons.synchro;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.Collection;
 
 class ThreadTest extends Thread {
@@ -23,15 +22,7 @@ class ThreadTest extends Thread {
 
         for (int i = 0; i < 10; i++)
             for (Account account : collection) {
-                try {
-                    accountService.deposit(account, 10);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                } catch (InvalidPointerException e) {
-                    e.printStackTrace();
-                }
+                accountService.deposit(account, 10);
             }
 
         Account account0 = null;
@@ -40,15 +31,7 @@ class ThreadTest extends Thread {
 
         for (int i = 0; i < 10; i++)
             for (Account account : collection) {
-                try {
-                    accountService.transfer(account0, account, 10);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                } catch (InvalidPointerException e) {
-                    e.printStackTrace();
-                }
+                accountService.transfer(account0, account, 10);
             }
 
     }
