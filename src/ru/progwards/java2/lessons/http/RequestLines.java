@@ -9,15 +9,26 @@ public class RequestLines {
     //где key - параметр (id, pin, amount, id2), а value - значение параметра
     //command - команда (GetBalance, Transfer, Deposit, Withdraw)
     //code - код выполнения parse. 0 - ok, 400 - что-то пошло не так
-    public int code = 0;
-    public Map<String, String> commands = new HashMap<>();
-    public String command;
+    private int code = 0;
+    private Map<String, String> commands = new HashMap<>();
+    private String command;
     private List<String> inputLines;
+
     public RequestLines(List<String> inputLines) {
         this.inputLines = inputLines;
         parseCommandLine();
     }
 
+    public Map<String, String> getCommands() {
+        return this.commands;
+    }
+
+    public String getCommand (){
+        return this.command;
+    }
+    public int getCode() {
+        return this.code;
+    }
     private void parseCommandLine(){
         String[] requesLines = inputLines.get(0).split("/");
         if (requesLines.length != 3){

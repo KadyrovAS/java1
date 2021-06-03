@@ -1,6 +1,5 @@
 package ru.progwards.java2.lessons.synchro;
 
-import java.io.IOException;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ConcurrentAccountService implements AccountService{

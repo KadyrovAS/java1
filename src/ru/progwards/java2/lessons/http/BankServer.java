@@ -1,4 +1,4 @@
-package ru.progwards.java2.lessons.http2;
+package ru.progwards.java2.lessons.http;
 
 import java.io.IOException;
 import java.net.*;
@@ -10,7 +10,7 @@ public class BankServer {
         ServerSocket serverSocket = null;
         try {
             serverSocket = new ServerSocket(80);
-            serverSocket.setSoTimeout(15000);
+            serverSocket.setSoTimeout(5_000);
         } catch (SocketException e) {
 
         } catch (IOException e) {
@@ -30,7 +30,8 @@ public class BankServer {
 
     }
 
-    public static void main(String[] args) throws UnknownHostException {
+    public static void main(String[] args){
+        new Thread( new AtmClientStart()).start();
         BankServer bankServer = new BankServer();
         bankServer.ServerLoad();
     }

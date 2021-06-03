@@ -1,4 +1,4 @@
-package ru.progwards.java2.lessons.http2;
+package ru.progwards.java2.lessons.http;
 
 import ru.progwards.java2.lessons.synchro.Account;
 import ru.progwards.java2.lessons.synchro.FactoryDataBase;

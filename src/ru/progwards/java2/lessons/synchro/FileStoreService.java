@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public enum FileStoreService implements StoreService{
     INSTANCE;
 
-    public final String FILE_DATA_BASE_PATH = "d:/java/account.csv";
+    public final String FILE_DATA_BASE_PATH = "C:/Work/Own/Java/account.csv";
     public final Path path;
     private List<Account> collection = new CopyOnWriteArrayList<>();
     public ConcurrentHashMap<String, ReentrantLock> mapLocks;

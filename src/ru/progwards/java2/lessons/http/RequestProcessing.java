@@ -1,4 +1,4 @@
-package ru.progwards.java2.lessons.http2;
+package ru.progwards.java2.lessons.http;
 import ru.progwards.java2.lessons.synchro.Account;
 import ru.progwards.java2.lessons.synchro.ConcurrentAccountService;
 
@@ -21,6 +21,7 @@ public class RequestProcessing implements Runnable {
 
     @Override
     public void run() {
+        this.service = new ConcurrentAccountService();
         String responseLine;
         List<String> listLine = new ArrayList<>();
         try (
@@ -28,16 +29,13 @@ public class RequestProcessing implements Runnable {
                 OutputStream os = server.getOutputStream();
         ) {
             Scanner sc = new Scanner(is);
-
             while (sc.hasNextLine()) {
                 listLine.add(sc.nextLine());
                 if (listLine.get(listLine.size() - 1).compareTo("") == 0)
                     break;
             }
 
-            System.out.println(Thread.currentThread().getName());
-            listLine.forEach(System.out::println);
-            System.out.println();
+
             //Авторизация клиента
             //Проверяется наличие id в базе и соответствие pin
             //Также проверяется структура запроса
@@ -137,8 +135,6 @@ public class RequestProcessing implements Runnable {
                 fResponse(os, 400, responseLine);
                 return;
             }
-
-
 
         } catch (IOException e) {
 
