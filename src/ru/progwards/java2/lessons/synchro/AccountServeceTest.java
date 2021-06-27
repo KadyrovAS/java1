@@ -4,14 +4,17 @@ import java.io.IOException;
 import java.util.Collection;
 
 class ThreadTest extends Thread {
+    StoreService dataBase;
+
+    ThreadTest(StoreService dataBase){
+        this.dataBase = dataBase;
+    }
 
     @Override
     public void run() {
         //Вариант с фабрикой
-//        StoreService dataBase = new FactoryDataBase().createDataBase("file");
-        StoreService dataBase = FileStoreService.INSTANCE;
 
-        ConcurrentAccountService accountService = new ConcurrentAccountService();
+        ConcurrentAccountService accountService = new ConcurrentAccountService(dataBase);
 
         Collection<Account> collection = null;
         try {
@@ -39,10 +42,11 @@ class ThreadTest extends Thread {
 
 public class AccountServeceTest {
     public static void main(String[] args) {
+        StoreService dataBase = new FactoryDataBase().createDataBase("file");
 
         Thread[] myThread = new Thread[100];
         for (int i = 0; i < 100; i++) {
-            myThread[i] = new ThreadTest();
+            myThread[i] = new ThreadTest(dataBase);
             myThread[i].start();
         }
 

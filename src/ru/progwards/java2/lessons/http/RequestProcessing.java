@@ -1,6 +1,8 @@
 package ru.progwards.java2.lessons.http;
 import ru.progwards.java2.lessons.synchro.Account;
 import ru.progwards.java2.lessons.synchro.ConcurrentAccountService;
+import ru.progwards.java2.lessons.synchro.FactoryDataBase;
+import ru.progwards.java2.lessons.synchro.StoreService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +23,8 @@ public class RequestProcessing implements Runnable {
 
     @Override
     public void run() {
-        this.service = new ConcurrentAccountService();
+        StoreService dataBase = new FactoryDataBase().createDataBase("file");
+        this.service = new ConcurrentAccountService(dataBase);
         String responseLine;
         List<String> listLine = new ArrayList<>();
         try (

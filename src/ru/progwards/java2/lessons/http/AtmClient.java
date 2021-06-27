@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Scanner;
 
 //Класс, который работает у клиента
+
 public class AtmClient{
 
     private List<String> listLines = new ArrayList<>();

@@ -5,7 +5,11 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ConcurrentAccountService implements AccountService{
 //    StoreService dataBase = FileStoreService.INSTANCE;
     //Создание dataBase c помощью фабрики
-    StoreService dataBase = new FactoryDataBase().createDataBase("file");
+//    StoreService dataBase = new FactoryDataBase().createDataBase("file");
+    StoreService dataBase;
+    public ConcurrentAccountService(StoreService dataBase) {
+        this.dataBase = dataBase;
+    }
 
     @Override
     public Account get(String id) {
